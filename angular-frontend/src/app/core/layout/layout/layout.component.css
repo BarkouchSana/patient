@@ -1,0 +1,87 @@
+.app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    font-family: 'Arial', sans-serif;
+    color: #333;
+  }
+  
+  .app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #0078d4;
+    color: white;
+    padding: 10px 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .header-left {
+    display: flex;
+    align-items: center;
+  }
+  
+  .logo {
+    height: 40px;
+    margin-right: 10px;
+  }
+  
+  .header-right {
+    display: flex;
+    align-items: center;
+  }
+  
+  .user-info {
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .user-info i {
+    margin-right: 5px;
+    font-size: 20px;
+  }
+  
+  .app-main {
+    display: flex;
+    flex: 1;
+  }
+  
+  .app-sidenav {
+    width: 250px;
+    background-color: #f4f4f4;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .app-sidenav ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .app-sidenav li {
+    margin-bottom: 15px;
+  }
+  
+  .app-sidenav a {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+  }
+  
+  .app-sidenav a i {
+    margin-right: 10px;
+    font-size: 18px;
+  }
+  
+  .app-sidenav a.active {
+    color: #0078d4;
+  }
+  
+  .app-content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+  }

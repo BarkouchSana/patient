@@ -1,0 +1,38 @@
+<div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-left">
+        <img src="assets/logo.png" alt="Logo Cabinet" class="logo">
+        <h1>Cabinet Médical</h1>
+      </div>
+      <div class="header-right">
+        <span class="user-info">
+          <i class="fas fa-user-circle"></i> John Doe
+        </span>
+      </div>
+    </header>
+  
+    <!-- Main Content -->
+    <div class="app-main">
+      <!-- Sidenav -->
+      <nav class="app-sidenav">
+        <ul>
+          <li><a routerLink="/dashboard" routerLinkActive="active"><i class="fas fa-home"></i> Tableau de bord</a></li>
+          <li><a routerLink="/profile" routerLinkActive="active"><i class="fas fa-user"></i> Profil</a></li>
+          <li><a routerLink="/medical-history" routerLinkActive="active"><i class="fas fa-notes-medical"></i> Historique médical</a></li>
+          <li><a routerLink="/appointments" routerLinkActive="active"><i class="fas fa-calendar-alt"></i> Rendez-vous</a></li>
+          <li><a routerLink="/prescriptions" routerLinkActive="active"><i class="fas fa-prescription-bottle-alt"></i> Prescriptions</a></li>
+          <li><a routerLink="/medical-record" routerLinkActive="active"><i class="fas fa-folder-open"></i> Dossier médical</a></li>
+          <li><a routerLink="/reminders" routerLinkActive="active"><i class="fas fa-bell"></i> Rappels</a></li>
+          <li><a routerLink="/chat" routerLinkActive="active"><i class="fas fa-comments"></i> Chatbot</a></li>
+          <li><a routerLink="/guest-access" routerLinkActive="active"><i class="fas fa-user-friends"></i> Invitations</a></li>
+          <li><a routerLink="/bills" routerLinkActive="active"><i class="fas fa-file-invoice-dollar"></i> Factures</a></li>
+        </ul>
+      </nav>
+  
+      <!-- Router Outlet -->
+      <main class="app-content">
+        <router-outlet></router-outlet>
+      </main>
+    </div>
+  </div>

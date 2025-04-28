@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-
+use Illuminate\Support\Facades\Route;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -19,6 +19,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+             // Enregistrer les routes API
+             Route::prefix('api')
+             ->middleware('api')
+             ->group(base_path('routes/api.php'));
+ 
+         // Enregistrer les routes Web (déjà fait par défaut)
+         Route::middleware('web')
+             ->group(base_path('routes/web.php'));
     }
 }

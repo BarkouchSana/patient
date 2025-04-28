@@ -8,6 +8,7 @@ import { AppointmentSummaryComponent } from './components/appointment-summary/ap
 import { LabResultsComponent } from './components/lab-results/lab-results.component';
 import { RemindersComponent } from './components/reminders/reminders.component';
 import { PrescriptionsComponent } from './components/prescriptions/prescriptions.component';
+import { PersonalInfoComponent } from './components/personal-info/personal-info.component';
 
 
 @NgModule({
@@ -17,7 +18,8 @@ import { PrescriptionsComponent } from './components/prescriptions/prescriptions
     AppointmentSummaryComponent,
     LabResultsComponent,
     RemindersComponent,
-    PrescriptionsComponent
+    PrescriptionsComponent,
+    PersonalInfoComponent
   ],
   imports: [
     CommonModule,

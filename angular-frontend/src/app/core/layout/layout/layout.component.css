@@ -64,8 +64,16 @@
     padding: 20px;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
     border-right: 1px solid #e0e0e0;
+    transition: width 0.3s ease;
+    overflow: hidden;
   }
   
+
+  .app-sidenav.collapsed {
+    width: 60px;
+  }
+
+
   .app-sidenav ul {
     list-style: none;
     padding: 0;
@@ -87,21 +95,42 @@
     transition: background-color 0.3s ease, color 0.3s ease;
   }
   
-  .app-sidenav a i {
+  .app-sidenav ul li a i  {
     margin-right: 12px;
     font-size: 20px;
   }
   
-  .app-sidenav a:hover {
+  .app-sidenav ul li a:hover {
     background-color: #0078d4;
     color: white;
   }
   
-  .app-sidenav a.active {
+  .app-sidenav ul li a.active {
     background-color: #0078d4;
     color: white;
   }
   
+  .app-sidenav ul li a span {
+    white-space: nowrap;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+  }
+  .toggle-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    font-size: 18px;
+    color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  .app-sidenav.collapsed ul li a span {
+    opacity: 0; 
+    pointer-events: none; 
+  }
   /* Content area styles */
   .app-content {
     flex: 1;

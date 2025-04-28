@@ -1,1 +1,56 @@
-<p>profile works!</p>
+<div class="profile-container">
+    <h1>Mon Profil</h1>
+    <div class="profile-photo">
+      <img [src]="photoPreview || 'assets/images/default-avatar.jpeg'" alt="Photo de profil" />
+      <input type="file" (change)="onFileSelected($event)" />
+  </div>
+    <form [formGroup]="form" (ngSubmit)="saveProfile()">
+      <div>
+        <label>Nom</label>
+        <input formControlName="surname" />
+      </div>
+      <div>
+        <label>Prénom</label>
+        <input formControlName="name" />
+      </div>
+      <div>
+        <label>Email</label> 
+        <input type="email" formControlName="email" />
+      </div>
+      <div>
+        <label>Date de naissance</label>
+        <input type="date" formControlName="birthdate" />
+      </div>
+      <div>
+        <label>Genre</label>
+        <select formControlName="gender">
+          <option value="male">Homme</option>
+          <option value="female">Femme</option>
+        </select>
+      </div>
+      <div>
+        <label>Adresse</label>
+        <input formControlName="address" />
+      </div>
+      <div>
+        <label>Contact d'urgence</label>
+        <input formControlName="emergencyContact" />
+      </div>
+      <div>
+        <label>État civil</label>
+        <select formControlName="maritalStatus">
+          <option value="single">Célibataire</option>
+          <option value="married">Marié(e)</option>
+        </select>
+      </div>
+      <div>
+        <label>Groupe sanguin</label>
+        <input formControlName="bloodType" />
+      </div>
+      <div>
+        <label>Nationalité</label>
+        <input formControlName="nationality" />
+      </div>
+      <button type="submit" [disabled]="loading">Enregistrer</button>
+    </form>
+  </div>

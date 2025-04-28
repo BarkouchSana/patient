@@ -11,4 +11,5 @@ export class RemindersComponent {
     { message: 'Prendre vos médicaments', date: '2025-04-24' },
     { message: 'Rendez-vous demain à 10h', date: '2025-04-25' }
   ];
+  
 }

@@ -7,5 +7,9 @@ import { Component } from '@angular/core';
   styleUrl: './layout.component.css'
 })
 export class LayoutComponent {
+  isSidenavCollapsed = false;
 
+  toggleSidenav(): void {
+    this.isSidenavCollapsed = !this.isSidenavCollapsed;
+  }
 }

@@ -18,18 +18,21 @@
     <!-- Main Content -->
     <div class="app-main">
       <!-- Sidenav -->
-      <nav class="app-sidenav">
+      <nav class="app-sidenav" [class.collapsed]="isSidenavCollapsed">
+        <button class="toggle-button" (click)="toggleSidenav()">
+          <i class="fas" [ngClass]="isSidenavCollapsed ? 'fa-chevron-right' : 'fa-chevron-left'"></i>
+        </button>
         <ul>
-            <li><a routerLink="/dashboard" routerLinkActive="active"><i class="fas fa-home"></i> Tableau de bord</a></li>
-            <li><a routerLink="/profile" routerLinkActive="active"><i class="fas fa-user"></i> Profil</a></li>
-            <li><a routerLink="/medical-history" routerLinkActive="active"><i class="fas fa-notes-medical"></i> Historique médical</a></li>
-            <li><a routerLink="/appointments" routerLinkActive="active"><i class="fas fa-calendar-alt"></i> Rendez-vous</a></li>
-            <li><a routerLink="/prescriptions" routerLinkActive="active"><i class="fas fa-prescription-bottle-alt"></i> Prescriptions</a></li>
-            <li><a routerLink="/medical-record" routerLinkActive="active"><i class="fas fa-folder-open"></i> Dossier médical</a></li>
-            <li><a routerLink="/reminders" routerLinkActive="active"><i class="fas fa-bell"></i> Rappels</a></li>
-            <li><a routerLink="/chat" routerLinkActive="active"><i class="fas fa-comments"></i> Chatbot</a></li>
-            <li><a routerLink="/guest-access" routerLinkActive="active"><i class="fas fa-user-friends"></i> Invitations</a></li>
-            <li><a routerLink="/bills" routerLinkActive="active"><i class="fas fa-file-invoice-dollar"></i> Factures</a></li>
+            <li><a routerLink="/dashboard" routerLinkActive="active"><i class="fas fa-home"></i><span *ngIf="!isSidenavCollapsed">Tableau de bord</span> </a></li>
+            <li><a routerLink="/profile" routerLinkActive="active"><i class="fas fa-user"></i><span *ngIf="!isSidenavCollapsed"> Profil</span></a></li>
+            <li><a routerLink="/medical-history" routerLinkActive="active"><i class="fas fa-notes-medical"></i><span *ngIf="!isSidenavCollapsed"> Historique médical</span></a></li>
+            <li><a routerLink="/appointments" routerLinkActive="active"><i class="fas fa-calendar-alt"></i><span *ngIf="!isSidenavCollapsed"> Rendez-vous</span></a></li>
+            <li><a routerLink="/prescriptions" routerLinkActive="active"><i class="fas fa-prescription-bottle-alt"></i> <span *ngIf="!isSidenavCollapsed">Prescriptions</span></a></li>
+            <li><a routerLink="/medical-record" routerLinkActive="active"><i class="fas fa-folder-open"></i> <span *ngIf="!isSidenavCollapsed">Dossier médical</span></a></li>
+            <li><a routerLink="/reminders" routerLinkActive="active"><i class="fas fa-bell"></i><span *ngIf="!isSidenavCollapsed"> Rappels</span></a></li>
+            <li><a routerLink="/chat" routerLinkActive="active"><i class="fas fa-comments"></i><span *ngIf="!isSidenavCollapsed"> Chatbot</span></a></li>
+            <li><a routerLink="/guest-access" routerLinkActive="active"><i class="fas fa-user-friends"></i><span *ngIf="!isSidenavCollapsed"> Invitations</span></a></li>
+            <li><a routerLink="/bills" routerLinkActive="active"><i class="fas fa-file-invoice-dollar"></i><span *ngIf="!isSidenavCollapsed"> Factures</span></a></li>
           </ul>
       </nav>
   

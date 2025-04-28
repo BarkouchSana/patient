@@ -1,0 +1,110 @@
+/* .medical-record-container {
+    padding: 20px;
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f9;
+    min-height: 100vh;
+  }
+  
+  .medical-record-container h1 {
+    font-size: 28px;
+    font-weight: bold;
+    color: #0078d4;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .tabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  
+  .tabs button {
+    padding: 10px 20px;
+    margin: 0 5px;
+    border: none;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .tabs button.active {
+    background-color: #0078d4;
+    color: white;
+  }
+  
+  .tabs button:hover {
+    background-color: #005bb5;
+    color: white;
+  }
+  
+  .tab-content {
+    margin-top: 20px;
+  } */
+
+
+  .medical-records-container {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: 'Arial', sans-serif;
+  }
+  
+  h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .tabs button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .tabs button.active {
+    background-color: #0078d4;
+    color: white;
+  }
+  
+  .tab-content {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .record-item {
+    padding: 15px;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .record-item h3 {
+    margin: 0;
+    font-size: 18px;
+  }
+  
+  .record-item p {
+    margin: 5px 0 0;
+    font-size: 14px;
+  }
+  
+  .completed {
+    color: green;
+  }
+  
+  .pending {
+    color: orange;
+  }

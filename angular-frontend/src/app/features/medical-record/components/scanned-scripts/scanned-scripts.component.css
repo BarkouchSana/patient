@@ -1,0 +1,30 @@
+.document-list ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .document-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .document-list li button {
+    padding: 5px 10px;
+    background-color: #0078d4;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .document-list li button:hover {
+    background-color: #005bb5;
+  }

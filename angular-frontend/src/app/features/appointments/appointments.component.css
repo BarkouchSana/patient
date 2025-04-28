@@ -1,0 +1,24 @@
+.appointments-container {
+    padding: 20px;
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f9;
+    min-height: 100vh;
+  }
+  
+  .appointments-container h1 {
+    font-size: 28px;
+    font-weight: bold;
+    color: #0078d4;
+    margin-bottom: 30px;
+    text-align: center;
+  }
+  
+  .appointments-container section {
+    margin-bottom: 40px;
+  }
+  
+  .appointments-container h2 {
+    font-size: 22px;
+    margin-bottom: 20px;
+    color: #333;
+  }

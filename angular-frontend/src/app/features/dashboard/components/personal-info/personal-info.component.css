@@ -1,0 +1,309 @@
+/* .personal-info-container {
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .personal-info-container h3 {
+    font-size: 20px;
+    margin-bottom: 15px;
+    color: #0078d4;
+  }
+  
+  .personal-info {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  
+  .patient-photo {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #0078d4;
+  }
+  
+  .personal-info ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .personal-info li {
+    margin-bottom: 10px;
+    font-size: 16px;
+    color: #333;
+  }
+  
+  .personal-info li strong {
+    color: #0078d4;
+  } */
+
+
+
+/*   
+  .personal-info-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .personal-info-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex: 1;
+  }
+  
+  .patient-photo {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #007bff;
+  }
+  
+  .personal-info-details {
+    flex: 1;
+  }
+  
+  .personal-info-details h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .personal-info-meta {
+    display: flex;
+    gap: 15px;
+    font-size: 14px;
+    color: #6c757d;
+  }
+  
+  .personal-info-meta i {
+    margin-right: 5px;
+  }
+  
+  .emergency-contact {
+    text-align: right;
+  }
+  
+  .emergency-contact strong {
+    display: block;
+    font-size: 14px;
+    color: #6c757d;
+  }
+  
+  .emergency-contact p {
+    margin: 0;
+    font-size: 16px;
+    font-weight: bold;
+    color: #007bff;
+  } */
+
+
+  .personal-info-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .personal-info-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  
+  .patient-photo {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #6f42c1;
+  }
+  .personal-info-details {
+    flex: 1; /* Permet aux détails de prendre l'espace disponible */
+  }
+  .personal-info-details h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .personal-info-meta {
+    display: flex;
+    gap: 15px;
+    font-size: 14px;
+    color: #6c757d;
+  }
+  
+  .emergency-contact {
+    text-align: right;
+    min-width: 150px;
+  }
+  
+  .emergency-contact strong {
+    display: block;
+    font-size: 14px;
+    color: #6c757d;
+  }
+  
+  .emergency-contact p {
+    margin: 0;
+    font-size: 16px;
+    font-weight: bold;
+    color: #6f42c1;
+  }
+  
+  .appointments h3 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Place l'icône à droite */
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  .appointments h3 i {
+    font-size: 20px;
+    color: #6f42c1; /* Couleur violette */
+  }
+  .info-cards {
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+  }
+  
+  .info-card {
+    flex: 1;
+    padding: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+  }
+  
+  .info-card h4 {
+    margin: 0;
+    font-size: 14px;
+    color: #6c757d;
+  }
+  
+  .info-card p {
+    margin: 10px 0 0;
+    font-size: 18px;
+    font-weight: bold;
+    color: #343a40;
+  }
+  
+  .info-card i {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+    color: #6f42c1;
+  }
+
+  .tabs-container {
+    margin-top: 20px;
+  }
+  
+  .tabs {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .tabs li {
+    padding: 10px 20px;
+    cursor: pointer;
+    border: 1px solid #e0e0e0;
+    border-bottom: none;
+    background-color: #f8f9fa;
+    font-weight: normal;
+  }
+  
+  .tabs li.active {
+    /* border-color: #6f42c1; */
+    background-color: #fff;
+    font-weight: bold;
+  }
+  
+  .tab-content {
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    border-top: none;
+    background-color: #fff;
+  }
+  
+  .appointment-card, .prescription-card {
+    display: flex;
+    justify-content: space-between; /* Place le statut à droite */
+    align-items: center; /* Aligne verticalement */
+    padding: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    background-color: #f9f9f9;
+  }
+  .appointment-info, .prescription-info {
+    flex: 1; /* Prend tout l'espace disponible */
+  }
+  .appointment-card h4, .prescription-card h4 {
+    margin: 0 0 5px;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .status {
+    display: inline-block;
+    padding: 5px 15px; /* Ajuste l'espacement interne */
+    border-radius: 20px; /* Bordures arrondies */
+    font-size: 12px;
+    font-weight: bold;
+    color: #6f42c1; /* Couleur du texte violet */
+    background-color: #f8f0fc; /* Couleur de fond violet clair */
+    text-align: center;
+    border: 1px solid #6f42c1;
+  }
+  .prescription-quantity {
+    font-size: 14px;
+    font-weight: bold;
+    color: #6f42c1; /* Couleur violette */
+  }
+  .prescriptions h3 {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Espacement entre l'icône et le texte */
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  .prescriptions h3 i {
+    font-size: 24px;
+    color: #6f42c1; /* Couleur violette */
+  }
+  /* .status.scheduled {
+    background-color: #6f42c1;
+  } */
+  
+  /* .status.pending {
+    background-color: #ffc107;
+  } */

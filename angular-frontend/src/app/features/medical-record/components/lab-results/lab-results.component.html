@@ -1,1 +1,10 @@
-<p>lab-results works!</p>
+<div class="document-list">
+    <ul>
+      <li *ngFor="let document of documents">
+        <span>{{ document.title }}</span>
+        <span>{{ document.date }}</span>
+        <button (click)="viewDocument(document)">Voir</button>
+        <button (click)="downloadDocument(document)">Télécharger</button>
+      </li>
+    </ul>
+  </div>

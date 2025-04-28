@@ -1,0 +1,115 @@
+<!-- <div class="personal-info-container">
+    <h3>Informations personnelles</h3>
+    <div class="personal-info">
+    
+      <img [src]="personalInfo.photoUrl" alt="Photo du patient" class="patient-photo" />
+  
+      
+      <ul>
+        <li><strong>Nom :</strong> {{ personalInfo.name }}</li>
+        <li><strong>Prénom :</strong> {{ personalInfo.surname }}</li>
+        <li><strong>Date de naissance :</strong> {{ personalInfo.birthDate }}</li>
+        <li><strong>Groupe sanguin :</strong> {{ personalInfo.bloodType }}</li>
+        <li><strong>Statut marital :</strong> {{ personalInfo.maritalStatus }}</li>
+        <li><strong>Date d'enregistrement :</strong> {{ personalInfo.registrationDate }}</li>
+      </ul>
+    </div>
+  </div> -->
+
+  <div class="personal-info-container">
+    <div class="personal-info-header">
+      <!-- Photo du patient -->
+      <img [src]="personalInfo.photoUrl || 'assets/default-avatar.png'" alt="Photo du patient" class="patient-photo" />
+  
+      <!-- Informations principales -->
+      <div class="personal-info-details">
+        <h3>{{ personalInfo.name }} {{ personalInfo.surname }}</h3>
+        <div class="personal-info-meta">
+          <span><i class="fa fa-calendar"></i> {{ personalInfo.birthDate }}</span>
+          <span><i class="fa fa-tint"></i> Blood Type: {{ personalInfo.bloodType }}</span>
+        </div>
+      </div>
+  
+      <!-- Contact d'urgence -->
+      <div class="emergency-contact">
+        <strong>
+          <i class="fa fa-bell" style="color: #6f42c1; margin-right: 5px;"></i> 
+          Emergency Contact</strong>
+        <p>{{ personalInfo.emergencyContact }}</p>
+      </div>
+    </div>
+
+
+     <!-- Section des cartes -->
+  <div class="info-cards">
+    <div class="info-card">
+      <h4>Tension</h4>
+      <p>{{ personalInfo.bloodPressure }}</p>
+      <i class="fa fa-heart"></i>
+    </div>
+    <div class="info-card">
+      <h4>Dernier RDV</h4>
+      <p>{{ personalInfo.lastAppointment }}</p>
+      <i class="fa fa-calendar"></i>
+    </div>
+    <div class="info-card">
+      <h4>Prochain RDV</h4>
+      <p>{{ personalInfo.nextAppointment }}</p>
+      <i class="fa fa-line-chart"></i>
+    </div>
+    <div class="info-card">
+      <h4>Prescriptions</h4>
+      <p>{{ personalInfo.activePrescriptions }} actives</p>
+      <i class="fa fa-line-chart"></i>
+    </div>
+  </div>
+
+
+  <div class="tabs-container">
+    <!-- Onglets -->
+    <ul class="tabs">
+      <li [class.active]="activeTab === 'appointments'" (click)="setActiveTab('appointments')">Rendez-vous</li>
+      <li [class.active]="activeTab === 'prescriptions'" (click)="setActiveTab('prescriptions')">Prescriptions</li>
+    </ul>
+  
+    <!-- Contenu des onglets -->
+    <div class="tab-content">
+      <!-- Section Rendez-vous -->
+      <div *ngIf="activeTab === 'appointments'" class="appointments">
+        <h3>
+          Prochains Rendez-vous
+          <i class="fa fa-calendar" aria-hidden="true"></i>
+        </h3>
+        <div class="appointment-card" *ngFor="let appointment of personalInfo.appointments">
+          <div class="appointment-info">
+            <h4>{{ appointment.title }}</h4>
+            <p>{{ appointment.doctor }}</p>
+            <p>{{ appointment.date }}</p>
+          </div>
+          <span class="status" [class.scheduled]="appointment.status === 'Programmé'" [class.pending]="appointment.status === 'En attente'">
+            {{ appointment.status }}
+          </span>
+        </div>
+      </div>
+  
+      <!-- Section Prescriptions -->
+      <div *ngIf="activeTab === 'prescriptions'" class="prescriptions">
+        <h3>Prescriptions Actives
+          
+        </h3>
+        <div class="prescription-card" *ngFor="let prescription of personalInfo.prescriptions">
+          <div class="prescription-info">
+            <h4><i class="fa fa-pills" aria-hidden="true" style="color: #6f42c1;"></i> {{ prescription.name }}</h4>
+            <p>{{ prescription.dosage }}</p>
+            <p>Prescrit par: {{ prescription.doctor }}</p>
+            <p>{{ prescription.startDate }} au {{ prescription.endDate }}</p>
+          </div>
+          <div class="prescription-quantity">
+            {{ prescription.quantity }}mg
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>

@@ -7,7 +7,7 @@ import { AppointmentListComponent } from './components/appointment-list/appointm
 import { AppointmentDetailComponent } from './components/appointment-detail/appointment-detail.component';
 import { AppointmentCreateComponent } from './components/appointment-create/appointment-create.component';
 
-
+import { FormsModule } from '@angular/forms';
 @NgModule({
   declarations: [
     AppointmentsComponent,
@@ -17,7 +17,12 @@ import { AppointmentCreateComponent } from './components/appointment-create/appo
   ],
   imports: [
     CommonModule,
-    AppointmentsRoutingModule
+    AppointmentsRoutingModule,
+    FormsModule
   ]
 })
-export class AppointmentsModule { }
+export class AppointmentsModule { 
+
+
+  
+}

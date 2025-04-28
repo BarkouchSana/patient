@@ -1,1 +1,57 @@
-<p>medical-record works!</p>
+<!-- <div class="medical-record-container">
+    <h1>Dossier médical</h1>
+  
+     
+    <div class="tabs">
+      <button 
+        *ngFor="let tab of tabs" 
+        (click)="selectTab(tab)" 
+        [class.active]="selectedTab === tab">
+        {{ tab }}
+      </button>
+    </div>
+  
+    
+    <div class="tab-content">
+      <app-general-records *ngIf="selectedTab === 'Ordonnances'"></app-general-records>
+      <app-lab-results *ngIf="selectedTab === 'Résultats d\'analyse'"></app-lab-results>
+      <app-scanned-scripts *ngIf="selectedTab === 'Certificats'"></app-scanned-scripts>
+    </div>
+  </div> -->
+
+  <div class="medical-records-container">
+    <h1>Medical Records</h1>
+  
+    <!-- Tabs -->
+    <div class="tabs">
+      <button [class.active]="activeTab === 'prescriptions'" (click)="setActiveTab('prescriptions')">Prescriptions</button>
+      <button [class.active]="activeTab === 'labResults'" (click)="setActiveTab('labResults')">Recommended Tests</button>
+      <button [class.active]="activeTab === 'certificates'" (click)="setActiveTab('certificates')">Certificates</button>
+    </div>
+  
+    <!-- Prescriptions -->
+    <div *ngIf="activeTab === 'prescriptions'" class="tab-content">
+      <div *ngFor="let prescription of medicalRecords.prescriptions" class="record-item">
+        <h3>{{ prescription.date }} • {{ prescription.doctor }}</h3>
+        <ul>
+          <li *ngFor="let medication of prescription.medications">{{ medication }}</li>
+        </ul>
+      </div>
+    </div>
+  
+    <!-- Lab Results -->
+    <div *ngIf="activeTab === 'labResults'" class="tab-content">
+      <div *ngFor="let result of medicalRecords.labResults" class="record-item">
+        <h3>{{ result.testName }}</h3>
+        <p>{{ result.date }} • <span [class.completed]="result.status === 'Completed'" [class.pending]="result.status === 'Pending'">{{ result.status }}</span></p>
+      </div>
+    </div>
+  
+    <!-- Certificates -->
+    <div *ngIf="activeTab === 'certificates'" class="tab-content">
+      <div *ngFor="let certificate of medicalRecords.certificates" class="record-item">
+        <h3>{{ certificate.title }}</h3>
+        <p>{{ certificate.date }} • {{ certificate.doctor }}</p>
+      </div>
+    </div>
+  </div>

@@ -15,7 +15,7 @@ class PersonalInfo
     public ?string $maritalStatus;
     public ?string $bloodType;
     public ?string $nationality;
-    public ?string $photo;
+    public ?string $profile_image;
     public string  $createdAt;
     public string  $updatedAt;
 }

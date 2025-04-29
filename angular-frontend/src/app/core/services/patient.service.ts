@@ -6,12 +6,19 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class PatientService {
-  private api = 'http://127.0.0.1:8000/api/profile';
+  private baseUrl = 'http://127.0.0.1:8000/api';
+  
   constructor(private http: HttpClient) {}
+  
   getProfile(): Observable<any> {
-    return this.http.get(this.api);
+    return this.http.get(`${this.baseUrl}/profile`);
   }
+  
   updateProfile(payload: any): Observable<any> {
-    return this.http.put(this.api, payload);
+    return this.http.put(`${this.baseUrl}/profile/update`, payload);
+  }
+  
+  updateProfileImage(formData: FormData): Observable<any> {
+    return this.http.post(`${this.baseUrl}/profile/update-image`, formData);
   }
 }

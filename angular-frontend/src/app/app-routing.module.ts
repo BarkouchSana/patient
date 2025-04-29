@@ -14,7 +14,6 @@ const routes: Routes = [
       { path: 'medical-record', loadChildren: () => import('./features/medical-record/medical-record.module').then(m => m.MedicalRecordModule) },
       { path: 'reminders', loadChildren: () => import('./features/reminders/reminders.module').then(m => m.RemindersModule) },
       { path: 'chat', loadChildren: () => import('./features/chat/chat.module').then(m => m.ChatModule) },
-      { path: 'guest-access', loadChildren: () => import('./features/guest-access/guest-access.module').then(m => m.GuestAccessModule) },
       { path: 'bills', loadChildren: () => import('./features/bills/bills.module').then(m => m.BillsModule) },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ]

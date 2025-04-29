@@ -1,1 +1,95 @@
-<p>profile-view works!</p>
+<div class="profile-view-container">
+  <div class="loading-spinner" *ngIf="isLoading">
+    <div class="spinner"></div>
+    <p>Loading profile data...</p>
+  </div>
+
+  <div *ngIf="!isLoading" class="profile-content">
+    <h2 class="section-title">Profile Information</h2>
+
+    <div class="profile-sections">
+      <!-- Profile Image Section -->
+      <div class="profile-image-section">
+        <h3>Profile Picture</h3>
+        <div class="profile-image-container">
+          <div class="image-preview">
+            <img *ngIf="profileData?.profile_image" [src]="sanitizeImageUrl(profileData?.profile_image)" alt="Profile picture" />
+            <div *ngIf="!profileData?.profile_image" class="no-image">
+              <i class="user-icon">👤</i>
+            </div>
+          </div>
+          <!-- Edit button removed as requested -->
+        </div>
+      </div>
+
+      <!-- Profile Information Display -->
+      <div class="profile-info-section">
+        <div class="info-section">
+          <h3>Personal Information</h3>
+          
+          <div class="info-grid">
+            <div class="info-group">
+              <label>First Name</label>
+              <div class="info-value">{{ profileData?.name || 'Not provided' }}</div>
+            </div>
+            
+            <div class="info-group">
+              <label>Last Name</label>
+              <div class="info-value">{{ profileData?.surname || 'Not provided' }}</div>
+            </div>
+          </div>
+          
+          <div class="info-grid">
+            <div class="info-group">
+              <label>Email</label>
+              <div class="info-value">{{ profileData?.email || 'Not provided' }}</div>
+            </div>
+            
+            <div class="info-group">
+              <label>Date of Birth</label>
+              <div class="info-value">{{ profileData?.birthdate ? (profileData?.birthdate | date:'mediumDate') : 'Not provided' }}</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="info-section">
+          <h3>Additional Information</h3>
+          
+          <div class="info-grid">
+            <div class="info-group">
+              <label>Gender</label>
+              <div class="info-value">{{ profileData?.gender || 'Not provided' }}</div>
+            </div>
+            
+            <div class="info-group">
+              <label>Blood Type</label>
+              <div class="info-value">{{ profileData?.bloodType || 'Not provided' }}</div>
+            </div>
+          </div>
+          
+          <div class="info-grid">
+            <div class="info-group">
+              <label>Marital Status</label>
+              <div class="info-value">{{ profileData?.maritalStatus || 'Not provided' }}</div>
+            </div>
+            
+            <div class="info-group">
+              <label>Nationality</label>
+              <div class="info-value">{{ profileData?.nationality || 'Not provided' }}</div>
+            </div>
+          </div>
+          
+          <div class="info-group full-width">
+            <label>Address</label>
+            <div class="info-value">{{ profileData?.address || 'Not provided' }}</div>
+          </div>
+          
+          <div class="info-group full-width">
+            <label>Emergency Contact</label>
+            <div class="info-value">{{ profileData?.emergencyContact || 'Not provided' }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

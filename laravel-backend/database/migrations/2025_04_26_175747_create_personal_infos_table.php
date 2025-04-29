@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('marital_status')->nullable();
             $table->string('blood_type')->nullable();
             $table->string('nationality')->nullable();
-            $table->string('photo')->nullable();
+            $table->string('profile_image')->nullable();
             $table->timestamps();
         });
     }

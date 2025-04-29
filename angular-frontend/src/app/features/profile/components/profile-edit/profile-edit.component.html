@@ -1,1 +1,197 @@
-<p>profile-edit works!</p>
+<div class="profile-edit-container">
+  <div class="loading-spinner" *ngIf="isLoading">
+    <div class="spinner"></div>
+    <p>Loading profile data...</p>
+  </div>
+
+  <div *ngIf="!isLoading" class="profile-content">
+    <h2 class="section-title">Edit Profile</h2>
+
+    <!-- Success and Error Messages -->
+    <div class="alert alert-success" *ngIf="profileUpdateSuccess">
+      Profile updated successfully!
+    </div>
+    <div class="alert alert-danger" *ngIf="profileUpdateError">
+      {{ errorMessage }}
+    </div>
+
+    <div class="profile-sections">
+      <!-- Profile Image Section -->
+      <div class="profile-image-section">
+        <h3>Profile Picture</h3>
+        <div class="profile-image-container">
+          <div class="image-preview">
+            <img *ngIf="imagePreview" [src]="imagePreview" alt="Profile preview" />
+            <div *ngIf="!imagePreview" class="no-image">
+              <i class="user-icon">👤</i>
+            </div>
+          </div>
+          
+          <div class="image-upload-controls">
+            <input 
+              type="file" 
+              id="profile_image" 
+              accept="image/*" 
+              (change)="onFileChange($event)" 
+              #fileInput
+              class="file-input"
+            >
+            <button type="button" class="btn btn-outline" (click)="fileInput.click()">
+              Choose file
+            </button>
+            <button 
+              type="button" 
+              class="btn btn-primary" 
+              [disabled]="!selectedFile || isSubmitting" 
+              (click)="uploadImage()"
+            >
+              <span *ngIf="isSubmitting && selectedFile">Uploading...</span>
+              <span *ngIf="!isSubmitting || !selectedFile">Upload</span>
+            </button>
+          </div>
+
+          <!-- Image upload status messages -->
+          <div class="alert alert-success image-status" *ngIf="imageUpdateSuccess">
+            Profile image updated successfully!
+          </div>
+          <div class="alert alert-danger image-status" *ngIf="imageUpdateError">
+            Failed to upload image: {{ errorMessage }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Profile Information Form -->
+      <div class="profile-form-section">
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+          <div class="form-section">
+            <h3>Personal Information</h3>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="name">First Name *</label>
+                <input 
+                  type="text" 
+                  id="name" 
+                  formControlName="name" 
+                  [ngClass]="{'is-invalid': form.get('name')?.invalid && form.get('name')?.touched}"
+                >
+                <div class="invalid-feedback" *ngIf="form.get('name')?.invalid && form.get('name')?.touched">
+                  First name is required
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label for="surname">Last Name *</label>
+                <input 
+                  type="text" 
+                  id="surname" 
+                  formControlName="surname"
+                  [ngClass]="{'is-invalid': form.get('surname')?.invalid && form.get('surname')?.touched}"
+                >
+                <div class="invalid-feedback" *ngIf="form.get('surname')?.invalid && form.get('surname')?.touched">
+                  Last name is required
+                </div>
+              </div>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="email">Email *</label>
+                <input 
+                  type="email" 
+                  id="email" 
+                  formControlName="email"
+                  [ngClass]="{'is-invalid': form.get('email')?.invalid && form.get('email')?.touched}"
+                >
+                <div class="invalid-feedback" *ngIf="form.get('email')?.invalid && form.get('email')?.touched">
+                  <span *ngIf="form.get('email')?.errors?.['required']">Email is required</span>
+                  <span *ngIf="form.get('email')?.errors?.['email']">Please enter a valid email</span>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label for="birthdate">Date of Birth *</label>
+                <input 
+                  type="date" 
+                  id="birthdate" 
+                  formControlName="birthdate"
+                  [ngClass]="{'is-invalid': form.get('birthdate')?.invalid && form.get('birthdate')?.touched}"
+                >
+                <div class="invalid-feedback" *ngIf="form.get('birthdate')?.invalid && form.get('birthdate')?.touched">
+                  Date of birth is required
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-section">
+            <h3>Additional Information</h3>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="gender">Gender</label>
+                <select id="gender" formControlName="gender">
+                  <option value="">Select gender</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                  <option value="Prefer not to say">Prefer not to say</option>
+                </select>
+              </div>
+              
+              <div class="form-group">
+                <label for="bloodType">Blood Type</label>
+                <select id="bloodType" formControlName="bloodType">
+                  <option value="">Select blood type</option>
+                  <option value="A+">A+</option>
+                  <option value="A-">A-</option>
+                  <option value="B+">B+</option>
+                  <option value="B-">B-</option>
+                  <option value="AB+">AB+</option>
+                  <option value="AB-">AB-</option>
+                  <option value="O+">O+</option>
+                  <option value="O-">O-</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="maritalStatus">Marital Status</label>
+                <select id="maritalStatus" formControlName="maritalStatus">
+                  <option value="">Select marital status</option>
+                  <option value="Single">Single</option>
+                  <option value="Married">Married</option>
+                  <option value="Divorced">Divorced</option>
+                  <option value="Widowed">Widowed</option>
+                </select>
+              </div>
+              
+              <div class="form-group">
+                <label for="nationality">Nationality</label>
+                <input type="text" id="nationality" formControlName="nationality">
+              </div>
+            </div>
+            
+            <div class="form-group full-width">
+              <label for="address">Address</label>
+              <textarea id="address" formControlName="address" rows="3"></textarea>
+            </div>
+            
+            <div class="form-group full-width">
+              <label for="emergencyContact">Emergency Contact</label>
+              <input type="text" id="emergencyContact" formControlName="emergencyContact" placeholder="Name and phone number">
+            </div>
+          </div>
+          
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary" [disabled]="isSubmitting || form.invalid">
+              <span *ngIf="isSubmitting">Saving...</span>
+              <span *ngIf="!isSubmitting">Save Changes</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

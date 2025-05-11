@@ -1,1 +1,47 @@
-<p>bill-list works!</p>
+<div class="bill-list-card">
+    <div class="card-header">
+      <i class="fas fa-dollar-sign icon"></i>
+      <div>
+        <h3>Billing History</h3>
+        <p>View all your bills from Dr. Sarah Johnson's clinic</p>
+      </div>
+    </div>
+    <div class="card-content">
+      <table class="bill-table">
+        <thead>
+          <tr>
+            <th>Bill ID</th>
+            <th>Issue Date</th>
+            <th>Due Date</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let bill of bills" (click)="selectBill(bill)" [class.selected-row]="bill.id === selectedBillId">
+            <td>{{ bill.billId }}</td>
+            <td>{{ bill.issueDate }}</td>
+            <td>{{ bill.dueDate }}</td>
+            <td>${{ bill.amount.toFixed(2) }}</td>
+            <td>
+              <span class="status-badge" [ngClass]="{
+                'status-paid': bill.status === 'Paid',
+                'status-unpaid': bill.status === 'Unpaid',
+                'status-overdue': bill.status === 'Overdue',
+                'status-pending': bill.status === 'Pending'
+              }">
+                {{ bill.status }}
+              </span>
+            </td>
+            <td>
+              <button class="details-button">Details</button>
+            </td>
+          </tr>
+          <tr *ngIf="bills.length === 0">
+              <td colspan="6" class="no-bills-message">No bills found.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>

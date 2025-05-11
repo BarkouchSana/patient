@@ -1,1 +1,18 @@
-<p>bills works!</p>
+<div class="bills-page-container">
+    <div class="page-header">
+      <i class="fas fa-file-invoice-dollar header-icon"></i>
+      <div>
+        <h2>Your Bills</h2>
+        <p>Manage and view your medical bills</p>
+      </div>
+    </div>
+  
+    <div class="bills-content-area">
+      <div class="bill-list-wrapper">
+        <app-bill-list (billSelected)="onBillSelected($event)"></app-bill-list>
+      </div>
+      <div class="bill-detail-wrapper">
+        <app-bill-detail [bill]="selectedBill"></app-bill-detail>
+      </div>
+    </div>
+  </div>

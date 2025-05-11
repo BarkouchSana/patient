@@ -6,11 +6,11 @@
         <h1>MedicaCare</h1>
       </div>
       <div class="header-right">
-        <span class="user-info">
+        <!-- <span class="user-info">
           <i class="fas fa-user-circle"></i> John Doe
-        </span>
+        </span> -->
         <button class="logout-button" >
-            <i class="fas fa-sign-out-alt"></i> Déconnexion
+            <i class="fas fa-sign-out-alt"></i> Logout
           </button>
       </div>
     </header>
@@ -23,16 +23,16 @@
           <i class="fas" [ngClass]="isSidenavCollapsed ? 'fa-chevron-right' : 'fa-chevron-left'"></i>
         </button>
         <ul>
-            <li><a routerLink="/dashboard" routerLinkActive="active"><i class="fas fa-home"></i><span *ngIf="!isSidenavCollapsed">Tableau de bord</span> </a></li>
-            <li><a routerLink="/profile" routerLinkActive="active"><i class="fas fa-user"></i><span *ngIf="!isSidenavCollapsed"> Profil</span></a></li>
-            <li><a routerLink="/medical-history" routerLinkActive="active"><i class="fas fa-notes-medical"></i><span *ngIf="!isSidenavCollapsed"> Historique médical</span></a></li>
-            <li><a routerLink="/appointments" routerLinkActive="active"><i class="fas fa-calendar-alt"></i><span *ngIf="!isSidenavCollapsed"> Rendez-vous</span></a></li>
-            <li><a routerLink="/prescriptions" routerLinkActive="active"><i class="fas fa-prescription-bottle-alt"></i> <span *ngIf="!isSidenavCollapsed">Prescriptions</span></a></li>
-            <li><a routerLink="/medical-record" routerLinkActive="active"><i class="fas fa-folder-open"></i> <span *ngIf="!isSidenavCollapsed">Dossier médical</span></a></li>
-            <li><a routerLink="/reminders" routerLinkActive="active"><i class="fas fa-bell"></i><span *ngIf="!isSidenavCollapsed"> Rappels</span></a></li>
+            <li><a routerLink="/dashboard" routerLinkActive="active"><i class="fas fa-home"></i><span *ngIf="!isSidenavCollapsed">Home</span> </a></li>
+            <li><a routerLink="/profile" routerLinkActive="active"><i class="fas fa-user"></i><span *ngIf="!isSidenavCollapsed"> Profile</span></a></li>
+            <li><a routerLink="/medical-history" routerLinkActive="active"><i class="fas fa-notes-medical"></i><span *ngIf="!isSidenavCollapsed"> Medical History</span></a></li>
+            <li><a routerLink="/appointments" routerLinkActive="active"><i class="fas fa-calendar-alt"></i><span *ngIf="!isSidenavCollapsed"> Appointments</span></a></li>
+            <!-- <li><a routerLink="/prescriptions" routerLinkActive="active"><i class="fas fa-prescription-bottle-alt"></i> <span *ngIf="!isSidenavCollapsed">Prescriptions</span></a></li> -->
+            <li><a routerLink="/medical-record" routerLinkActive="active"><i class="fas fa-folder-open"></i> <span *ngIf="!isSidenavCollapsed">Medical Record</span></a></li>
+            <!-- <li><a routerLink="/reminders" routerLinkActive="active"><i class="fas fa-bell"></i><span *ngIf="!isSidenavCollapsed"> Rappels</span></a></li>
             <li><a routerLink="/chat" routerLinkActive="active"><i class="fas fa-comments"></i><span *ngIf="!isSidenavCollapsed"> Chatbot</span></a></li>
-            <li><a routerLink="/guest-access" routerLinkActive="active"><i class="fas fa-user-friends"></i><span *ngIf="!isSidenavCollapsed"> Invitations</span></a></li>
-            <li><a routerLink="/bills" routerLinkActive="active"><i class="fas fa-file-invoice-dollar"></i><span *ngIf="!isSidenavCollapsed"> Factures</span></a></li>
+            <li><a routerLink="/guest-access" routerLinkActive="active"><i class="fas fa-user-friends"></i><span *ngIf="!isSidenavCollapsed"> Invitations</span></a></li> -->
+            <li><a routerLink="/bills" routerLinkActive="active"><i class="fas fa-file-invoice-dollar"></i><span *ngIf="!isSidenavCollapsed"> Bills</span></a></li>
           </ul>
       </nav>
   

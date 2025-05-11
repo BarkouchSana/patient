@@ -39,7 +39,7 @@ class GetProfileService
             'maritalStatus'    => $pi->maritalStatus,
             'bloodType'        => $pi->bloodType,
             'nationality'      => $pi->nationality,
-            'photo'            => $pi->photo,
+            'photo'            => $pi->profile_image,
         ];
 
         return $dto;

@@ -40,7 +40,7 @@ class PersonalInfoRepository implements PersonalInfoRepositoryInterface
               'marital_status'   => $info->maritalStatus,
               'blood_type'       => $info->bloodType,
               'nationality'      => $info->nationality,
-              'photo'            => $info->photo,
+              'photo'            => $info->profile_image,
             ]
         );
         $info->id = $m->id;

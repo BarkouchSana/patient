@@ -1,0 +1,230 @@
+<!--  
+ <div class="calendar-container">
+    <div class="sidebar">
+      <h4>Légendes / Filtres</h4>
+      <div class="legend-item" *ngFor="let resource of resources">
+        <label>
+          <input
+            type="checkbox"
+            [checked]="selectedResources.includes(resource.id)"
+            (change)="toggleResource(resource.id)"
+          />
+          <span class="legend-color-box" [style.backgroundColor]="resource.eventColor"></span>
+          {{ resource.title }}
+        </label>
+      </div>
+      <button (click)="printCalendar()" class="print-button">
+          <i class="fa fa-print"></i> Imprimer
+      </button>
+    </div>
+  
+    <div class="calendar-main">
+      <full-calendar #calendar [options]="calendarOptions"></full-calendar>
+    </div>
+  </div>
+  
+  
+  <div class="modal-overlay" *ngIf="isEventModalOpen">
+    <div class="modal-content event-details-modal">
+      <div class="modal-header">
+        <h3>Détails de l'événement</h3>
+        <button class="close-modal-button" (click)="closeEventModal()">&times;</button>
+      </div>
+      <div class="modal-body" *ngIf="selectedEventDetails">
+        <h4>{{ selectedEventDetails.title }}</h4>
+        <p>
+          <strong>Début :</strong> {{ selectedEventDetails.start | date:'medium' }} <br />
+          <strong *ngIf="selectedEventDetails.end">Fin :</strong> {{ selectedEventDetails.end | date:'medium' }}
+        </p>
+        <p *ngIf="selectedEventDetails.extendedProps?.description">
+          <strong>Description :</strong> {{ selectedEventDetails.extendedProps?.description }}
+        </p>
+        <p *ngIf="selectedEventDetails.extendedProps?.location">
+          <strong>Lieu :</strong> {{ selectedEventDetails.extendedProps?.location }}
+        </p>
+        <p *ngIf="selectedEventDetails.extendedProps?.status">
+          <strong>Statut :</strong> {{ selectedEventDetails.extendedProps?.status }}
+        </p>
+         
+      </div>
+    </div>
+  </div>
+  
+   
+  <div class="modal-overlay" *ngIf="isBookingFormOpen">
+    <div class="modal-content booking-form-modal">
+       <div class="modal-header">
+          <h3>Réserver un rendez-vous</h3>
+          <button class="close-modal-button" (click)="isBookingFormOpen = false">&times;</button>
+      </div>
+      <div class="modal-body">
+          <p>Date sélectionnée : {{ bookingFormData.date | date:'fullDate' }}</p>
+           
+          <p>Formulaire de réservation à implémenter...</p>
+          <button (click)="submitBookingForm()">Confirmer la réservation (Simulé)</button>
+      </div>
+    </div>
+  </div> 
+ -->
+
+
+
+ <!-- ... (début du template : .page-container, .page-header, .calendar-layout-container, .calendar-sidebar, .calendar-main-area, .main-calendar-toolbar, full-calendar) ... -->
+<div class="page-container">
+    <div class="page-header">
+      <h2>Schedule a New Appointment</h2>
+      <p>Choose an available time slot with {{ doctorName }}</p>
+    </div>
+  
+    <div class="calendar-layout-container">
+      <!-- Colonne de gauche (Sidebar) -->
+      <div class="calendar-sidebar">
+        <button class="today-button" (click)="goToToday()">
+          <i class="fa fa-calendar-check-o"></i> Today
+        </button>
+  
+        <div class="mini-calendar">
+          <div class="mini-calendar-header">
+            <button (click)="previousMiniMonth()" aria-label="Previous month">&lt;</button>
+            <span>{{ miniCalendarViewDate | date:'MMMM yyyy' }}</span>
+            <button (click)="nextMiniMonth()" aria-label="Next month">&gt;</button>
+          </div>
+          <div class="mini-calendar-grid">
+            <div *ngFor="let dayName of miniCalendarWeekDaysHeader" class="mini-weekday-header">{{ dayName }}</div>
+            <div *ngFor="let day of miniCalendarDays"
+                 class="mini-day-cell"
+                 [class.not-current-month]="!day.isCurrentMonth"
+                 [class.is-selected]="day.isSelected"
+                 (click)="selectMiniCalendarDate(day.date)"
+                 role="button"
+                 [attr.aria-label]="day.date | date:'longDate'">
+              {{ day.dayOfMonth }}
+            </div>
+          </div>
+        </div>
+  
+        <div class="sidebar-section legends-filters">
+          <h4>Your schedule</h4> <!-- Titre mis à jour -->
+          <div class="legend-item" *ngFor="let resource of resources">
+            <label>
+              <input
+                type="checkbox"
+                [checked]="selectedResources.includes(resource.id)"
+                (change)="toggleResource(resource.id)"
+              />
+              <span class="legend-color-box" [style.backgroundColor]="resource.eventColor"></span>
+              {{ resource.title }}
+            </label>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Colonne de droite (Calendrier Principal) -->
+      <div class="calendar-main-area">
+        <div class="main-calendar-toolbar">
+          <div class="toolbar-left">
+            <button (click)="mainCalendarPrev()" title="Previous period" aria-label="Previous period"><i class="fa fa-chevron-left"></i></button>
+            <button (click)="mainCalendarNext()" title="Next period" aria-label="Next period"><i class="fa fa-chevron-right"></i></button>
+            <span class="calendar-title" aria-live="polite">{{ customToolbarTitle }}</span>
+          </div>
+          <div class="toolbar-center">
+              <input
+              type="text"
+              class="search-appointments-input"
+              placeholder="Search appointments"
+              [(ngModel)]="searchTerm"
+              (ngModelChange)="onSearchTermChange()"
+              aria-label="Search appointments"
+            />
+          </div>
+          <div class="toolbar-right">
+            <button (click)="changeMainCalendarView('timeGridDay')" [class.active]="calendarApi?.view?.type === 'timeGridDay'" [attr.aria-pressed]="calendarApi?.view?.type === 'timeGridDay'">Day</button>
+            <button (click)="changeMainCalendarView('timeGridWeek')" [class.active]="calendarApi?.view?.type === 'timeGridWeek'" [attr.aria-pressed]="calendarApi?.view?.type === 'timeGridWeek'">Week</button>
+            <button (click)="changeMainCalendarView('dayGridMonth')" [class.active]="calendarApi?.view?.type === 'dayGridMonth'" [attr.aria-pressed]="calendarApi?.view?.type === 'dayGridMonth'">Month</button>
+            <button (click)="printCalendar()" class="print-button-toolbar" title="Print calendar" aria-label="Print calendar">
+              <i class="fa fa-print"></i> PRINT
+            </button>
+          </div>
+        </div>
+        <full-calendar #calendar [options]="calendarOptions"></full-calendar>
+      </div>
+    </div>
+  
+  
+    <!-- Modal pour afficher les détails de l'événement -->
+    <div class="modal-overlay" *ngIf="isEventModalOpen" (click)="closeEventModal()">
+      <div class="modal-content event-details-modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>Event Details</h3>
+          <button class="close-modal-button" (click)="closeEventModal()" aria-label="Close event details">&times;</button>
+        </div>
+        <div class="modal-body" *ngIf="selectedEventDetails">
+          <h4 [style.color]="selectedEventDetails.backgroundColor">{{ selectedEventDetails.title }}</h4>
+          <p>
+            <strong>Start:</strong> {{ selectedEventDetails.start | date:'medium' }} <br />
+            <strong *ngIf="selectedEventDetails.end">End:</strong> {{ selectedEventDetails.end | date:'medium' }}
+          </p>
+          <p *ngIf="selectedEventDetails.extendedProps?.description">
+            <strong>Description:</strong> {{ selectedEventDetails.extendedProps?.description }}
+          </p>
+           <p *ngIf="selectedEventDetails.extendedProps?.patientEmail">
+            <strong>Patient Email:</strong> {{ selectedEventDetails.extendedProps?.patientEmail }}
+          </p>
+           <p *ngIf="selectedEventDetails.extendedProps?.patientPhone">
+            <strong>Patient Phone:</strong> {{ selectedEventDetails.extendedProps?.patientPhone }}
+          </p>
+          <p *ngIf="selectedEventDetails.extendedProps?.status">
+            <strong>Status:</strong> {{ selectedEventDetails.extendedProps?.status }}
+          </p>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Modal/Formulaire de Réservation (MIS À JOUR) -->
+    <div class="modal-overlay" *ngIf="isBookingFormOpen" (click)="closeBookingForm()">
+      <div class="modal-content booking-form-modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>Book Appointment</h3>
+          <button class="close-modal-button" (click)="closeBookingForm()" aria-label="Close booking form">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="appointment-time-info" *ngIf="selectedDateForBooking && selectedTimeForBooking">
+            <p><strong>Date:</strong> {{ selectedDateForBooking | date:'MMMM d, yyyy' }}</p>
+            <p><strong>Time:</strong> {{ selectedTimeForBooking }} - {{ selectedEndTimeForBooking }}</p>
+          </div>
+  
+          <form [formGroup]="bookingForm" (ngSubmit)="submitNewAppointment()">
+            <div class="form-group">
+              <label for="fullName">Full Name</label>
+              <input type="text" id="fullName" formControlName="fullName" placeholder="John Doe" required>
+              <div *ngIf="bookingForm.get('fullName')?.invalid && (bookingForm.get('fullName')?.dirty || bookingForm.get('fullName')?.touched)" class="error-message">
+                Full name is required.
+              </div>
+            </div>
+  
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" id="email" formControlName="email" placeholder="john.doe@example.com">
+              <div *ngIf="bookingForm.get('email')?.errors?.['email'] && (bookingForm.get('email')?.dirty || bookingForm.get('email')?.touched)" class="error-message">
+                Please enter a valid email address.
+              </div>
+            </div>
+  
+            <div class="form-group">
+              <label for="phoneNumber">Phone Number</label>
+              <input type="tel" id="phoneNumber" formControlName="phoneNumber" placeholder="+1234567890">
+            </div>
+  
+            <div class="form-group">
+              <label for="notes">Notes (Optional)</label>
+              <textarea id="notes" formControlName="notes" rows="3" placeholder="Additional information about your appointment"></textarea>
+            </div>
+  
+            <div class="modal-actions">
+              <button type="submit" class="btn btn-primary" [disabled]="bookingForm.invalid">Book Appointment</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>

@@ -19,6 +19,7 @@ const routes: Routes = [
     ]
   },
   { path: '**', redirectTo: '' } // Redirection pour les routes inconnues
+    
 ];
 
 @NgModule({

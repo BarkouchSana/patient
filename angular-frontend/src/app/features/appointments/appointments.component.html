@@ -1,15 +1,87 @@
-<div class="appointments-container">
-    <h1>Gestion des rendez-vous</h1>
-  
+
+
+
+  <!-- <div class="appointments-wrapper">
+    <nav class="appointments-nav">
+      <a routerLink="list" routerLinkActive="active">Mes rendez-vous</a>
+      <a routerLink="create" routerLinkActive="active">Prendre un rendez-vous</a>
+    </nav>
+    <router-outlet></router-outlet>
+  </div> -->
+
+
+<!-- 
+  <div class="container mx-auto px-4 py-6">
+    <div class="flex flex-col mb-6">
+      <h1 class="text-2xl font-bold text-gray-900 mb-1">Your Appointments</h1>
+      <p class="text-gray-500">Schedule and track your appointments with Dr. Sarah Johnson</p>
+    </div>
     
-    <section>
-       
-      <app-appointment-create></app-appointment-create>
-    </section>
+    
+    <div class="flex border-b mb-6">
+      <button
+        (click)="selectedTab = 'calendar'"
+        class="flex-1 py-2 text-center"
+        [ngClass]="selectedTab === 'calendar'
+          ? 'border-b-2 border-blue-600 text-blue-600'
+          : 'text-gray-500 hover:text-gray-700'">
+        <i class="lucide-calendar inline-block mr-1"></i>
+        Book Appointment
+      </button>
+      <button
+        (click)="selectedTab = 'list'"
+        class="flex-1 py-2 text-center"
+        [ngClass]="selectedTab === 'list'
+          ? 'border-b-2 border-blue-600 text-blue-600'
+          : 'text-gray-500 hover:text-gray-700'">
+        <i class="lucide-clipboard-list inline-block mr-1"></i>
+        Appointment History
+      </button>
+    </div>
   
-     
-    <section>
-      
-      <app-appointment-list></app-appointment-list>
-    </section>
+    <div *ngIf="selectedTab==='calendar'">
+      <app-book-appointment></app-book-appointment>
+    </div>
+    <div *ngIf="selectedTab==='list'">
+      <app-appointment-history></app-appointment-history>
+    </div>
+  </div>
+  
+   -->
+
+
+
+   <div class="tab-container">
+
+    <div class="header">
+      <div class="title-section">
+        <h2>Appointments</h2>
+        <p>Schedule and manage your appointments </p>
+      </div>
+      <div class="date-box">
+        <i class="fa fa-calendar"></i>
+        <span>{{ formatDate(currentDate) }}</span>
+      </div>
+    </div>
+    <!-- Boutons de navigation -->
+    <div class="tab-buttons">
+      <button 
+        [class.active]="selectedTab === 'book'"
+        (click)="switchTab('book')"
+      >
+        Book Appointment
+      </button>
+      <button 
+        [class.active]="selectedTab === 'history'"
+        (click)="switchTab('history')"
+      >
+        Appointment History
+      </button>
+    </div>
+  
+    <!-- Contenu dynamique -->
+    <div class="tab-content">
+      <app-book-appointment *ngIf="selectedTab === 'book'"></app-book-appointment>
+      <app-appointment-history *ngIf="selectedTab === 'history'"></app-appointment-history>
+    </div>
   </div>

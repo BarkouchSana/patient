@@ -1,1 +1,61 @@
-<p>bill-detail works!</p>
+<div class="bill-detail-card">
+    <div class="card-header">
+      <i class="fas fa-info-circle icon"></i>
+      <div>
+        <h3>Bill Details</h3>
+        <p *ngIf="bill">Information about bill {{ bill.billId }}</p>
+        <p *ngIf="!bill">Select a bill to view details</p>
+      </div>
+    </div>
+    <div class="card-content">
+      <div *ngIf="bill; else noBillSelected">
+        <div class="detail-item">
+          <span class="detail-label">Bill ID:</span>
+          <span class="detail-value">{{ bill.billId }}</span>
+        </div>
+        <div class="detail-item amount-highlight">
+          <span class="detail-label">Amount:</span>
+          <span class="detail-value amount-value">${{ bill.amount.toFixed(2) }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Status:</span>
+          <span class="detail-value">
+            <span class="status-badge-detail" [ngClass]="{
+              'status-paid': bill.status === 'Paid',
+              'status-unpaid': bill.status === 'Unpaid',
+              'status-overdue': bill.status === 'Overdue',
+              'status-pending': bill.status === 'Pending'
+            }">
+              {{ bill.status }}
+            </span>
+          </span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label"><i class="far fa-calendar-alt"></i> Issue Date:</span>
+          <span class="detail-value">{{ bill.issueDate }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label"><i class="far fa-calendar-times"></i> Due Date:</span>
+          <span class="detail-value">{{ bill.dueDate }}</span>
+        </div>
+        <div class="detail-item notes-section" *ngIf="bill.notes">
+          <span class="detail-label"><i class="far fa-sticky-note"></i> Notes:</span>
+          <p class="detail-value notes-value">{{ bill.notes }}</p>
+        </div>
+  
+        <div class="action-area" *ngIf="bill.detailsActionText && !bill.isPaid">
+          <button class="pay-now-button">{{ bill.detailsActionText }}</button>
+        </div>
+        <div class="payment-completed-message" *ngIf="bill.isPaid && bill.status === 'Paid'">
+          <i class="fas fa-check-circle"></i> Payment completed
+        </div>
+  
+      </div>
+      <ng-template #noBillSelected>
+        <div class="no-bill-placeholder">
+          <i class="fas fa-file-invoice placeholder-icon"></i>
+          <p>Select a bill from the table to view its details</p>
+        </div>
+      </ng-template>
+    </div>
+  </div>

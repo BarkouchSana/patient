@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit  } from '@angular/core';
 
 @Component({
   selector: 'app-lab-results',
@@ -6,20 +6,42 @@ import { Component } from '@angular/core';
   templateUrl: './lab-results.component.html',
   styleUrl: './lab-results.component.css'
 })
-export class LabResultsComponent {
-  documents = [
-    { title: 'Résultat Analyse 1', date: '2025-04-18', fileUrl: 'assets/documents/analyse1.pdf' },
-    { title: 'Résultat Analyse 2', date: '2025-04-15', fileUrl: 'assets/documents/analyse2.pdf' }
+export class LabResultsComponent implements OnInit {
+  labResults = [
+    {
+      id: 'LR001',
+      date: '2025-04-10',
+      testName: 'HbA1c',
+      result: '6.2%',
+      referenceRange: '<5.7%',
+      interpretation: 'Indicates good diabetes control'
+    },
+    {
+      id: 'LR002',
+      date: '2025-04-10',
+      testName: 'Blood Pressure',
+      result: '138/85 mmHg',
+      referenceRange: '<120/80 mmHg',
+      interpretation: 'Slightly elevated'
+    },
+    {
+      id: 'LR003',
+      date: '2025-03-15',
+      testName: 'Lipid Panel',
+      result: 'LDL: 110 mg/dL',
+      referenceRange: '<100 mg/dL',
+      interpretation: 'Slightly elevated LDL cholesterol'
+    },
+    {
+      id: 'LR004',
+      date: '2025-02-20',
+      testName: 'Kidney Function',
+      result: 'eGFR: 85 mL/min',
+      referenceRange: '>90 mL/min',
+      interpretation: 'Mild reduction in kidney function'
+    }
   ];
+  constructor() {}
 
-  viewDocument(document: any): void {
-    window.open(document.fileUrl, '_blank');
-  }
-
-  downloadDocument(document: any): void {
-    const link = document.createElement('a');
-    link.href = document.fileUrl;
-    link.download = document.title;
-    link.click();
-  }
+  ngOnInit(): void {}
 }

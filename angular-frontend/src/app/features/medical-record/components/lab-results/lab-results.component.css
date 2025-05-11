@@ -1,4 +1,4 @@
-.document-list ul {
+/* .document-list ul {
     list-style: none;
     padding: 0;
   }
@@ -27,4 +27,48 @@
   
   .document-list li button:hover {
     background-color: #005bb5;
+  } */
+
+
+
+
+  .lab-results-container {
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .lab-results-container h2 {
+    margin-bottom: 20px;
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .lab-results-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .lab-results-table th,
+  .lab-results-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .lab-results-table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #555;
+  }
+  
+  .lab-results-table tr:hover {
+    background-color: #f1f1f1;
+  }
+  
+  .lab-results-table td {
+    font-size: 14px;
+    color: #333;
   }

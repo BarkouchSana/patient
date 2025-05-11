@@ -1,57 +1,136 @@
-<!-- <div class="medical-record-container">
-    <h1>Dossier médical</h1>
-  
-     
-    <div class="tabs">
-      <button 
-        *ngFor="let tab of tabs" 
-        (click)="selectTab(tab)" 
-        [class.active]="selectedTab === tab">
-        {{ tab }}
+
+
+
+  <div class="medical-records-page">
+    <!-- Header -->
+    <div class="page-main-header">
+      <div class="header-title-section">
+        <h1>Medical Records</h1>
+        <p>Complete access to your medical history</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-secondary btn-icon">
+          <i class="fas fa-upload"></i> Export
+        </button>
+        <button class="btn btn-primary btn-icon">
+          <i class="fas fa-plus-circle"></i> Request Records
+        </button>
+      </div>
+    </div>
+     <!-- Search and Filter Bar -->
+  <div class="filter-bar">
+    <div class="search-input-container">
+      <i class="fas fa-search search-icon"></i>
+      <input type="text" placeholder="Search records by title, doctor, or description..."
+             [(ngModel)]="searchTerm" (ngModelChange)="onSearchChange()">
+    </div>
+    <div class="filter-actions">
+      <button class="btn btn-filter ">
+        <i class="fas fa-calendar-alt"></i> Date
+      </button>
+      
+      <button class="btn btn-filter">
+        <i class="fas fa-filter"></i> Filters
       </button>
     </div>
-  
-    
-    <div class="tab-content">
-      <app-general-records *ngIf="selectedTab === 'Ordonnances'"></app-general-records>
-      <app-lab-results *ngIf="selectedTab === 'Résultats d\'analyse'"></app-lab-results>
-      <app-scanned-scripts *ngIf="selectedTab === 'Certificats'"></app-scanned-scripts>
+  </div>
+   <!-- Tabs -->
+   <div class="tabs-container">
+    <button [class.active]="activeTab === 'All'" (click)="setActiveTab('All')">All</button>
+    <button [class.active]="activeTab === 'Examination'" (click)="setActiveTab('Examination')">Examinations</button>
+    <button [class.active]="activeTab === 'LabResult'" (click)="setActiveTab('LabResult')">Lab Results</button>
+    <button [class.active]="activeTab === 'Image'" (click)="setActiveTab('Image')">Images</button>
+    <button [class.active]="activeTab === 'Prescription'" (click)="setActiveTab('Prescription')">Prescriptions</button>
+  </div>
+   <!-- Records Grid -->
+   <div class="records-grid" *ngIf="filteredRecords.length > 0; else noRecords">
+    <div class="record-card" *ngFor="let record of filteredRecords">
+      <div class="card-header">
+        <h4 class="record-title">{{ record.title }}</h4>
+        <span class="record-tag" [ngClass]="record.tagClass">{{ record.tagText }}</span>
+      </div>
+      <p class="record-date"><i class="far fa-calendar-alt"></i> {{ record.recordDate }}</p>
+      <p class="record-doctor" *ngIf="record.doctor"><i class="far fa-user-md"></i> {{ record.doctor }}</p>
+      <p class="record-summary">{{ record.summary }}</p>
+      <button class="btn btn-view-details" (click)="openModal(record)">View Details</button>
     </div>
-  </div> -->
+  </div>
+  <ng-template #noRecords>
+    <div class="no-records-message">
+      <i class="fas fa-folder-open"></i>
+      <p>No medical records found matching your criteria.</p>
+    </div>
+  </ng-template>
 
-  <div class="medical-records-container">
-    <h1>Medical Records</h1>
-  
-    <!-- Tabs -->
-    <div class="tabs">
-      <button [class.active]="activeTab === 'prescriptions'" (click)="setActiveTab('prescriptions')">Prescriptions</button>
-      <button [class.active]="activeTab === 'labResults'" (click)="setActiveTab('labResults')">Recommended Tests</button>
-      <button [class.active]="activeTab === 'certificates'" (click)="setActiveTab('certificates')">Certificates</button>
-    </div>
-  
-    <!-- Prescriptions -->
-    <div *ngIf="activeTab === 'prescriptions'" class="tab-content">
-      <div *ngFor="let prescription of medicalRecords.prescriptions" class="record-item">
-        <h3>{{ prescription.date }} • {{ prescription.doctor }}</h3>
-        <ul>
-          <li *ngFor="let medication of prescription.medications">{{ medication }}</li>
-        </ul>
+  <!-- Modal for Record Details -->
+  <div class="modal-overlay" *ngIf="isModalOpen" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div>
+          <h3 class="modal-title-main">Medical Record Details</h3>
+          <p class="modal-subtitle">View detailed information about this medical record</p>
+        </div>
+        <button class="btn-close-modal" (click)="closeModal()"><i class="fas fa-times"></i></button>
       </div>
-    </div>
-  
-    <!-- Lab Results -->
-    <div *ngIf="activeTab === 'labResults'" class="tab-content">
-      <div *ngFor="let result of medicalRecords.labResults" class="record-item">
-        <h3>{{ result.testName }}</h3>
-        <p>{{ result.date }} • <span [class.completed]="result.status === 'Completed'" [class.pending]="result.status === 'Pending'">{{ result.status }}</span></p>
+      <div class="modal-body" *ngIf="selectedRecord">
+        <div class="record-main-info">
+          <i class="fas fa-file-alt record-icon-modal"></i> <!-- Icône générique, peut être changée par type -->
+          <div>
+            <h4 class="record-title-modal">{{ selectedRecord.title }}</h4>
+            <p class="record-date-modal">{{ selectedRecord.recordDate }}</p>
+          </div>
+          <button class="btn btn-secondary btn-close-inline" (click)="closeModal()">Close</button>
+        </div>
+
+        <div class="info-section" *ngIf="selectedRecord.doctor">
+          <label>Doctor</label>
+          <p><i class="far fa-user-md"></i> {{ selectedRecord.doctor }}</p>
+        </div>
+
+        <div class="info-section">
+          <label>Details</label>
+          <p class="details-text-box">{{ selectedRecord.details }}</p>
+        </div>
+         <!-- Type-specific details -->
+         <ng-container [ngSwitch]="selectedRecord.type">
+          <ng-template [ngSwitchCase]="'LabResult'">
+            <div class="info-section" *ngIf="selectedRecord.resultDate">
+              <label>Result Date</label>
+              <p><i class="far fa-calendar-check"></i> {{ selectedRecord.resultDate }}</p>
+            </div>
+            <div class="info-section" *ngIf="selectedRecord.performedBy">
+              <label>Performed By</label>
+              <p><i class="fas fa-flask"></i> {{ selectedRecord.performedBy }}</p>
+            </div>
+          </ng-template>
+
+          <ng-template [ngSwitchCase]="'Image'">
+            <div class="info-section" *ngIf="selectedRecord.imageDetails">
+              <label>Image Details</label>
+              <p>{{ selectedRecord.imageDetails }}</p>
+            </div>
+            <div class="info-section" *ngIf="selectedRecord.takenBy">
+              <label>Taken By</label>
+              <p><i class="fas fa-camera-retro"></i> {{ selectedRecord.takenBy }}</p>
+            </div>
+            <div class="image-preview-container" *ngIf="selectedRecord.imageUrl">
+              <!-- En production, utilisez une vraie image. Ici, un placeholder. -->
+              <div class="image-placeholder">
+                <i class="fas fa-image"></i>
+                <span>Image Preview</span>
+              </div>
+            </div>
+          </ng-template>
+        </ng-container>
       </div>
-    </div>
-  
-    <!-- Certificates -->
-    <div *ngIf="activeTab === 'certificates'" class="tab-content">
-      <div *ngFor="let certificate of medicalRecords.certificates" class="record-item">
-        <h3>{{ certificate.title }}</h3>
-        <p>{{ certificate.date }} • {{ certificate.doctor }}</p>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeModal()">Cancel</button>
+        <button class="btn btn-primary btn-icon" (click)="downloadRecord(selectedRecord)">
+          <i class="fas fa-download"></i>
+          {{ selectedRecord?.type === 'LabResult' ? 'Download Lab Report' : 'Download Record' }}
+        </button>
       </div>
     </div>
   </div>
+</div>
+ 

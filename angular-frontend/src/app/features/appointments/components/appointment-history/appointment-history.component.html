@@ -1,0 +1,107 @@
+<div class="appointment-history-container">
+  <h2 id="appointmentHistoryTitle">Your Appointment History</h2>
+  <p>Track all your past and upcoming appointments with {{ doctorName }}</p>
+
+  <div class="controls-bar">
+    <input
+      type="text"
+      placeholder="Search by reason..."
+      [(ngModel)]="searchTerm"
+      (ngModelChange)="onSearchTermChange()"
+      class="search-input"
+      aria-label="Search appointments by reason"
+    />
+    <div class="buttons">
+      <button type="button" class="btn btn-filter" (click)="openFilterModal()" aria-label="Filter appointments">Filter</button>
+      <button type="button" class="btn btn-export" (click)="exportData()" aria-label="Export appointment data">Export</button>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-indicator">
+    <p>Loading appointment history...</p>
+  </div>
+
+  <div *ngIf="errorMessage && !isLoading" class="error-message">
+    <p>{{ errorMessage }}</p>
+  </div>
+
+  <div *ngIf="!isLoading && !errorMessage">
+    <table class="appointments-table" aria-live="polite" aria-labelledby="appointmentHistoryTitle">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Reason</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngIf="paginatedAppointments.length > 0; else noAppointments">
+          <tr *ngFor="let appointment of paginatedAppointments; trackBy: trackByAppointmentId">
+            <td>
+              <i class="fa fa-calendar icon" aria-hidden="true"></i> {{ appointment.date }}
+            </td>
+            <td>
+              <i class="fa fa-clock-o icon" aria-hidden="true"></i> {{ appointment.time }}
+            </td>
+            <td>{{ appointment.reason || 'N/A' }}</td>
+            <td>
+              <span
+                class="status-badge"
+                [ngClass]="getStatusClass(appointment.status)"  >
+                
+                {{ appointment.status }}</span>
+              
+            </td>
+          </tr>
+        </ng-container>
+        <ng-template #noAppointments>
+          <tr>
+            <td colspan="4" class="no-results">
+              <span *ngIf="allAppointments.length > 0 && searchTerm.trim() !== ''">No appointments match your search criteria.</span>
+              <span *ngIf="allAppointments.length === 0 && !searchTerm.trim()">No appointment history found.</span>
+            </td>
+          </tr>
+        </ng-template>
+      </tbody>
+    </table>
+
+    <div class="pagination-controls" *ngIf="totalPages() > 1" role="navigation" aria-label="Pagination">
+      <button
+        type="button"
+        class="btn-pagination"
+        (click)="previousPage()"
+        [disabled]="currentPage === 1"
+        aria-label="Go to previous page"
+      >
+        Previous
+      </button>
+      <span
+        *ngFor="let page of totalPagesArray()"
+        class="page-number"
+        [class.active]="currentPage === page"
+        (click)="goToPage(page)"
+        role="button"
+        tabindex="0"
+        (keydown.enter)="goToPage(page)" (keydown.space)="goToPage(page)"
+        [attr.aria-current]="currentPage === page ? 'page' : null"
+        [attr.aria-label]="'Go to page ' + page"
+      >
+        {{ page }}
+      </span>
+      <button
+        type="button"
+        class="btn-pagination"
+        (click)="nextPage()"
+        [disabled]="currentPage === totalPages()"
+        aria-label="Go to next page"
+      >
+        Next
+      </button>
+    </div>
+  </div>
+
+  <footer class="history-footer">
+    Your appointment history with {{ doctorName }}
+  </footer>
+</div>

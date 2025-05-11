@@ -14,12 +14,19 @@
     "@angular/common": "^19.2.0",
     "@angular/compiler": "^19.2.0",
     "@angular/core": "^19.2.0",
+    "@angular/flex-layout": "^15.0.0-beta.42",
     "@angular/forms": "^19.2.0",
     "@angular/material": "^19.2.11",
     "@angular/platform-browser": "^19.2.0",
     "@angular/platform-browser-dynamic": "^19.2.0",
     "@angular/router": "^19.2.0",
     "@fortawesome/fontawesome-free": "^6.7.2",
+    "@fullcalendar/angular": "^6.1.17",
+    "@fullcalendar/core": "^6.1.17",
+    "@fullcalendar/daygrid": "^6.1.17",
+    "@fullcalendar/interaction": "^6.1.17",
+    "@fullcalendar/list": "^6.1.17",
+    "@fullcalendar/timegrid": "^6.1.17",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
@@ -37,7 +44,7 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "postcss": "^8.5.3",
-    "tailwindcss": "^4.1.4",
+    "tailwindcss": "^4.1.6",
     "typescript": "~5.7.2"
   }
 }

@@ -123,26 +123,26 @@
   } */
 
 
-  .medical-history-container {
+  /* .medical-history-container {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     padding: 20px;
-    background-color: #f8f9fa; /* Light background for the page */
-    border-radius: 8px; /* Optional: if this container itself should be rounded */
-  }
+    background-color: #f8f9fa;  
+    border-radius: 8px;  
+  } */
   
-  /* Loading Spinner Styles */
-  .loading-spinner {
+   
+  /* .loading-spinner {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     padding: 40px;
-    color: #4a5568; /* gray-700 */
+    color: #4a5568;  
   }
   
   .spinner {
-    border: 4px solid #e2e8f0; /* gray-300 */
-    border-top: 4px solid #3b82f6; /* blue-500 */
+    border: 4px solid #e2e8f0;  
+    border-top: 4px solid #3b82f6;  
     border-radius: 50%;
     width: 40px;
     height: 40px;
@@ -153,69 +153,69 @@
   @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+  } */
+  
+  /* .loading-spinner p {
+    font-size: 1rem;  
   }
   
-  .loading-spinner p {
-    font-size: 1rem; /* text-base */
-  }
   
-  /* Card Styles (Main content area) */
-  .card.medical-history-container { /* Specificity for the card itself */
-    background-color: #ffffff; /* white */
-    border-radius: 0.5rem; /* rounded-lg */
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-md */
-    overflow: hidden; /* To ensure rounded corners clip content */
-    border: 1px solid #e5e7eb; /* gray-200 border */
-  }
+  .card.medical-history-container {  
+    background-color: #ffffff;  
+    border-radius: 0.5rem; 
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);  
+    overflow: hidden;  
+    border: 1px solid #e5e7eb; 
+  } */
   
-  .card-header {
-    padding: 1rem 1.5rem; /* p-4 md:p-6 */
-    /* bg-blue-50 is a very light blue, Tailwind: #eff6ff */
+  /* .card-header {
+    padding: 1rem 1.5rem;  
+     
     background-color: #eff6ff;
-    border-bottom: 1px solid #dbeafe; /* blue-200 for a subtle separation */
+    border-bottom: 1px solid #dbeafe;  
   }
   
   .card-title {
     display: flex;
     align-items: center;
     justify-content: space-between;
-  }
+  } */
   
-  .card-title .flex.items-center.gap-2 {
+  /* .card-title .flex.items-center.gap-2 {
     display: flex;
     align-items: center;
-    gap: 0.5rem; /* gap-2 */
+    gap: 0.5rem;  
   }
   
   .card-title .h-5.w-5.text-blue-600 {
-    height: 1.25rem; /* h-5 */
-    width: 1.25rem; /* w-5 */
-    color: #2563eb; /* text-blue-600 */
+    height: 1.25rem;  
+    width: 1.25rem;  
+    color: #2563eb;  
   }
   
   .card-title .font-semibold.text-lg {
-    font-weight: 600; /* font-semibold */
-    font-size: 1.125rem; /* text-lg */
-    color: #1e3a8a; /* A darker blue for better contrast on light blue bg */
-  }
-  
+    font-weight: 600;  
+    font-size: 1.125rem;  
+    color: #1e3a8a;  
+  } */
+/*   
   .card-title .text-sm.text-gray-500 {
-    font-size: 0.875rem; /* text-sm */
-    color: #6b7280; /* text-gray-500 */
+    font-size: 0.875rem;  
+    color: #6b7280;  
   }
   
   .card-content {
-    padding: 1.5rem; /* p-6 */
+    padding: 1.5rem;  
   }
   
-  /* Scrollable Area */
+  
   .scroll-area {
-    height: 400px; /* Fixed height */
+    height: 400px;  
     overflow-y: auto;
-    padding-right: 1rem; /* pr-4, for scrollbar spacing */
+    padding-right: 1rem; 
   }
   
-  /* Custom Scrollbar (Optional, Webkit browsers) */
+   
   .scroll-area::-webkit-scrollbar {
     width: 8px;
   }
@@ -224,35 +224,35 @@
     border-radius: 10px;
   }
   .scroll-area::-webkit-scrollbar-thumb {
-    background: #c7d2fe; /* blue-300 */
+    background: #c7d2fe;  
     border-radius: 10px;
-  }
-  .scroll-area::-webkit-scrollbar-thumb:hover {
-    background: #a5b4fc; /* blue-400 */
+  } */
+  /* .scroll-area::-webkit-scrollbar-thumb:hover {
+    background: #a5b4fc;  
   }
   
   .space-y-6 > *:not([hidden]) ~ *:not([hidden]) {
-    margin-top: 1.5rem; /* space-y-6 */
+    margin-top: 1.5rem;  
   }
   
-  /* Section Styling (Conditions, Surgeries, etc.) */
+   
   .medical-history-container h3.font-medium.text-lg.text-blue-700 {
-    font-weight: 500; /* font-medium */
-    font-size: 1.125rem; /* text-lg */
-    color: #1d4ed8; /* text-blue-700 */
-    margin-bottom: 0.75rem; /* mb-3, was mb-2 */
-  }
+    font-weight: 500;  
+    font-size: 1.125rem; 
+    color: #1d4ed8;  
+    margin-bottom: 0.75rem;  
+  } */
   
-  .bg-gray-50 {
-    background-color: #f9fafb; /* bg-gray-50 */
+  /* .bg-gray-50 {
+    background-color: #f9fafb;  
   }
   
   .p-3 {
-    padding: 0.75rem; /* p-3 */
+    padding: 0.75rem;  
   }
   
   .rounded-lg {
-    border-radius: 0.5rem; /* rounded-lg */
+    border-radius: 0.5rem;  
   }
   
   ul.list-disc {
@@ -260,42 +260,42 @@
   }
   
   ul.pl-5 {
-    padding-left: 1.25rem; /* pl-5 */
-  }
-  
+    padding-left: 1.25rem;  
+  } */
+/*   
   ul.space-y-1 > *:not([hidden]) ~ *:not([hidden]) {
-    margin-top: 0.25rem; /* space-y-1 */
+    margin-top: 0.25rem;  
   }
   
   ul li {
-    color: #374151; /* gray-700, for better readability */
+    color: #374151; 
     font-size: 0.95rem;
   }
   
   .text-gray-500.italic {
-    color: #6b7280; /* text-gray-500 */
+    color: #6b7280;  
     font-style: italic;
-  }
+  } */
   
-  /* Separator Line */
+/*   
   hr.separator {
     border: 0;
     height: 1px;
-    background-color: #e5e7eb; /* gray-200 */
-    margin-top: 1.5rem;    /* Consistent with space-y-6 */
-    margin-bottom: 1.5rem; /* Consistent with space-y-6 */
+    background-color: #e5e7eb; 
+    margin-top: 1.5rem;     
+    margin-bottom: 1.5rem;  
   }
   
-  /* No Data Message */
+   
   .text-center.text-gray-500.italic {
     text-align: center;
-    color: #6b7280; /* text-gray-500 */
+    color: #6b7280;  
     font-style: italic;
-    padding: 2rem 0; /* Add some padding */
-  }
+    padding: 2rem 0;  
+  } */
   
-  /* Utility classes from HTML (if not using Tailwind globally) */
-  .flex { display: flex; }
+ 
+  /* .flex { display: flex; }
   .items-center { align-items: center; }
   .justify-between { justify-content: space-between; }
   .gap-2 { gap: 0.5rem; }
@@ -304,12 +304,12 @@
   .text-sm { font-size: 0.875rem; }
   .font-medium { font-weight: 500; }
   .mb-2 { margin-bottom: 0.5rem; }
-  .mb-3 { margin-bottom: 0.75rem; } /* Added for consistency */
+  .mb-3 { margin-bottom: 0.75rem; }  
   .text-center { text-align: center; }
   .italic { font-style: italic; }
   
-  /* Colors (if not using Tailwind) */
+ 
   .text-blue-600 { color: #2563eb; }
   .text-blue-700 { color: #1d4ed8; }
   .bg-blue-50 { background-color: #eff6ff; }
-  .text-gray-500 { color: #6b7280; }
+  .text-gray-500 { color: #6b7280; } */

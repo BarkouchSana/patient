@@ -1,4 +1,4 @@
-.bill-detail-card {
+/* .bill-detail-card {
     background-color: #ffffff;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
@@ -15,9 +15,9 @@
   
   .card-header .icon {
     font-size: 22px;
-    color: #17a2b8; /* Teal for info icon */
+    color: #17a2b8; 
     margin-right: 15px;
-    background-color: #e3f2fd; /* Light teal/blue background */
+    background-color: #e3f2fd;  
     padding: 8px;
     border-radius: 6px;
   }
@@ -44,11 +44,11 @@
     justify-content: space-between;
     align-items: center;
     padding: 12px 0;
-    border-bottom: 1px dashed #e0e0e0; /* Dashed separator */
+    border-bottom: 1px dashed #e0e0e0;  
     font-size: 15px;
   }
   .detail-item:last-of-type {
-    border-bottom: none; /* No border for the last item before notes/actions */
+    border-bottom: none; 
   }
   .notes-section {
       border-bottom: none;
@@ -57,7 +57,7 @@
   
   
   .detail-label {
-    color: #555; /* Slightly darker gray for labels */
+    color: #555;  
     font-weight: 500;
     display: flex;
     align-items: center;
@@ -65,11 +65,11 @@
   .detail-label .far, .detail-label .fas {
     margin-right: 8px;
     color: #888;
-    width: 16px; /* Consistent icon width */
+    width: 16px;  
   }
   
   .detail-value {
-    color: #333; /* Darker text for values */
+    color: #333;  
     text-align: right;
   }
   
@@ -81,14 +81,14 @@
     padding-right: 25px;
   }
   .amount-highlight .amount-value {
-    font-size: 20px; /* Larger font for amount */
+    font-size: 20px;  
     font-weight: 600;
-    color: #2c3e50; /* Dark blue/gray for amount */
+    color: #2c3e50;  
   }
   
   .status-badge-detail {
     padding: 4px 10px;
-    border-radius: 4px; /* More rectangular badge */
+    border-radius: 4px;  
     font-size: 13px;
     font-weight: 500;
     color: #fff;
@@ -110,8 +110,8 @@
   }
   
   .notes-section .detail-label {
-    align-self: flex-start; /* Align label to top for multi-line notes */
-    margin-bottom: 5px; /* Space if notes are short */
+    align-self: flex-start;  
+    margin-bottom: 5px;  
   }
   .notes-section {
     flex-direction: column;
@@ -135,7 +135,7 @@
   }
   
   .pay-now-button {
-    background-color: #343a40; /* Dark button */
+    background-color: #343a40;  
     color: white;
     border: none;
     padding: 12px 25px;
@@ -144,18 +144,18 @@
     border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.2s ease;
-    width: 100%; /* Full width button */
+    width: 100%; 
   }
   
   .pay-now-button:hover {
-    background-color: #23272b; /* Slightly darker on hover */
+    background-color: #23272b;  
   }
   
   .payment-completed-message {
     margin-top: 25px;
     padding: 12px;
-    background-color: #e6ffed; /* Light green background */
-    color: #006422; /* Dark green text */
+    background-color: #e6ffed;  
+    color: #006422;  
     border: 1px solid #c3e6cb;
     border-radius: 6px;
     text-align: center;
@@ -164,23 +164,25 @@
   }
   .payment-completed-message .fas {
     margin-right: 8px;
-    color: #28a745; /* Green check icon */
+    color: #28a745;  
   }
   
   
   .no-bill-placeholder {
     text-align: center;
     padding: 40px 20px;
-    color: #868e96; /* Muted text color */
+    color: #868e96; 
   }
   
   .placeholder-icon {
-    font-size: 48px; /* Large icon */
+    font-size: 48px;  
     margin-bottom: 20px;
-    color: #ced4da; /* Light gray icon */
+    color: #ced4da;  
   }
   
   .no-bill-placeholder p {
     font-size: 15px;
     line-height: 1.6;
-  }
+  } */
+
+  

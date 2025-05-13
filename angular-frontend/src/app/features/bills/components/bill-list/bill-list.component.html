@@ -1,4 +1,4 @@
-<div class="bill-list-card">
+<!-- <div class="bill-list-card">
     <div class="card-header">
       <i class="fas fa-dollar-sign icon"></i>
       <div>
@@ -43,5 +43,65 @@
           </tr>
         </tbody>
       </table>
+    </div>
+  </div> -->
+
+
+
+  <div class="bill-list-card bg-card rounded-card shadow-card overflow-hidden">
+    <div class="card-header flex items-center p-card-padding border-b border-border">
+      <i class="fas fa-dollar-sign text-accent text-2xl mr-3"></i>
+      <div>
+        <h3 class="text-section-header font-display text-text">Billing History</h3>
+        <p class="text-body text-text-light">View all your bills from Dr. Sarah Johnson's clinic</p>
+      </div>
+    </div>
+    <div class="card-content p-card-padding">
+      <div class="overflow-x-auto">
+        <table class="bill-table w-full text-left text-body">
+          <thead class="border-b border-border">
+            <tr>
+              <th class="p-3 font-semibold text-text-light">Bill ID</th>
+              <th class="p-3 font-semibold text-text-light">Issue Date</th>
+              <th class="p-3 font-semibold text-text-light">Due Date</th>
+              <th class="p-3 font-semibold text-text-light">Amount</th>
+              <th class="p-3 font-semibold text-text-light">Status</th>
+              <th class="p-3 font-semibold text-text-light">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let bill of bills" 
+                (click)="selectBill(bill)" 
+                [class.bg-primary-light]="bill.id === selectedBillId"
+                [class.text-white]="bill.id === selectedBillId"
+                class="border-b border-border hover:bg-hover cursor-pointer transition-colors duration-150 ease-in-out"
+                [ngClass]="{'hover:text-text': bill.id !== selectedBillId}">
+              <td class="p-3 text-text">{{ bill.billId }}</td>
+              <td class="p-3 text-text-light">{{ bill.issueDate | date:'shortDate' }}</td>
+              <td class="p-3 text-text-light">{{ bill.dueDate | date:'shortDate' }}</td>
+              <td class="p-3 text-text font-medium">${{ bill.amount.toFixed(2) }}</td>
+              <td class="p-3">
+                <span class="status-badge py-1 px-3 rounded-full text-xs font-medium" [ngClass]="{
+                  'bg-status-success/20 text-status-success': bill.status === 'Paid',
+                  'bg-status-warning/20 text-status-warning': bill.status === 'Unpaid',
+                  'bg-status-urgent/20 text-status-urgent': bill.status === 'Overdue',
+                  'bg-status-info/20 text-status-info': bill.status === 'Pending'
+                }">
+                  {{ bill.status }}
+                </span>
+              </td>
+              <td class="p-3">
+                <button class="details-button text-primary hover:text-primary-dark font-medium text-sm py-1 px-2 rounded-button hover:bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary/50">Details</button>
+              </td>
+            </tr>
+            <tr *ngIf="bills.length === 0">
+                <td colspan="6" class="no-bills-message text-center p-6 text-text-muted italic">
+                  <i class="fas fa-folder-open text-3xl mb-2"></i>
+                  <p>No bills found.</p>
+                </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>

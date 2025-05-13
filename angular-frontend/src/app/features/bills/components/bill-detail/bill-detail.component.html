@@ -1,4 +1,4 @@
-<div class="bill-detail-card">
+<!-- <div class="bill-detail-card">
     <div class="card-header">
       <i class="fas fa-info-circle icon"></i>
       <div>
@@ -55,6 +55,73 @@
         <div class="no-bill-placeholder">
           <i class="fas fa-file-invoice placeholder-icon"></i>
           <p>Select a bill from the table to view its details</p>
+        </div>
+      </ng-template>
+    </div>
+  </div> -->
+
+
+  <div class="bill-detail-card bg-card rounded-card shadow-card">
+    <div class="card-header flex items-center p-card-padding border-b border-border">
+      <i class="fas fa-info-circle text-accent text-2xl mr-3"></i>
+      <div>
+        <h3 class="text-section-header font-display text-text">Bill Details</h3>
+        <p *ngIf="bill" class="text-body text-text-light">Information about bill {{ bill.billId }}</p>
+        <p *ngIf="!bill" class="text-body text-text-light">Select a bill to view details</p>
+      </div>
+    </div>
+    <div class="card-content p-card-padding">
+      <div *ngIf="bill; else noBillSelected" class="space-y-4">
+        <div class="detail-item flex justify-between items-center">
+          <span class="detail-label text-text-light font-medium">Bill ID:</span>
+          <span class="detail-value text-text">{{ bill.billId }}</span>
+        </div>
+        <div class="detail-item flex justify-between items-center p-3 bg-primary/5 rounded-md">
+          <span class="detail-label text-primary font-semibold">Amount:</span>
+          <span class="detail-value text-primary text-lg font-bold">${{ bill.amount.toFixed(2) }}</span>
+        </div>
+        <div class="detail-item flex justify-between items-center">
+          <span class="detail-label text-text-light font-medium">Status:</span>
+          <span class="detail-value">
+            <span class="status-badge-detail py-1 px-3 rounded-full text-xs font-medium" [ngClass]="{
+              'bg-status-success/20 text-status-success': bill.status === 'Paid',
+              'bg-status-warning/20 text-status-warning': bill.status === 'Unpaid',
+              'bg-status-urgent/20 text-status-urgent': bill.status === 'Overdue',
+              'bg-status-info/20 text-status-info': bill.status === 'Pending'
+            }">
+              {{ bill.status }}
+            </span>
+          </span>
+        </div>
+        <div class="detail-item flex justify-between items-center">
+          <span class="detail-label text-text-light font-medium"><i class="far fa-calendar-alt mr-2 text-text-muted"></i>Issue Date:</span>
+          <span class="detail-value text-text">{{ bill.issueDate | date:'longDate' }}</span>
+        </div>
+        <div class="detail-item flex justify-between items-center">
+          <span class="detail-label text-text-light font-medium"><i class="far fa-calendar-times mr-2 text-text-muted"></i>Due Date:</span>
+          <span class="detail-value text-text">{{ bill.dueDate | date:'longDate' }}</span>
+        </div>
+        <div class="notes-section pt-2 mt-2 border-t border-border" *ngIf="bill.notes">
+          <span class="detail-label text-text-light font-medium block mb-1"><i class="far fa-sticky-note mr-2 text-text-muted"></i>Notes:</span>
+          <p class="detail-value notes-value text-text bg-gray-50 p-3 rounded-md">{{ bill.notes }}</p>
+        </div>
+  
+        <div class="action-area mt-6" *ngIf="bill.detailsActionText && !bill.isPaid">
+          <button class="pay-now-button w-full bg-accent hover:bg-accent-dark text-white font-medium py-3 px-4 rounded-button shadow-md hover:shadow-lg transition-all duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-accent/50">
+            <i class="fas fa-credit-card mr-2"></i>{{ bill.detailsActionText }}
+          </button>
+        </div>
+        <div class="payment-completed-message mt-6 text-center p-4 bg-status-success/10 text-status-success rounded-md" *ngIf="bill.isPaid && bill.status === 'Paid'">
+          <i class="fas fa-check-circle text-2xl mr-2"></i>
+          <p class="font-semibold">Payment completed</p>
+        </div>
+  
+      </div>
+      <ng-template #noBillSelected>
+        <div class="no-bill-placeholder text-center py-10 text-text-muted">
+          <i class="fas fa-file-invoice text-5xl mb-4"></i>
+          <p class="text-card-title">Select a bill from the table</p>
+          <p class="text-body">Its details will be shown here.</p>
         </div>
       </ng-template>
     </div>

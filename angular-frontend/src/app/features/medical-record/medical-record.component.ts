@@ -28,60 +28,6 @@ export interface MedicalRecordItem {
 })
 export class MedicalRecordComponent implements OnInit{
  
-
-
-  // activeTab: string = 'prescriptions';
-
-  // medicalRecords = {
-  //   prescriptions: [
-  //     {
-  //       date: '20/04/2024',
-  //       doctor: 'Dr. Smith',
-  //       medications: ['Amoxicillin 500mg', 'Ibuprofen 400mg']
-  //     },
-  //     {
-  //       date: '15/04/2024',
-  //       doctor: 'Dr. Johnson',
-  //       medications: ['Omeprazole 20mg']
-  //     }
-  //   ],
-  //   labResults: [
-  //     {
-  //       testName: 'Blood Test',
-  //       date: '18/04/2024',
-  //       status: 'Completed'
-  //     },
-  //     {
-  //       testName: 'X-Ray',
-  //       date: '25/04/2024',
-  //       status: 'Pending'
-  //     }
-  //   ],
-  //   certificates: [
-  //     {
-  //       title: 'Medical Fitness Certificate',
-  //       date: '10/04/2024',
-  //       doctor: 'Dr. Smith'
-  //     },
-  //     {
-  //       title: 'Vaccination Certificate',
-  //       date: '15/03/2024',
-  //       doctor: 'Dr. Johnson'
-  //     }
-  //   ]  };
-  //   setActiveTab(tab: string): void {
-  //     this.activeTab = tab;
-  //   }
-
-
-
-  // activeTab: string = 'scannedScripts';
-
-  // setActiveTab(tab: string): void {
-  //   this.activeTab = tab;
-  // }
-
-
   activeTab: string = 'All'; // 'All', 'Examinations', 'LabResults', 'Images', 'Prescriptions'
   searchTerm: string = '';
 
@@ -143,7 +89,7 @@ export class MedicalRecordComponent implements OnInit{
         id: 'img1', type: 'Image', title: 'Chest X-Ray', recordDate: 'Mar 10, 2025', doctor: 'Dr. Emily Chen',
         summary: 'Standard PA and lateral views of chest. No evidence of acute cardiopulmonary disease.',
         details: 'Standard PA and lateral views of chest. Lungs are clear. Heart size is normal. No evidence of acute cardiopulmonary disease. Minor degenerative changes in the thoracic spine.',
-        tagText: 'Medical Image', tagClass: 'tag-image', imageDetails: 'PA and lateral views', takenBy: 'Radiology Department', imageUrl: 'assets/placeholder-image.png' // Replace with actual image path or logic
+        tagText: 'Medical Image', tagClass: 'tag-image', imageDetails: 'PA and lateral views', takenBy: 'Radiology Department', imageUrl: 'assets/images/round-pneumonia.jpg' // Replace with actual image path or logic
       },
       {
         id: 'img2', type: 'Image', title: 'Right Knee MRI', recordDate: 'Mar 15, 2025', doctor: 'Dr. Emily Chen',
@@ -246,23 +192,7 @@ export class MedicalRecordComponent implements OnInit{
       this.closeAllDropdowns();
     }
   }
-  // filterRecords(): void {
-  //   let recordsToDisplay = this.allRecords;
-
-  //   if (this.activeTab !== 'All') {
-  //     recordsToDisplay = this.allRecords.filter(record => record.type === this.activeTab);
-  //   }
-
-  //   if (this.searchTerm) {
-  //     const lowerSearchTerm = this.searchTerm.toLowerCase();
-  //     recordsToDisplay = recordsToDisplay.filter(record =>
-  //       record.title.toLowerCase().includes(lowerSearchTerm) ||
-  //       (record.doctor && record.doctor.toLowerCase().includes(lowerSearchTerm)) ||
-  //       record.summary.toLowerCase().includes(lowerSearchTerm)
-  //     );
-  //   }
-  //   this.filteredRecords = recordsToDisplay;
-  // }
+  
 
   filterRecords(): void {
     let recordsToDisplay = [...this.allRecords];
@@ -325,9 +255,46 @@ export class MedicalRecordComponent implements OnInit{
 
   downloadRecord(record: MedicalRecordItem | null): void {
     if (record) {
-      // Implement actual download logic here
-      alert(`Downloading record: ${record.title}`);
-      this.closeModal();
+      // Logique de téléchargement à implémenter
+      // Par exemple, créer un blob et un lien de téléchargement
+      const recordData = JSON.stringify(record, null, 2);
+      const blob = new Blob([recordData], { type: 'application/json' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${record.title.replace(/\s+/g, '_')}_${record.id}.json`; // Nom de fichier suggéré
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+      console.log(`Downloading record: ${record.title}`);
+      // Ne fermez pas la modale ici, laissez l'utilisateur le faire s'il le souhaite
+    }
+  }
+  exportRecords(): void {
+    // Logique d'exportation à implémenter (par exemple, tous les filteredRecords)
+    console.log('Exporting records...', this.filteredRecords);
+    alert('Exporting records functionality to be implemented.');
+  }
+
+  requestRecords(): void {
+    // Logique de demande de dossiers à implémenter
+    console.log('Requesting new records...');
+    alert('Requesting records functionality to be implemented.');
+  }
+
+  getRecordIconClass(type: MedicalRecordItem['type']): string {
+    switch (type) {
+      case 'Examination':
+        return 'fas fa-stethoscope'; // Ou fa-file-medical-alt
+      case 'LabResult':
+        return 'fas fa-vial'; // Ou fa-flask
+      case 'Image':
+        return 'fas fa-x-ray'; // Ou fa-image
+      case 'Prescription':
+        return 'fas fa-file-prescription';
+      default:
+        return 'fas fa-file-alt';
     }
   }
   

@@ -1,134 +1,129 @@
+<div class="medical-history-container">
+  <!-- Loading Spinner -->
+  <div *ngIf="isLoading" class="flex flex-col items-center justify-center p-10 text-center">
+    <div class="w-12 h-12 border-4 border-t-4 border-border border-t-primary rounded-full animate-spin mb-4"></div>
+    <p class="text-text-light">Loading medical history...</p>
+  </div>
 
-
-
-  <div class="medical-history-container">
-    <!-- Loading Spinner -->
-    <div class="loading-spinner" *ngIf="isLoading">
-      <div class="spinner"></div>
-      <p>Loading medical history...</p>
-    </div>
-  
-    <!-- Medical History Content -->
-    <div *ngIf="!isLoading && medicalHistory" class="card medical-history-container">
-      <div class="card-header bg-blue-50">
-        <div class="card-title flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="h-5 w-5 text-blue-600"
-            >
-              <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
-              <path d="M8 7h6" />
-              <path d="M8 11h8" />
-              <path d="M8 15h6" />
-            </svg>
-            <span class="font-semibold text-lg">Medical History</span>
-          </div>
-          <span class="text-sm text-gray-500">
-            Last updated: {{ medicalHistory.lastUpdated }}
-          </span>
+  <!-- Medical History Content -->
+  <div *ngIf="!isLoading && medicalHistory" class="card">
+    <div class="card-header bg-hover p-card-padding border-b border-border">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="h-6 w-6 text-primary"
+          >
+            <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
+            <path d="M8 7h6" />
+            <path d="M8 11h8" />
+            <path d="M8 15h6" />
+          </svg>
+          <span class="font-display text-section-header text-text">Medical History</span>
         </div>
+        <span class="text-body text-text-muted">
+          Last updated: {{ medicalHistory.lastUpdated | date:'mediumDate' }}
+        </span>
       </div>
-      <div class="card-content p-6">
-        <div class="scroll-area h-[400px] pr-4">
-          <div class="space-y-6">
-            <!-- Current Medical Conditions -->
-            <div>
-              <h3 class="font-medium text-lg text-blue-700 mb-2">
-                Current Medical Conditions
-              </h3>
-              <div class="bg-gray-50 p-3 rounded-lg">
-                <ul *ngIf="medicalHistory.currentMedicalConditions?.length > 0; else noConditions" class="list-disc pl-5 space-y-1">
-                  <li *ngFor="let condition of medicalHistory.currentMedicalConditions">
-                    {{ condition }}
-                  </li>
-                </ul>
-                <ng-template #noConditions>
-                  <p class="text-gray-500 italic">No current medical conditions</p>
-                </ng-template>
-              </div>
+    </div>
+    <div class="p-card-padding">
+      <div class="scroll-area h-[400px] overflow-y-auto pr-2 space-y-6">
+        <!-- Current Medical Conditions -->
+        <div>
+          <h3 class="font-display text-card-title text-primary mb-2">
+            Current Medical Conditions
+          </h3>
+          <div class="bg-hover p-3 rounded-lg">
+            <div *ngIf="medicalHistory.currentMedicalConditions?.length > 0; else noConditions" class="flex flex-wrap gap-2">
+              <span *ngFor="let condition of medicalHistory.currentMedicalConditions" class="bg-status-info/10 text-status-info text-sm font-medium px-2.5 py-1 rounded-full">
+                {{ condition }}
+              </span>
             </div>
-  
-            <hr class="separator" />
-  
-            <!-- Past Surgeries -->
-            <div>
-              <h3 class="font-medium text-lg text-blue-700 mb-2">Past Surgeries</h3>
-              <div class="bg-gray-50 p-3 rounded-lg">
-                <ul *ngIf="medicalHistory.pastSurgeries?.length > 0; else noSurgeries" class="list-disc pl-5 space-y-1">
-                  <li *ngFor="let surgery of medicalHistory.pastSurgeries">
-                    {{ surgery }}
-                  </li>
-                </ul>
-                <ng-template #noSurgeries>
-                  <p class="text-gray-500 italic">No past surgeries</p>
-                </ng-template>
-              </div>
+            <ng-template #noConditions>
+              <p class="text-text-muted italic">No current medical conditions</p>
+            </ng-template>
+          </div>
+        </div>
+
+        <hr class="border-t border-border" />
+
+        <!-- Past Surgeries -->
+        <div>
+          <h3 class="font-display text-card-title text-primary mb-2">Past Surgeries</h3>
+          <div class="bg-hover p-3 rounded-lg">
+            <div *ngIf="medicalHistory.pastSurgeries?.length > 0; else noSurgeries" class="flex flex-wrap gap-2">
+              <span *ngFor="let surgery of medicalHistory.pastSurgeries" class="bg-status-success/10 text-status-success text-sm font-medium px-2.5 py-1 rounded-full">
+                {{ surgery }}
+              </span>
             </div>
-  
-            <hr class="separator" />
-  
-            <!-- Chronic Diseases -->
-            <div>
-              <h3 class="font-medium text-lg text-blue-700 mb-2">Chronic Diseases</h3>
-              <div class="bg-gray-50 p-3 rounded-lg">
-                <ul *ngIf="medicalHistory.chronicDiseases?.length > 0; else noDiseases" class="list-disc pl-5 space-y-1">
-                  <li *ngFor="let disease of medicalHistory.chronicDiseases">
-                    {{ disease }}
-                  </li>
-                </ul>
-                <ng-template #noDiseases>
-                  <p class="text-gray-500 italic">No chronic diseases</p>
-                </ng-template>
-              </div>
+            <ng-template #noSurgeries>
+              <p class="text-text-muted italic">No past surgeries</p>
+            </ng-template>
+          </div>
+        </div>
+
+        <hr class="border-t border-border" />
+
+        <!-- Chronic Diseases -->
+        <div>
+          <h3 class="font-display text-card-title text-primary mb-2">Chronic Diseases</h3>
+          <div class="bg-hover p-3 rounded-lg">
+            <div *ngIf="medicalHistory.chronicDiseases?.length > 0; else noDiseases" class="flex flex-wrap gap-2">
+              <span *ngFor="let disease of medicalHistory.chronicDiseases" class="bg-status-warning/10 text-status-warning text-sm font-medium px-2.5 py-1 rounded-full">
+                {{ disease }}
+              </span>
             </div>
-  
-            <hr class="separator" />
-  
-            <!-- Current Medications -->
-            <div>
-              <h3 class="font-medium text-lg text-blue-700 mb-2">Current Medications</h3>
-              <div class="bg-gray-50 p-3 rounded-lg">
-                <ul *ngIf="medicalHistory.currentMedications?.length > 0; else noMedications" class="list-disc pl-5 space-y-1">
-                  <li *ngFor="let medication of medicalHistory.currentMedications">
-                    {{ medication }}
-                  </li>
-                </ul>
-                <ng-template #noMedications>
-                  <p class="text-gray-500 italic">No current medications</p>
-                </ng-template>
-              </div>
+            <ng-template #noDiseases>
+              <p class="text-text-muted italic">No chronic diseases</p>
+            </ng-template>
+          </div>
+        </div>
+
+        <hr class="border-t border-border" />
+
+        <!-- Current Medications -->
+        <div>
+          <h3 class="font-display text-card-title text-primary mb-2">Current Medications</h3>
+          <div class="bg-hover p-3 rounded-lg">
+            <div *ngIf="medicalHistory.currentMedications?.length > 0; else noMedications" class="flex flex-wrap gap-2">
+              <span *ngFor="let medication of medicalHistory.currentMedications" class="bg-accent/10 text-accent text-sm font-medium px-2.5 py-1 rounded-full">
+                {{ medication }}
+              </span>
             </div>
-  
-            <hr class="separator" />
-  
-            <!-- Allergies -->
-            <div>
-              <h3 class="font-medium text-lg text-blue-700 mb-2">Allergies</h3>
-              <div class="bg-gray-50 p-3 rounded-lg">
-                <ul *ngIf="medicalHistory.allergies?.length > 0; else noAllergies" class="list-disc pl-5 space-y-1">
-                  <li *ngFor="let allergy of medicalHistory.allergies">
-                    {{ allergy }}
-                  </li>
-                </ul>
-                <ng-template #noAllergies>
-                  <p class="text-gray-500 italic">No allergies</p>
-                </ng-template>
-              </div>
+            <ng-template #noMedications>
+              <p class="text-text-muted italic">No current medications</p>
+            </ng-template>
+          </div>
+        </div>
+
+        <hr class="border-t border-border" />
+
+        <!-- Allergies -->
+        <div>
+          <h3 class="font-display text-card-title text-primary mb-2">Allergies</h3>
+          <div class="bg-hover p-3 rounded-lg">
+            <div *ngIf="medicalHistory.allergies?.length > 0; else noAllergies" class="flex flex-wrap gap-2">
+              <span *ngFor="let allergy of medicalHistory.allergies" class="bg-status-urgent/10 text-status-urgent text-sm font-medium px-2.5 py-1 rounded-full">
+                {{ allergy }}
+              </span>
             </div>
+            <ng-template #noAllergies>
+              <p class="text-text-muted italic">No allergies</p>
+            </ng-template>
           </div>
         </div>
       </div>
-    </div>
-  
-    <!-- No Data Message -->
-    <div *ngIf="!isLoading && !medicalHistory" class="text-center text-gray-500 italic">
-      No medical history available.
     </div>
   </div>
+
+  <!-- No Data Message -->
+  <div *ngIf="!isLoading && !medicalHistory" class="text-center text-text-muted italic p-10">
+    No medical history available.
+  </div>
+</div>

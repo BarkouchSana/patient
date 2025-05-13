@@ -1,21 +1,21 @@
-.bill-list-card {
+/* .bill-list-card {
     background-color: #ffffff;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
-    overflow: hidden; /* Ensures border-radius is respected by children */
+    overflow: hidden;  
   }
   
   .card-header {
     display: flex;
     align-items: center;
     padding: 20px;
-    background-color: #f8f9fa; /* Slightly different from page bg for card header */
+    background-color: #f8f9fa;  
     border-bottom: 1px solid #e9ecef;
   }
   
   .card-header .icon {
     font-size: 22px;
-    color: #007bff; /* Primary color for icon */
+    color: #007bff;  
     margin-right: 15px;
     background-color: #e7f3ff;
     padding: 8px;
@@ -36,28 +36,28 @@
   }
   
   .card-content {
-    padding: 0; /* Remove padding to allow table to span full width */
+    padding: 0;  
   }
   
   .bill-table {
     width: 100%;
-    border-collapse: collapse; /* Removes gaps between cells */
+    border-collapse: collapse; 
   }
   
   .bill-table th,
   .bill-table td {
-    padding: 14px 18px; /* Increased padding */
+    padding: 14px 18px;  
     text-align: left;
     font-size: 14px;
-    border-bottom: 1px solid #e9ecef; /* Lighter border for rows */
+    border-bottom: 1px solid #e9ecef;  
     color: #495057;
   }
   
   .bill-table th {
-    background-color: #f8f9fa; /* Header background */
-    font-weight: 500; /* Medium weight for headers */
+    background-color: #f8f9fa;  
+    font-weight: 500;  
     color: #495057;
-    font-size: 13px; /* Slightly smaller header text */
+    font-size: 13px;  
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
@@ -68,11 +68,11 @@
   }
   
   .bill-table tbody tr:hover {
-    background-color: #f1f3f5; /* Light hover effect */
+    background-color: #f1f3f5;  
   }
   .bill-table tbody tr.selected-row {
-    background-color: #e7f3ff; /* Light blue for selected row */
-    /* border-left: 3px solid #007bff; */ /* Optional: selected indicator */
+    background-color: #e7f3ff;  
+     
   }
   .bill-table tbody tr.selected-row td {
       font-weight: 500;
@@ -83,13 +83,13 @@
     text-align: center;
   }
   .bill-table tbody tr:last-child td {
-    border-bottom: none; /* No border for the last row's cells */
+    border-bottom: none;  
   }
   
   
   .status-badge {
     padding: 5px 10px;
-    border-radius: 12px; /* Pill shape */
+    border-radius: 12px;  
     font-size: 12px;
     font-weight: 500;
     color: #fff;
@@ -99,7 +99,7 @@
   }
   
   .status-paid {
-    background-color: #28a745; /* Green */
+    background-color: #28a745;  
   }
   .status-paid.selected-row, .bill-table tbody tr.selected-row .status-paid {
     background-color: #1e7e34;
@@ -107,22 +107,22 @@
   
   
   .status-unpaid {
-    background-color: #6c757d; /* Gray */
+    background-color: #6c757d;  
   }
   .status-unpaid.selected-row, .bill-table tbody tr.selected-row .status-unpaid {
     background-color: #545b62;
   }
   
   .status-overdue {
-    background-color: #dc3545; /* Red */
+    background-color: #dc3545;  
   }
   .status-overdue.selected-row, .bill-table tbody tr.selected-row .status-overdue {
     background-color: #b02a37;
   }
   
   .status-pending {
-    background-color: #ffc107; /* Yellow */
-    color: #212529; /* Dark text for yellow bg */
+    background-color: #ffc107; 
+    color: #212529;  
   }
   .status-pending.selected-row, .bill-table tbody tr.selected-row .status-pending {
     background-color: #d39e00;
@@ -162,4 +162,8 @@
       padding: 20px;
       color: #6c757d;
       font-style: italic;
-  }
+  } */
+
+
+
+  

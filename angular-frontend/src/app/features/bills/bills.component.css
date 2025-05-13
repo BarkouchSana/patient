@@ -1,8 +1,8 @@
-.bills-page-container {
+/* .bills-page-container {
   padding: 25px;
-  background-color: #f8f9fa; /* Light gray background */
+  background-color: #f8f9fa;  
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  min-height: calc(100vh - 60px); /* Adjust based on your header height */
+  min-height: calc(100vh - 60px);  
 }
 
 .page-header {
@@ -14,8 +14,8 @@
 }
 
 .header-icon {
-  font-size: 32px; /* Larger icon */
-  color: #6c757d; /* Muted icon color */
+  font-size: 32px;  
+  color: #6c757d;  
   margin-right: 20px;
   padding: 10px;
   background-color: #e9ecef;
@@ -37,27 +37,28 @@
 
 .bills-content-area {
   display: flex;
-  gap: 25px; /* Space between list and detail */
+  gap: 25px; 
 }
 
 .bill-list-wrapper {
-  flex: 2; /* List takes more space */
-  min-width: 0; /* Prevents overflow issues with flex children */
+  flex: 2;  
+  min-width: 0;  
 }
 
 .bill-detail-wrapper {
-  flex: 1.2; /* Detail takes less space */
-  min-width: 0; /* Prevents overflow issues with flex children */
+  flex: 1.2;  
+  min-width: 0;  
 }
 
-/* Responsive adjustments */
+ 
 @media (max-width: 992px) {
   .bills-content-area {
     flex-direction: column;
   }
   .bill-list-wrapper,
   .bill-detail-wrapper {
-    flex: none; /* Reset flex grow */
+    flex: none;  
     width: 100%;
   }
-}
+} */
+

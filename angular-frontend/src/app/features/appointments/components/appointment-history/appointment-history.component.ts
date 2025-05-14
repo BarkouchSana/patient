@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { AppointmentService } from '../../../../core/services/appointment.service';
@@ -30,7 +30,9 @@ export class AppointmentHistoryComponent implements OnInit {
     errorMessage: string | null = null;
   
     constructor(
-      private appointmentService: AppointmentService
+      private appointmentService: AppointmentService,
+      private cdr: ChangeDetectorRef // Inject ChangeDetectorRef
+
     ) {}
   
     ngOnInit(): void {
@@ -52,12 +54,42 @@ export class AppointmentHistoryComponent implements OnInit {
       this.errorMessage = null;
       this.appointmentService.getAppointmentHistory(this.currentPatientId).subscribe(
         (data) => {
-          this.allAppointments = data.map(appointment => ({
-            ...appointment,
-            status: appointment.status || 'Unknown' // Provide a default value if status is missing
-          }));
+          this.allAppointments = data.map(appointment => {
+            let parsedDate: string = appointment.date as string; // Default to original string
+            if (typeof appointment.date === 'string') {
+              // Remove ordinal suffixes (st, nd, rd, th) before attempting to parse
+              const dateStringWithoutOrdinal = appointment.date.replace(/(\d+)(st|nd|rd|th)/, '$1');
+              const tempDate = new Date(dateStringWithoutOrdinal);
+              if (!isNaN(tempDate.getTime())) { // Check if the conversion was successful
+                parsedDate = tempDate.toISOString(); // Convert Date to ISO string
+              } else {
+                console.warn(`Could not parse date string: "${appointment.date}". Using original or it might appear as invalid.`);
+              }
+            } else if (appointment.date && Object.prototype.toString.call(appointment.date) === '[object Date]') {
+              parsedDate = (appointment.date as Date).toISOString(); // Convert Date to ISO string
+            }
+
+            return {
+              ...appointment,
+              date: parsedDate, // Ensure date is always a string
+              status: appointment.status || 'Unknown'
+            };
+          });
+                    // ---- DEBUT DU DEBUG ----
+                    console.log('Données brutes reçues (data):', JSON.stringify(data.slice(0, 10))); // Affiche les 10 premiers éléments bruts
+                    console.log('allAppointments (après mapping, 10 premiers):', JSON.stringify(this.allAppointments.slice(0, 10)));
+                    // ---- FIN DU DEBUG ----
+          
           this.applyFiltersAndPagination();
+                    // ---- DEBUT DU DEBUG (après pagination pour la première page) ----
+                    if (this.paginatedAppointments) {
+                      console.log('paginatedAppointments (première page):', JSON.stringify(this.paginatedAppointments));
+                      console.log('Nombre dans paginatedAppointments:', this.paginatedAppointments.length);
+                    }
+                    console.log('currentPage:', this.currentPage, 'itemsPerPage:', this.itemsPerPage);
+                    //
           this.isLoading = false;
+          this.cdr.detectChanges();
         },
         (error) => {
           console.error('Error fetching appointment history:', error);
@@ -65,6 +97,7 @@ export class AppointmentHistoryComponent implements OnInit {
           this.isLoading = false;
           this.allAppointments = [];
           this.applyFiltersAndPagination();
+          this.cdr.detectChanges(); 
         }
       );
     }

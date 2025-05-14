@@ -8,13 +8,15 @@ import { ProfileEditComponent } from './components/profile-edit/profile-edit.com
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
+import { ProfileSecurityComponent } from './components/profile-security/profile-security.component';
 
 
 @NgModule({
   declarations: [
     ProfileComponent,
     ProfileViewComponent,
-    ProfileEditComponent
+    ProfileEditComponent,
+    ProfileSecurityComponent
   ],
   imports: [
     CommonModule,

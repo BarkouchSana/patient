@@ -1,3 +1,5 @@
+
+
 <div class="appointment-history-container bg-card p-card-padding rounded-card shadow-card font-sans">
   <div class="mb-6">
     <h2 id="appointmentHistoryTitle" class="text-section-header font-display text-text">Your Appointment History</h2>
@@ -14,15 +16,15 @@
         placeholder="Search by reason..."
         [(ngModel)]="searchTerm"
         (ngModelChange)="onSearchTermChange()"
-        class="search-input w-full pl-10 pr-4 py-2.5 border border-border rounded-input text-body text-text focus:ring-1 focus:ring-primary focus:border-primary outline-none placeholder:text-text-muted/70"
+        class="search-input w-full pl-10 pr-4 py-2.5 border border-border rounded-input text-body text-text bg-card focus:ring-1 focus:ring-primary focus:border-primary outline-none placeholder:text-text-muted/70"
         aria-label="Search appointments by reason"
       />
     </div>
     <div class="buttons flex space-x-3 w-full sm:w-auto">
-      <button type="button" class="btn-filter flex-grow sm:flex-grow-0 flex items-center justify-center text-sm font-medium py-2 px-4 rounded-button border border-border text-text-light bg-card hover:bg-hover focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 transition-colors duration-150" (click)="openFilterModal()" aria-label="Filter appointments">
+      <button type="button" class="btn-filter flex-grow sm:flex-grow-0 flex items-center justify-center text-sm font-medium py-2 px-4 rounded-button border border-border text-text-light bg-card hover:bg-hover focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 focus:ring-offset-card transition-colors duration-150" (click)="openFilterModal()" aria-label="Filter appointments">
         <i class="fas fa-filter mr-2"></i>Filter
       </button>
-      <button type="button" class="btn-export flex-grow sm:flex-grow-0 flex items-center justify-center text-sm font-medium py-2 px-4 rounded-button bg-primary text-white hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 transition-colors duration-150" (click)="exportData()" aria-label="Export appointment data">
+      <button type="button" class="btn-export flex-grow sm:flex-grow-0 flex items-center justify-center text-sm font-medium py-2 px-4 rounded-button bg-primary text-white hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 focus:ring-offset-card transition-colors duration-150" (click)="exportData()" aria-label="Export appointment data">
         <i class="fas fa-upload mr-2"></i>Export
       </button>
     </div>
@@ -65,7 +67,7 @@
                   'bg-status-success/20 text-status-success': appointment.status === 'Confirmed' || appointment.status === 'Completed',
                   'bg-status-warning/20 text-status-warning': appointment.status === 'Pending',
                   'bg-status-urgent/20 text-status-urgent': appointment.status === 'Cancelled',
-                  'bg-gray-200 text-gray-700': !['Confirmed', 'Pending', 'Cancelled', 'Completed'].includes(appointment.status ?? '')
+                  'bg-hover text-text-muted': !['Confirmed', 'Pending', 'Cancelled', 'Completed'].includes(appointment.status ?? '')
                 }"
               >
                 {{ appointment.status }}

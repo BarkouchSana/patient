@@ -25,4 +25,8 @@ export class PatientService {
   getPatientDashboard(userId: number): Observable<any> {
     return this.http.get(`${this.baseUrl}/patient/dashboard/?userId=${userId}`);
   }
+  changePassword(currentPassword: string, newPassword: string): Observable<{ status: string; message?: string }> {
+    const payload = { currentPassword, newPassword };
+    return this.http.post<{ status: string; message?: string }>('/api/change-password', payload);
+  }
 }

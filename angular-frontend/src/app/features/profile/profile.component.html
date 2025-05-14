@@ -38,8 +38,22 @@
       >
         Modifier le profil
       </a>
+
+      <a 
+      [routerLink]="['security']" 
+      routerLinkActive="active-link"
+      #rlaSecurity="routerLinkActive"
+      [ngClass]="{'text-primary border-primary': rlaSecurity.isActive, 'text-text-muted border-transparent hover:text-primary hover:border-primary/30': !rlaSecurity.isActive}"
+      class="nav-link py-3 px-4 md:px-5 text-sm font-medium border-b-2 focus:outline-none focus:bg-hover transition-colors duration-150 ease-in-out"
+    >
+      Sécurité
+    </a>
+
+
     </div>
   </div>
+
+
 
   <div class="mt-card-margin">
     <router-outlet></router-outlet>

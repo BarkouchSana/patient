@@ -1,11 +1,11 @@
 <div class="medical-history-container">
-  <!-- Loading Spinner -->
+  
   <div *ngIf="isLoading" class="flex flex-col items-center justify-center p-10 text-center">
     <div class="w-12 h-12 border-4 border-t-4 border-border border-t-primary rounded-full animate-spin mb-4"></div>
     <p class="text-text-light">Loading medical history...</p>
   </div>
 
-  <!-- Medical History Content -->
+ 
   <div *ngIf="!isLoading && medicalHistory" class="card">
     <div class="card-header bg-hover p-card-padding border-b border-border">
       <div class="flex items-center justify-between">
@@ -34,7 +34,7 @@
     </div>
     <div class="p-card-padding">
       <div class="scroll-area h-[400px] overflow-y-auto pr-2 space-y-6">
-        <!-- Current Medical Conditions -->
+  
         <div>
           <h3 class="font-display text-card-title text-primary mb-2">
             Current Medical Conditions
@@ -53,7 +53,7 @@
 
         <hr class="border-t border-border" />
 
-        <!-- Past Surgeries -->
+       
         <div>
           <h3 class="font-display text-card-title text-primary mb-2">Past Surgeries</h3>
           <div class="bg-hover p-3 rounded-lg">
@@ -70,7 +70,7 @@
 
         <hr class="border-t border-border" />
 
-        <!-- Chronic Diseases -->
+        
         <div>
           <h3 class="font-display text-card-title text-primary mb-2">Chronic Diseases</h3>
           <div class="bg-hover p-3 rounded-lg">
@@ -87,7 +87,7 @@
 
         <hr class="border-t border-border" />
 
-        <!-- Current Medications -->
+         
         <div>
           <h3 class="font-display text-card-title text-primary mb-2">Current Medications</h3>
           <div class="bg-hover p-3 rounded-lg">
@@ -104,7 +104,7 @@
 
         <hr class="border-t border-border" />
 
-        <!-- Allergies -->
+         
         <div>
           <h3 class="font-display text-card-title text-primary mb-2">Allergies</h3>
           <div class="bg-hover p-3 rounded-lg">
@@ -122,7 +122,7 @@
     </div>
   </div>
 
-  <!-- No Data Message -->
+   
   <div *ngIf="!isLoading && !medicalHistory" class="text-center text-text-muted italic p-10">
     No medical history available.
   </div>

@@ -1,8 +1,9 @@
 import { Component, HostListener, OnInit } from '@angular/core';
+import { MedicalHistoryService } from '../../core/services/medical-history.service';
 
 export interface MedicalRecordItem {
   id: string;
-  type: 'Examination' | 'LabResult' | 'Image' | 'Prescription';
+  type:  'LabResult' | 'Image' | 'Prescription';
   title: string;
   recordDate: string; // Date affichée sur la carte et dans le modal (e.g., "May 2, 2025")
   doctor?: string;
@@ -17,8 +18,40 @@ export interface MedicalRecordItem {
   imageDetails?: string; // Pour Image
   takenBy?: string; // Pour Image
   imageUrl?: string; // Pour Image (placeholder pour l'instant)
+  status?: 'active' | 'completed';
+}
+export interface MedicalHistoryData {
+  currentMedicalConditions: string[];
+  pastSurgeries: string[];
+  chronicDiseases: string[];
+  currentMedications: string[];
+  allergies: string[];
+  vitalSigns?: VitalSignsData;
+  lastUpdated: string | Date | null;
+}
+export interface VitalSign {
+  label: string;
+  value: string;
+  unit: string;
+  icon: string; // Classe Font Awesome
+}
+export interface VitalSignsData {
+  lastRecorded: string | Date | null;
+  bloodPressure?: VitalSign;
+  pulse?: VitalSign;
+  temperature?: VitalSign;
+  respiratoryRate?: VitalSign;
+  oxygenSaturation?: VitalSign;
+  weight?: VitalSign;
+  height?: VitalSign;
 }
 
+interface MedicalHistorySectionConfig {
+  key: keyof MedicalHistoryData;
+  title: string;
+  color: string; // Tailwind color name (e.g., 'status-info', 'accent')
+  emptyText: string;
+}
 
 @Component({
   selector: 'app-medical-record',
@@ -27,8 +60,8 @@ export interface MedicalRecordItem {
   styleUrl: './medical-record.component.css'
 })
 export class MedicalRecordComponent implements OnInit{
- 
-  activeTab: string = 'All'; // 'All', 'Examinations', 'LabResults', 'Images', 'Prescriptions'
+  tabs: string[] = ['MedicalHistory', 'LabResult', 'Image', 'Prescription'];
+  activeTab: string = 'MedicalHistory'; // 'All', 'Examinations', 'LabResults', 'Images', 'Prescriptions'
   searchTerm: string = '';
 
   allRecords: MedicalRecordItem[] = [];
@@ -42,35 +75,32 @@ export class MedicalRecordComponent implements OnInit{
   dateTo: string = '';
     // Nouvelles propriétés pour le filtre avancé
     isAdvancedFilterOpen: boolean = false;
-    availableRecordTypes: string[] = ['Examination', 'LabResult', 'Image', 'Prescription'];
+    availableRecordTypes: string[] = ['LabResult', 'Image', 'Prescription'];
     availableDoctors: string[] = [];
   
     selectedRecordTypes: { [key: string]: boolean } = {};
     selectedDoctors: { [key: string]: boolean } = {};
+
+      // Propriétés pour l'historique médical
+  medicalHistory: MedicalHistoryData | null = null;
+  isLoadingMedicalHistory: boolean = true;
+  medicalHistoryErrorMessage: string | null = null;
   
-  constructor() { }
+  constructor(private medicalHistoryService: MedicalHistoryService) { } // Injection du service
+
+  
+  
 
   ngOnInit(): void {
     this.initializeStaticData();
     this.populateAvailableDoctors();
     this.initializeAdvancedFilters();
     this.filterRecords();
+    this.loadMedicalHistory();
   }
   initializeStaticData(): void {
     this.allRecords = [
-      // Examinations
-      {
-        id: 'exam1', type: 'Examination', title: 'Annual Physical Examination', recordDate: 'Apr 12, 2025', doctor: 'Dr. Sarah Johnson',
-        summary: 'Routine annual physical examination. Blood pressure: 120/80, Heart rate: 72 bpm, Temperature: 98.6°F. No significant findings.',
-        details: 'Routine annual physical examination. Blood pressure: 120/80, Heart rate: 72 bpm, Temperature: 98.6°F. No significant findings. Patient advised to continue healthy lifestyle.',
-        tagText: 'Examination', tagClass: 'tag-examination'
-      },
-      {
-        id: 'exam2', type: 'Examination', title: 'Dermatology Consultation', recordDate: 'Feb 5, 2025', doctor: 'Dr. James Wilson',
-        summary: 'Consultation for skin rash on arms. Diagnosed as contact dermatitis. Prescription provided.',
-        details: 'Patient presented with itchy red rash on both forearms, consistent with contact dermatitis. Advised to avoid suspected allergens and prescribed a topical corticosteroid cream.',
-        tagText: 'Examination', tagClass: 'tag-examination'
-      },
+ 
       // Lab Results
       {
         id: 'lab1', type: 'LabResult', title: 'Complete Blood Count', recordDate: 'Apr 15, 2025', doctor: 'Dr. Sarah Johnson',
@@ -102,13 +132,19 @@ export class MedicalRecordComponent implements OnInit{
         id: 'presc1', type: 'Prescription', title: 'Amoxicillin Prescription', recordDate: 'May 2, 2025', doctor: 'Dr. Sarah Johnson',
         summary: 'Amoxicillin 500mg, 3 times daily for 7 days. For treatment of sinus infection.',
         details: 'Amoxicillin 500mg. Take one capsule by mouth three times daily for 7 days. For treatment of acute bacterial sinusitis. Complete the entire course of antibiotics.',
-        tagText: 'Prescription', tagClass: 'tag-prescription'
+        tagText: 'Prescription', tagClass: 'tag-prescription', status: 'active' // <-- Add status
       },
       {
-        id: 'presc2', type: 'Prescription', title: 'Lisinopril Renewal', recordDate: 'Apr 20, 2025', doctor: 'Dr. Sarah Johnson',
+        id: 'presc2', type: 'Prescription', title: 'Amoxicillin Prescription', recordDate: 'May 2, 2025', doctor: 'Dr. Sarah Johnson',
+        summary: 'Doliprane 500mg, 2 times daily for 3 days. For treatment of sinus infection.',
+        details: 'Amoxicillin 500mg. Take one capsule by mouth three times daily for 7 days. For treatment of acute bacterial sinusitis. Complete the entire course of antibiotics.',
+        tagText: 'Prescription', tagClass: 'tag-prescription', status: 'active' // <-- Add status
+      },
+      {
+        id: 'presc3', type: 'Prescription', title: 'Lisinopril Renewal', recordDate: 'Apr 20, 2025', doctor: 'Dr. Sarah Johnson',
         summary: 'Lisinopril 10mg, once daily. 90-day supply with 3 refills. For blood pressure management.',
         details: 'Lisinopril 10mg. Take one tablet by mouth once daily. 90-day supply with 3 refills. For management of hypertension. Monitor blood pressure regularly.',
-        tagText: 'Prescription', tagClass: 'tag-prescription'
+        tagText: 'Prescription', tagClass: 'tag-prescription', status: 'completed' // <-- Add status
       }
     ];
   }
@@ -126,14 +162,52 @@ export class MedicalRecordComponent implements OnInit{
     this.availableRecordTypes.forEach(type => this.selectedRecordTypes[type] = false);
     this.availableDoctors.forEach(doc => this.selectedDoctors[doc] = false);
   }
+  loadMedicalHistory(): void {
+    this.isLoadingMedicalHistory = true;
+    const patientId = 1; // Ou récupérez l'ID du patient dynamiquement
+    this.medicalHistoryService.getMedicalHistory(patientId).subscribe({
+      next: (data) => {
+  // Données fictives pour VitalSigns pour l'instant
+  const vitalSignsData: VitalSignsData = {
+    lastRecorded: data.vitalSigns?.lastRecorded || new Date('2025-05-07T10:00:00Z'), // Exemple de date
+    bloodPressure: data.vitalSigns?.bloodPressure || { label: 'Blood Pressure', value: '120/80', unit: 'mmHg', icon: 'fas fa-heartbeat' },
+    pulse: data.vitalSigns?.pulse || { label: 'Pulse', value: '72', unit: 'bpm', icon: 'fas fa-pulse' }, // fas fa-pulse est plus spécifique
+    temperature: data.vitalSigns?.temperature || { label: 'Temperature', value: '36.7', unit: '°C', icon: 'fas fa-thermometer-half' },
+    respiratoryRate: data.vitalSigns?.respiratoryRate || { label: 'Respiratory Rate', value: '16', unit: 'breaths/min', icon: 'fas fa-wind' },
+    oxygenSaturation: data.vitalSigns?.oxygenSaturation || { label: 'O₂ Saturation', value: '98', unit: '%', icon: 'fas fa-lungs' },
+    weight: data.vitalSigns?.weight || { label: 'Weight', value: '75', unit: 'kg', icon: 'fas fa-weight' },
+    height: data.vitalSigns?.height || { label: 'Height', value: '176', unit: 'cm', icon: 'fas fa-ruler-vertical' },
+  };
+
+    this.medicalHistory = {
+      currentMedicalConditions: data.currentMedicalConditions || [],
+      pastSurgeries: data.pastSurgeries || [],
+      chronicDiseases: data.chronicDiseases || [],
+      currentMedications: data.currentMedications || [],
+      allergies: data.allergies || [],
+      vitalSigns: vitalSignsData, // LIGNE CORRIGÉE : Assignation de vitalSignsData
+      lastUpdated: data.lastUpdated || null,
+    };
+    this.medicalHistoryErrorMessage = null;
+    this.isLoadingMedicalHistory = false;
+  },
+      error: (err) => {
+        console.error('Error fetching medical history:', err);
+        this.medicalHistoryErrorMessage = 'Failed to load medical history. Please try again later.';
+        this.isLoadingMedicalHistory = false;
+      }
+    });
+  }
   setActiveTab(tabName: string): void {
     this.activeTab = tabName;
     this.closeAllDropdowns();
     this.filterRecords();
   }
-
   onSearchChange(): void {
-    this.filterRecords();
+    // La recherche ne s'applique que si l'onglet actif n'est pas MedicalHistory
+    if (this.activeTab !== 'MedicalHistory') {
+      this.filterRecords();
+    }
   }
   toggleDateFilter(event: MouseEvent): void {
     event.stopPropagation();
@@ -142,13 +216,17 @@ export class MedicalRecordComponent implements OnInit{
   }
 
   applyDateFilter(): void {
-    this.filterRecords();
+    if (this.activeTab !== 'MedicalHistory') {
+      this.filterRecords();
+    }
     this.isDateFilterOpen = false;
   }
   clearDateFilter(): void {
     this.dateFrom = '';
     this.dateTo = '';
-    this.filterRecords();
+    if (this.activeTab !== 'MedicalHistory') {
+      this.filterRecords();
+    }
     this.isDateFilterOpen = false;
   }
   toggleAdvancedFilter(event: MouseEvent): void {
@@ -158,12 +236,16 @@ export class MedicalRecordComponent implements OnInit{
   }
 
   applyAdvancedFilters(): void {
-    this.filterRecords();
+    if (this.activeTab !== 'MedicalHistory') {
+      this.filterRecords();
+    }
     this.isAdvancedFilterOpen = false;
   }
   clearAdvancedFilters(): void {
-    this.initializeAdvancedFilters(); // Réinitialise les sélections
-    this.filterRecords();
+    this.initializeAdvancedFilters(); 
+    if (this.activeTab !== 'MedicalHistory') {
+      this.filterRecords();
+    }
     this.isAdvancedFilterOpen = false;
   }
 
@@ -192,15 +274,19 @@ export class MedicalRecordComponent implements OnInit{
       this.closeAllDropdowns();
     }
   }
-  
-
   filterRecords(): void {
+    // Si l'onglet MedicalHistory est actif, on vide filteredRecords et on ne fait rien d'autre ici.
+    // L'affichage de l'historique médical est géré par *ngIf dans le template.
+    if (this.activeTab === 'MedicalHistory') {
+      this.filteredRecords = [];
+      return;
+    }
+
     let recordsToDisplay = [...this.allRecords];
 
-    // 1. Filtre par onglet actif (si ce n'est pas 'All')
-    if (this.activeTab !== 'All') {
-      recordsToDisplay = recordsToDisplay.filter(record => record.type === this.activeTab);
-    }
+    // 1. Filtre par onglet actif (pour les types d'enregistrements)
+    recordsToDisplay = recordsToDisplay.filter(record => record.type === this.activeTab);
+    
     // 2. Filtre par plage de dates
     if (this.dateFrom) {
       const fromDate = new Date(this.dateFrom);
@@ -218,30 +304,32 @@ export class MedicalRecordComponent implements OnInit{
         return recordDateObj <= toDate;
       });
     }
-      // 3. Filtre par types d'enregistrements sélectionnés (depuis le dropdown "Filters")
-      const activeSelectedTypes = this.availableRecordTypes.filter(type => this.selectedRecordTypes[type]);
-      if (activeSelectedTypes.length > 0) {
-        recordsToDisplay = recordsToDisplay.filter(record => activeSelectedTypes.includes(record.type));
-      }
-  
-      // 4. Filtre par médecins sélectionnés (depuis le dropdown "Filters")
-      const activeSelectedDoctors = this.availableDoctors.filter(doc => this.selectedDoctors[doc]);
-      if (activeSelectedDoctors.length > 0) {
-        recordsToDisplay = recordsToDisplay.filter(record => record.doctor && activeSelectedDoctors.includes(record.doctor));
-      }
-  
-      // 5. Filtre par terme de recherche
-      if (this.searchTerm) {
-        const lowerSearchTerm = this.searchTerm.toLowerCase();
-        recordsToDisplay = recordsToDisplay.filter(record =>
-          record.title.toLowerCase().includes(lowerSearchTerm) ||
-          (record.doctor && record.doctor.toLowerCase().includes(lowerSearchTerm)) ||
-          record.summary.toLowerCase().includes(lowerSearchTerm) ||
-          record.details.toLowerCase().includes(lowerSearchTerm)
-        );
-      }
-      this.filteredRecords = recordsToDisplay;
+    
+    // 3. Filtre par types d'enregistrements sélectionnés (depuis le dropdown "Filters")
+    const activeSelectedTypes = this.availableRecordTypes.filter(type => this.selectedRecordTypes[type]);
+    if (activeSelectedTypes.length > 0) {
+      recordsToDisplay = recordsToDisplay.filter(record => activeSelectedTypes.includes(record.type));
     }
+  
+    // 4. Filtre par médecins sélectionnés (depuis le dropdown "Filters")
+    const activeSelectedDoctors = this.availableDoctors.filter(doc => this.selectedDoctors[doc]);
+    if (activeSelectedDoctors.length > 0) {
+      recordsToDisplay = recordsToDisplay.filter(record => record.doctor && activeSelectedDoctors.includes(record.doctor));
+    }
+    // 5. Filtre par terme de recherche
+    if (this.searchTerm) {
+      const lowerSearchTerm = this.searchTerm.toLowerCase();
+      recordsToDisplay = recordsToDisplay.filter(record =>
+        record.title.toLowerCase().includes(lowerSearchTerm) ||
+        (record.doctor && record.doctor.toLowerCase().includes(lowerSearchTerm)) ||
+        record.summary.toLowerCase().includes(lowerSearchTerm) ||
+        record.details.toLowerCase().includes(lowerSearchTerm)
+      );
+    }
+    this.filteredRecords = recordsToDisplay;
+  }
+
+   
     openModal(record: MedicalRecordItem): void {
       this.selectedRecord = record;
       this.isModalOpen = true;
@@ -285,8 +373,6 @@ export class MedicalRecordComponent implements OnInit{
 
   getRecordIconClass(type: MedicalRecordItem['type']): string {
     switch (type) {
-      case 'Examination':
-        return 'fas fa-stethoscope'; // Ou fa-file-medical-alt
       case 'LabResult':
         return 'fas fa-vial'; // Ou fa-flask
       case 'Image':

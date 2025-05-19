@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Domain\Entities;
-
+use DateTimeImmutable;
 class MedicalHistory
 {
     public int $id;
@@ -11,7 +11,7 @@ class MedicalHistory
     public array $chronicDiseases;
     public array $currentMedications;
     public array $allergies;
-    public string $lastUpdated;
+    public ?DateTimeImmutable $lastUpdated;
 
     public function __construct(
         int $id,
@@ -21,7 +21,7 @@ class MedicalHistory
         array $chronicDiseases,
         array $currentMedications,
         array $allergies,
-        string $lastUpdated
+        ?DateTimeImmutable $lastUpdated
     ) {
         $this->id = $id;
         $this->patientId = $patientId;

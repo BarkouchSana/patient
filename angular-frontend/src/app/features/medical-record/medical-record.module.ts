@@ -11,21 +11,19 @@ import { MedicalImagesComponent } from './components/medical-images/medical-imag
 import { FormsModule } from '@angular/forms';
 import { MedicalHistoryComponent } from './components/medical-history/medical-history.component';
 import { PrescriptionListComponent } from './components/prescription-list/prescription-list.component';
-
-
-
+ 
 @NgModule({
   declarations: [
-    MedicalRecordComponent,
+     
     LabResultsComponent,
-  
-    
     MedicalImagesComponent,
+    MedicalRecordComponent,
    
- 
+ PrescriptionListComponent,
     MedicalHistoryComponent,
-    PrescriptionListComponent
+   
   ],
+   
   imports: [
     CommonModule,
     MedicalRecordRoutingModule,

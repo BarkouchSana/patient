@@ -53,4 +53,7 @@ export class PrescriptionListComponent {
   onViewDetails(record: MedicalRecordItem): void {
     this.viewRecordDetails.emit(record);
   }
+  trackByRecordId(index: number, record: MedicalRecordItem): string {
+    return record.id;
+  }
 }

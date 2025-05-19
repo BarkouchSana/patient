@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Bill } from '../../core/domain/models/bill.model';
  
 @Component({
@@ -7,10 +7,21 @@ import { Bill } from '../../core/domain/models/bill.model';
   templateUrl: './bills.component.html',
   styleUrl: './bills.component.css'
 })
-export class BillsComponent {
-  selectedBill: Bill | null = null;
+export class BillsComponent implements OnInit{
+  patientId: string | number | null = null;
+  // selectedBill: Bill | undefined = undefined; // Pour stocker la facture sélectionnée
 
-  onBillSelected(bill: Bill): void {
-    this.selectedBill = bill;
+  // constructor(private authService: AuthService) {} // Exemple
+
+  ngOnInit(): void {
+    // this.patientId = this.authService.getCurrentPatientId();
+    this.patientId = 1; // REMPLACEZ PAR LA LOGIQUE RÉELLE D'AUTH
+    if (!this.patientId) {
+      console.error("ID du patient non disponible.");
+    }
   }
+
+  // onBillSelected(bill: Bill | undefined): void {
+  //   this.selectedBill = bill;
+  // }
 }

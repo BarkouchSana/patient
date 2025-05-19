@@ -1,6 +1,8 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, OnInit } from '@angular/core';
 import { MedicalHistoryService } from '../../core/services/medical-history.service';
-
+import { PrescriptionService } from '../../core/services/prescription-service.service';
+import { LabResultService } from '../../core/services/lab-result-service.service';
+ 
 export interface MedicalRecordItem {
   id: string;
   type:  'LabResult' | 'Image' | 'Prescription';
@@ -45,13 +47,7 @@ export interface VitalSignsData {
   weight?: VitalSign;
   height?: VitalSign;
 }
-
-interface MedicalHistorySectionConfig {
-  key: keyof MedicalHistoryData;
-  title: string;
-  color: string; // Tailwind color name (e.g., 'status-info', 'accent')
-  emptyText: string;
-}
+ 
 
 @Component({
   selector: 'app-medical-record',
@@ -73,9 +69,9 @@ export class MedicalRecordComponent implements OnInit{
   isDateFilterOpen: boolean = false;
   dateFrom: string = '';
   dateTo: string = '';
-    // Nouvelles propriétés pour le filtre avancé
+     
     isAdvancedFilterOpen: boolean = false;
-    availableRecordTypes: string[] = ['LabResult', 'Image', 'Prescription'];
+    availableRecordTypes: string[] = ['Prescription', 'LabResult', 'Image'];
     availableDoctors: string[] = [];
   
     selectedRecordTypes: { [key: string]: boolean } = {};
@@ -85,68 +81,49 @@ export class MedicalRecordComponent implements OnInit{
   medicalHistory: MedicalHistoryData | null = null;
   isLoadingMedicalHistory: boolean = true;
   medicalHistoryErrorMessage: string | null = null;
-  
-  constructor(private medicalHistoryService: MedicalHistoryService) { } // Injection du service
 
+  isLoadingRecords: boolean = false; 
+  recordsError: string | null = null;
+  // TEMPORAIRE: ID Patient (à remplacer par l'authentification)
+  private patientId = 1; // TEMPORAIRE: ID Patient
+
+  constructor(
+    private medicalHistoryService: MedicalHistoryService,
+    private prescriptionService: PrescriptionService, // Injection de PrescriptionService
+    private labResultService: LabResultService, // Inject LabResultService
+    private cdr: ChangeDetectorRef
+  ) { }
   
+ 
   
+ 
+
 
   ngOnInit(): void {
-    this.initializeStaticData();
-    this.populateAvailableDoctors();
-    this.initializeAdvancedFilters();
-    this.filterRecords();
+    this.initializeStaticLabAndImageData(); // Initialise les données statiques pour Image
     this.loadMedicalHistory();
+    this.loadPrescriptions();
+    this.loadLabResults(); 
   }
-  initializeStaticData(): void {
-    this.allRecords = [
- 
-      // Lab Results
+  initializeStaticLabAndImageData(): void {
+    // Conserver les données statiques pour LabResult et Image pour l'instant
+    const staticImageRecords: MedicalRecordItem[] = [
+
       {
-        id: 'lab1', type: 'LabResult', title: 'Complete Blood Count', recordDate: 'Apr 15, 2025', doctor: 'Dr. Sarah Johnson',
-        summary: 'All values within normal range. White blood cell count: 7.5, Red blood cell count: 4.8, Hemoglobin: 14.2, Hematocrit: 42.0%',
-        details: 'All values within normal range. White blood cell count: 7.5 x 10^9/L, Red blood cell count: 4.8 x 10^12/L, Hemoglobin: 14.2 g/dL, Hematocrit: 42.0%. No abnormalities detected.',
-        tagText: 'Lab Result', tagClass: 'tag-lab', resultDate: 'April 16th, 2025', performedBy: 'Central Laboratory'
-      },
-      {
-        id: 'lab2', type: 'LabResult', title: 'Lipid Panel', recordDate: 'Apr 15, 2025', doctor: 'Dr. Sarah Johnson',
-        summary: 'Total Cholesterol: 185 mg/dL, HDL: 55 mg/dL, LDL: 110 mg/dL, Triglycerides: 100 mg/dL.',
-        details: 'Total Cholesterol: 185 mg/dL (Desirable), HDL Cholesterol: 55 mg/dL (Good), LDL Cholesterol: 110 mg/dL (Near Optimal), Triglycerides: 100 mg/dL (Normal).',
-        tagText: 'Lab Result', tagClass: 'tag-lab', resultDate: 'April 16th, 2025', performedBy: 'Central Laboratory'
-      },
-      // Images
-      {
-        id: 'img1', type: 'Image', title: 'Chest X-Ray', recordDate: 'Mar 10, 2025', doctor: 'Dr. Emily Chen',
+        id: 'img1', type: 'Image', title: 'Chest X-Ray', recordDate: '2025-03-10T14:30:00Z', doctor: 'Dr. Emily Chen',
         summary: 'Standard PA and lateral views of chest. No evidence of acute cardiopulmonary disease.',
         details: 'Standard PA and lateral views of chest. Lungs are clear. Heart size is normal. No evidence of acute cardiopulmonary disease. Minor degenerative changes in the thoracic spine.',
-        tagText: 'Medical Image', tagClass: 'tag-image', imageDetails: 'PA and lateral views', takenBy: 'Radiology Department', imageUrl: 'assets/images/round-pneumonia.jpg' // Replace with actual image path or logic
+        tagText: 'Clear', tagClass: 'tag-image-clear', imageDetails: 'PA and lateral views', takenBy: 'Radiology Department', imageUrl: 'assets/images/round-pneumonia.jpg', status: 'completed'
       },
       {
-        id: 'img2', type: 'Image', title: 'Right Knee MRI', recordDate: 'Mar 15, 2025', doctor: 'Dr. Emily Chen',
+        id: 'img2', type: 'Image', title: 'Right Knee MRI', recordDate: '2025-03-15T09:00:00Z', doctor: 'Dr. Emily Chen',
         summary: 'MRI of right knee shows mild meniscus tear in the medial compartment. No evidence of ligament damage or fracture.',
         details: 'MRI of right knee shows mild degenerative fraying and a small radial tear of the posterior horn of the medial meniscus. ACL, PCL, and collateral ligaments are intact. No fracture or dislocation.',
-        tagText: 'Medical Image', tagClass: 'tag-image', imageDetails: 'Sagittal view of right knee', takenBy: 'Radiology Department', imageUrl: 'assets/placeholder-image.png'
-      },
-       // Prescriptions
-       {
-        id: 'presc1', type: 'Prescription', title: 'Amoxicillin Prescription', recordDate: 'May 2, 2025', doctor: 'Dr. Sarah Johnson',
-        summary: 'Amoxicillin 500mg, 3 times daily for 7 days. For treatment of sinus infection.',
-        details: 'Amoxicillin 500mg. Take one capsule by mouth three times daily for 7 days. For treatment of acute bacterial sinusitis. Complete the entire course of antibiotics.',
-        tagText: 'Prescription', tagClass: 'tag-prescription', status: 'active' // <-- Add status
-      },
-      {
-        id: 'presc2', type: 'Prescription', title: 'Amoxicillin Prescription', recordDate: 'May 2, 2025', doctor: 'Dr. Sarah Johnson',
-        summary: 'Doliprane 500mg, 2 times daily for 3 days. For treatment of sinus infection.',
-        details: 'Amoxicillin 500mg. Take one capsule by mouth three times daily for 7 days. For treatment of acute bacterial sinusitis. Complete the entire course of antibiotics.',
-        tagText: 'Prescription', tagClass: 'tag-prescription', status: 'active' // <-- Add status
-      },
-      {
-        id: 'presc3', type: 'Prescription', title: 'Lisinopril Renewal', recordDate: 'Apr 20, 2025', doctor: 'Dr. Sarah Johnson',
-        summary: 'Lisinopril 10mg, once daily. 90-day supply with 3 refills. For blood pressure management.',
-        details: 'Lisinopril 10mg. Take one tablet by mouth once daily. 90-day supply with 3 refills. For management of hypertension. Monitor blood pressure regularly.',
-        tagText: 'Prescription', tagClass: 'tag-prescription', status: 'completed' // <-- Add status
+        tagText: 'Meniscus Tear', tagClass: 'tag-image-finding', imageDetails: 'Sagittal view of right knee', takenBy: 'Radiology Department', imageUrl: 'assets/placeholder-image.png', status: 'completed'
       }
     ];
+    this.allRecords = this.allRecords.filter(r => r.type !== 'Image');
+    this.allRecords = [...this.allRecords, ...staticImageRecords];
   }
   populateAvailableDoctors(): void {
     const doctors = new Set<string>();
@@ -158,49 +135,100 @@ export class MedicalRecordComponent implements OnInit{
     this.availableDoctors = Array.from(doctors).sort();
   }
 
-  initializeAdvancedFilters(): void {
-    this.availableRecordTypes.forEach(type => this.selectedRecordTypes[type] = false);
-    this.availableDoctors.forEach(doc => this.selectedDoctors[doc] = false);
-  }
+ 
   loadMedicalHistory(): void {
     this.isLoadingMedicalHistory = true;
-    const patientId = 1; // Ou récupérez l'ID du patient dynamiquement
-    this.medicalHistoryService.getMedicalHistory(patientId).subscribe({
-      next: (data) => {
-  // Données fictives pour VitalSigns pour l'instant
-  const vitalSignsData: VitalSignsData = {
-    lastRecorded: data.vitalSigns?.lastRecorded || new Date('2025-05-07T10:00:00Z'), // Exemple de date
-    bloodPressure: data.vitalSigns?.bloodPressure || { label: 'Blood Pressure', value: '120/80', unit: 'mmHg', icon: 'fas fa-heartbeat' },
-    pulse: data.vitalSigns?.pulse || { label: 'Pulse', value: '72', unit: 'bpm', icon: 'fas fa-pulse' }, // fas fa-pulse est plus spécifique
-    temperature: data.vitalSigns?.temperature || { label: 'Temperature', value: '36.7', unit: '°C', icon: 'fas fa-thermometer-half' },
-    respiratoryRate: data.vitalSigns?.respiratoryRate || { label: 'Respiratory Rate', value: '16', unit: 'breaths/min', icon: 'fas fa-wind' },
-    oxygenSaturation: data.vitalSigns?.oxygenSaturation || { label: 'O₂ Saturation', value: '98', unit: '%', icon: 'fas fa-lungs' },
-    weight: data.vitalSigns?.weight || { label: 'Weight', value: '75', unit: 'kg', icon: 'fas fa-weight' },
-    height: data.vitalSigns?.height || { label: 'Height', value: '176', unit: 'cm', icon: 'fas fa-ruler-vertical' },
-  };
-
-    this.medicalHistory = {
-      currentMedicalConditions: data.currentMedicalConditions || [],
-      pastSurgeries: data.pastSurgeries || [],
-      chronicDiseases: data.chronicDiseases || [],
-      currentMedications: data.currentMedications || [],
-      allergies: data.allergies || [],
-      vitalSigns: vitalSignsData, // LIGNE CORRIGÉE : Assignation de vitalSignsData
-      lastUpdated: data.lastUpdated || null,
-    };
     this.medicalHistoryErrorMessage = null;
-    this.isLoadingMedicalHistory = false;
-  },
+    this.medicalHistoryService.getMedicalHistory(this.patientId).subscribe({
+      next: (data) => {
+        this.medicalHistory = data; // Le service devrait retourner la structure complète
+        this.isLoadingMedicalHistory = false;
+        this.cdr.detectChanges();
+      },
       error: (err) => {
         console.error('Error fetching medical history:', err);
         this.medicalHistoryErrorMessage = 'Failed to load medical history. Please try again later.';
         this.isLoadingMedicalHistory = false;
+        this.cdr.detectChanges();
       }
     });
   }
+
+  loadPrescriptions(): void {
+    this.isLoadingRecords = true; // Peut-être un indicateur spécifique pour les prescriptions
+    this.recordsError = null;
+    this.prescriptionService.getPrescriptions(this.patientId).subscribe({
+      next: (prescriptions) => {
+        // S'assurer que les prescriptions ont le type 'Prescription'
+        const typedPrescriptions = prescriptions.map(p => ({ ...p, type: 'Prescription' as const }));
+        
+        // Fusionner avec les enregistrements existants, en remplaçant les anciennes prescriptions
+        this.allRecords = [
+          ...this.allRecords.filter(r => r.type !== 'Prescription'), // Enlever les anciennes prescriptions
+          ...typedPrescriptions // Ajouter les nouvelles
+        ];
+        
+        this.finalizeLoadingRecords();
+      },
+      error: (err) => {
+        console.error('Error fetching prescriptions:', err);
+        this.recordsError = 'Failed to load prescriptions. Please try again later.';
+        this.isLoadingRecords = false;
+        this.finalizeLoadingRecords(); // Appeler même en cas d'erreur pour initialiser les filtres
+      }
+    });
+  }
+
+  loadLabResults(): void {
+    this.isLoadingRecords = true;
+    this.recordsError = null;
+    this.labResultService.getLabResults(this.patientId).subscribe({
+      next: (labResults: Omit<MedicalRecordItem, 'type'>[]) => {
+        const typedLabResults = labResults.map(lr => ({ ...lr, type: 'LabResult' as const }));
+
+        this.allRecords = [
+          ...this.allRecords.filter(r => r.type !== 'LabResult'),
+          ...typedLabResults
+        ];
+
+        this.finalizeLoadingRecords();
+      },
+      error: (err: any) => {
+        console.error('Error fetching lab results:', err);
+        this.recordsError = 'Failed to load lab results. Please try again later.';
+        this.isLoadingRecords = false;
+        this.finalizeLoadingRecords();
+      }
+    });
+  } 
+  finalizeLoadingRecords(): void {
+    this.populateAvailableDoctors();
+    this.initializeAdvancedFilters();
+    this.filterRecords(); // Appliquer les filtres initiaux
+    this.isLoadingRecords = false;
+    this.cdr.detectChanges();
+  }
+
+  initializeAdvancedFilters(): void {
+    const currentSelectedTypes = { ...this.selectedRecordTypes };
+    this.selectedRecordTypes = {};
+    this.availableRecordTypes.forEach(type => {
+        this.selectedRecordTypes[type] = currentSelectedTypes[type] !== undefined ? currentSelectedTypes[type] : true;
+    });
+
+    // Réinitialiser les docteurs sélectionnés
+    const currentSelectedDoctors = { ...this.selectedDoctors };
+    this.selectedDoctors = {};
+    this.availableDoctors.forEach(doc => {
+        this.selectedDoctors[doc] = currentSelectedDoctors[doc] !== undefined ? currentSelectedDoctors[doc] : true;
+    });
+  }
+
   setActiveTab(tabName: string): void {
     this.activeTab = tabName;
     this.closeAllDropdowns();
+    // Re-filter records when tab changes
+    // Data loading for each tab type happens in ngOnInit or could be triggered here if not already loaded
     this.filterRecords();
   }
   onSearchChange(): void {
@@ -242,7 +270,10 @@ export class MedicalRecordComponent implements OnInit{
     this.isAdvancedFilterOpen = false;
   }
   clearAdvancedFilters(): void {
-    this.initializeAdvancedFilters(); 
+    // Re-initialize filters to their default state (all true)
+    this.availableRecordTypes.forEach(type => this.selectedRecordTypes[type] = true);
+    this.availableDoctors.forEach(doc => this.selectedDoctors[doc] = true);
+    
     if (this.activeTab !== 'MedicalHistory') {
       this.filterRecords();
     }
@@ -256,29 +287,24 @@ export class MedicalRecordComponent implements OnInit{
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: Event): void {
+    const target = event.target as Node;
     // Ferme les dropdowns si le clic est à l'extérieur
     const dateFilterButton = document.querySelector('.btn-filter-date');
     const dateDropdown = document.querySelector('.date-filter-dropdown');
     const advancedFilterButton = document.querySelector('.btn-filter-advanced');
     const advancedDropdown = document.querySelector('.advanced-filter-dropdown');
 
-    let clickedInsideDateFilter = false;
-    if (dateFilterButton && dateFilterButton.contains(event.target as Node)) clickedInsideDateFilter = true;
-    if (dateDropdown && dateDropdown.contains(event.target as Node)) clickedInsideDateFilter = true;
+    const clickedInsideDate = (dateFilterButton && dateFilterButton.contains(target)) || (dateDropdown && dateDropdown.contains(target));
+    const clickedInsideAdvanced = (advancedFilterButton && advancedFilterButton.contains(target)) || (advancedDropdown && advancedDropdown.contains(target));
 
-    let clickedInsideAdvancedFilter = false;
-    if (advancedFilterButton && advancedFilterButton.contains(event.target as Node)) clickedInsideAdvancedFilter = true;
-    if (advancedDropdown && advancedDropdown.contains(event.target as Node)) clickedInsideAdvancedFilter = true;
-
-    if (!clickedInsideDateFilter && !clickedInsideAdvancedFilter) {
+    if (!clickedInsideDate && !clickedInsideAdvanced) {
       this.closeAllDropdowns();
     }
   }
   filterRecords(): void {
-    // Si l'onglet MedicalHistory est actif, on vide filteredRecords et on ne fait rien d'autre ici.
-    // L'affichage de l'historique médical est géré par *ngIf dans le template.
     if (this.activeTab === 'MedicalHistory') {
-      this.filteredRecords = [];
+      this.filteredRecords = []; // MedicalHistory a son propre affichage
+      this.cdr.detectChanges();
       return;
     }
 
@@ -306,16 +332,18 @@ export class MedicalRecordComponent implements OnInit{
     }
     
     // 3. Filtre par types d'enregistrements sélectionnés (depuis le dropdown "Filters")
-    const activeSelectedTypes = this.availableRecordTypes.filter(type => this.selectedRecordTypes[type]);
-    if (activeSelectedTypes.length > 0) {
-      recordsToDisplay = recordsToDisplay.filter(record => activeSelectedTypes.includes(record.type));
-    }
+    if (!this.selectedRecordTypes[this.activeTab as 'Prescription' | 'LabResult' | 'Image']) {
+      recordsToDisplay = []; 
+  }
   
     // 4. Filtre par médecins sélectionnés (depuis le dropdown "Filters")
     const activeSelectedDoctors = this.availableDoctors.filter(doc => this.selectedDoctors[doc]);
-    if (activeSelectedDoctors.length > 0) {
+    if (activeSelectedDoctors.length < this.availableDoctors.length && activeSelectedDoctors.length > 0) { 
       recordsToDisplay = recordsToDisplay.filter(record => record.doctor && activeSelectedDoctors.includes(record.doctor));
+    } else if (activeSelectedDoctors.length === 0 && this.availableDoctors.length > 0) { 
+        recordsToDisplay = []; 
     }
+    
     // 5. Filtre par terme de recherche
     if (this.searchTerm) {
       const lowerSearchTerm = this.searchTerm.toLowerCase();
@@ -323,10 +351,11 @@ export class MedicalRecordComponent implements OnInit{
         record.title.toLowerCase().includes(lowerSearchTerm) ||
         (record.doctor && record.doctor.toLowerCase().includes(lowerSearchTerm)) ||
         record.summary.toLowerCase().includes(lowerSearchTerm) ||
-        record.details.toLowerCase().includes(lowerSearchTerm)
+        (record.details && record.details.toLowerCase().includes(lowerSearchTerm))
       );
     }
     this.filteredRecords = recordsToDisplay;
+    this.cdr.detectChanges();
   }
 
    
@@ -341,6 +370,7 @@ export class MedicalRecordComponent implements OnInit{
     this.selectedRecord = null;
   }
 
+ 
   downloadRecord(record: MedicalRecordItem | null): void {
     if (record) {
       // Logique de téléchargement à implémenter
@@ -373,14 +403,10 @@ export class MedicalRecordComponent implements OnInit{
 
   getRecordIconClass(type: MedicalRecordItem['type']): string {
     switch (type) {
-      case 'LabResult':
-        return 'fas fa-vial'; // Ou fa-flask
-      case 'Image':
-        return 'fas fa-x-ray'; // Ou fa-image
-      case 'Prescription':
-        return 'fas fa-file-prescription';
-      default:
-        return 'fas fa-file-alt';
+      case 'LabResult': return 'fas fa-vial';
+      case 'Image': return 'fas fa-x-ray';
+      case 'Prescription': return 'fas fa-file-prescription';
+      default: return 'fas fa-file-alt';
     }
   }
   

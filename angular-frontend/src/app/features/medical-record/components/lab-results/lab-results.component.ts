@@ -16,6 +16,8 @@ export interface MedicalRecordItem {
   takenBy?: string;
   imageUrl?: string;
 }
+
+
 @Component({
   selector: 'app-lab-results',
   standalone: false,
@@ -28,5 +30,10 @@ export class LabResultsComponent   {
 
   onViewDetails(record: MedicalRecordItem): void {
     this.viewRecordDetails.emit(record);
+  }
+
+  // Optionnel: trackBy pour optimiser le *ngFor
+  trackByRecordId(index: number, record: MedicalRecordItem): string {
+    return record.id;
   }
 }

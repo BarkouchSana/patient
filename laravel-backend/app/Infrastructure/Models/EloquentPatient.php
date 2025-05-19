@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class EloquentPatient extends Model
 {
     use HasFactory;
-
+    protected $table = 'patients';
     protected $fillable = [
         'user_id','registration_date'
     ];

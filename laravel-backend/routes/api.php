@@ -5,6 +5,9 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PatientDashboardController;
 use App\Http\Controllers\MedicalHistoryController;
 use App\Http\Controllers\AppointmentHistoryController;
+use App\Http\Controllers\PrescriptionController;
+use App\Http\Controllers\LabResultController;
+use App\Http\Controllers\BillController; 
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -26,4 +29,11 @@ use App\Http\Controllers\AppointmentHistoryController;
     Route::get('/patients/{patientId}/medical-history', [MedicalHistoryController::class, 'show']);
     Route::get('/patients/{patientId}/appointments/history',[AppointmentHistoryController::class, 'index']);
     Route::get('/appointments/history', [AppointmentHistoryController::class, 'index']);
+    Route::get('/prescriptions', [PrescriptionController::class, 'index'])->name('prescriptions.index');
+    Route::get('/lab-results', [LabResultController::class, 'index'])->name('labresults.index');
+    
+    Route::get('/patients/{patientId}/bills', [BillController::class, 'index'])->name('patients.bills.index');
+    Route::get('/bills/{billId}/pdf', [BillController::class, 'downloadPdf'])->name('bills.pdf.download');
+
+    
     // });

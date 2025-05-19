@@ -24,5 +24,11 @@ class EloquentMedicalHistory extends Model
         'chronicDiseases' => 'array',
         'currentMedications' => 'array',
         'allergies' => 'array',
+        'lastUpdated' => 'datetime',
     ];
+    public function patient()
+    {
+        return $this->belongsTo(EloquentPatient::class, 'patient_id');
+    }
+  
 }

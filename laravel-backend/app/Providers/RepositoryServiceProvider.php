@@ -14,6 +14,10 @@ use App\Domain\Interfaces\PrescriptionRepositoryInterface;
 use App\Infrastructure\Repositories\PrescriptionRepository;
 use App\Domain\Interfaces\MedicalHistoryRepositoryInterface;
 use App\Infrastructure\Repositories\MedicalHistoryRepository;
+use App\Domain\Interfaces\VitalSignRepositoryInterface;
+use App\Infrastructure\Repositories\VitalSignRepository;
+use App\Domain\Interfaces\LabResultRepositoryInterface;
+use App\Infrastructure\Repositories\EloquentLabResultRepository;
 class RepositoryServiceProvider extends ServiceProvider
 {
     public function register(): void
@@ -42,7 +46,16 @@ class RepositoryServiceProvider extends ServiceProvider
             MedicalHistoryRepositoryInterface::class,
             MedicalHistoryRepository::class
         );
+        $this->app->bind(
+            VitalSignRepositoryInterface::class,
+            VitalSignRepository::class
+        );
 
+
+        $this->app->bind(  
+            LabResultRepositoryInterface::class,
+            EloquentLabResultRepository::class
+        );
 
     }
 

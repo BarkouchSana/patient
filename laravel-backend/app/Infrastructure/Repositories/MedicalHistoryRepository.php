@@ -5,7 +5,8 @@ namespace App\Infrastructure\Repositories;
 use App\Domain\Entities\MedicalHistory;
 use App\Domain\Interfaces\MedicalHistoryRepositoryInterface;
 use App\Infrastructure\Models\EloquentMedicalHistory;
-
+use Carbon\Carbon;
+use DateTimeImmutable;
 class MedicalHistoryRepository implements MedicalHistoryRepositoryInterface
 {
     public function findByPatientId(int $patientId): ?MedicalHistory
@@ -19,12 +20,12 @@ class MedicalHistoryRepository implements MedicalHistoryRepositoryInterface
         return new MedicalHistory(
             $record->id,
             $record->patient_id,
-            $record->currentMedicalConditions,
-            $record->pastSurgeries,
-            $record->chronicDiseases,
-            $record->currentMedications,
-            $record->allergies,
-            $record->lastUpdated
+            $record->currentMedicalConditions ?? [], // Assurer que c'est un tableau
+            $record->pastSurgeries ?? [],
+            $record->chronicDiseases ?? [],
+            $record->currentMedications ?? [],
+            $record->allergies ?? [],
+            $record->lastUpdated ? new DateTimeImmutable($record->lastUpdated->toDateTimeString()) : null // Modifié
         );
     }
 }

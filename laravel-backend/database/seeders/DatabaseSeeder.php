@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Domain\Entities\Prescription;
+use App\Models\Bill;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -37,6 +38,8 @@ class DatabaseSeeder extends Seeder
             AppointmentSeeder::class,
             PrescriptionSeeder::class,
             MedicalHistorySeeder::class,
+            LabTestDataSeeder::class,
+            BillSeeder::class,
             
         ]);
     }

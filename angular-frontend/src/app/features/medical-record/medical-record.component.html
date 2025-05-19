@@ -414,8 +414,7 @@
  
  -->
 
- 
-<div class="medical-records-page bg-background min-h-screen p-4 md:p-6 lg:p-8">
+ <div class="medical-records-page bg-background min-h-screen p-4 md:p-6 lg:p-8">
     
   <div class="page-main-header flex flex-col md:flex-row justify-between items-start md:items-center mb-6 md:mb-8 p-6 bg-white rounded-2xl shadow-md border border-gray-200">
     <div class="header-title-section mb-4 md:mb-0">
@@ -443,7 +442,7 @@
       [class.hover:text-white]="activeTab !== tab"
       (click)="setActiveTab(tab)"
       class="flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary/50">
-      {{ tab === 'MedicalHistory' ? 'Medical History' : (tab === 'LabResult' ? 'Lab Results' : tab + 's') }}
+      {{ tab === 'MedicalHistory' ? 'Medical History' : (tab === 'LabResult' ? 'Lab Results' : (tab === 'Prescription' ? 'Prescriptions' : tab + 's')) }}
     </button>
   </div>
 
@@ -455,7 +454,7 @@
     [errorMessage]="medicalHistoryErrorMessage">
   </app-medical-history>
   
-  <!-- Record Lists Section (Examinations, Lab Results, Images, Prescriptions) -->
+  <!-- Record Lists Section (Lab Results, Images, Prescriptions) -->
   <ng-container *ngIf="activeTab !== 'MedicalHistory'">
     <div class="filter-bar flex flex-col md:flex-row justify-between items-center mb-6 p-4 bg-card rounded-card shadow-card">
       <div class="search-input-container relative w-full md:w-2/3 mb-4 md:mb-0">
@@ -486,16 +485,19 @@
         <button (click)="toggleAdvancedFilter($event)" class="btn-filter btn-filter-advanced flex items-center bg-card hover:bg-hover text-text-light font-medium py-2 px-4 rounded-button border border-border shadow-sm transition-colors duration-150 relative">
           <i class="fas fa-filter mr-2"></i> Filters
           <div *ngIf="isAdvancedFilterOpen" (click)="$event.stopPropagation()" class="advanced-filter-dropdown absolute top-full right-0 mt-2 w-80 bg-card border border-border rounded-card shadow-lg z-20 p-4 space-y-4">
-            <div>
+            <!-- Le filtre de type est maintenant implicitement géré par l'onglet actif -->
+            <!-- Si vous voulez toujours un filtre de type ici, il faudrait ajuster la logique -->
+            <!-- Pour l'instant, nous le laissons pour les docteurs -->
+            <!-- <div>
               <h4 class="text-sm font-semibold text-text mb-2">Record Type</h4>
               <div class="space-y-1">
                 <label *ngFor="let type of availableRecordTypes" class="flex items-center space-x-2 p-1 hover:bg-hover rounded-md cursor-pointer">
                   <input type="checkbox" [(ngModel)]="selectedRecordTypes[type]" class="form-checkbox h-4 w-4 text-primary rounded border-border focus:ring-primary/50">
-                  <span class="text-sm text-text-light">{{ type === 'LabResult' ? 'Lab Results' : type + 's' }}</span>
+                  <span class="text-sm text-text-light">{{ type === 'LabResult' ? 'Lab Results' : (type === 'Prescription' ? 'Prescriptions' : type + 's') }}</span>
                 </label>
               </div>
             </div>
-            <hr class="border-border">
+            <hr class="border-border"> -->
             <div>
               <h4 class="text-sm font-semibold text-text mb-2">Doctor</h4>
               <div class="space-y-1 max-h-32 overflow-y-auto">
@@ -514,10 +516,27 @@
       </div>
     </div>
     
+    <div *ngIf="isLoadingRecords" class="flex items-center justify-center p-10 text-center">
+        <div class="w-12 h-12 border-4 border-t-4 border-border border-t-primary rounded-full animate-spin mb-4 mr-4"></div>
+        <p class="text-text-light text-lg">Loading {{ activeTab }}s...</p>
+    </div>
+
+    <div *ngIf="!isLoadingRecords && recordsError" class="bg-status-urgent/10 border border-status-urgent text-status-urgent px-4 py-3 rounded-card relative mb-6 shadow-card" role="alert">
+        <strong class="font-bold">Error!</strong>
+        <span class="block sm:inline">{{ recordsError }}</span>
+    </div>
     
-    <app-lab-results *ngIf="activeTab === 'LabResult'" [records]="filteredRecords" (viewRecordDetails)="openModal($event)"></app-lab-results>
-    <app-medical-images *ngIf="activeTab === 'Image'" [records]="filteredRecords" (viewRecordDetails)="openModal($event)"></app-medical-images>
-    <app-prescription-list *ngIf="activeTab === 'Prescription'" [records]="filteredRecords" (viewRecordDetails)="openModal($event)"></app-prescription-list>
+    <ng-container *ngIf="!isLoadingRecords && !recordsError">
+        <app-lab-results *ngIf="activeTab === 'LabResult'" [records]="filteredRecords" (viewRecordDetails)="openModal($event)"></app-lab-results>
+        <app-medical-images *ngIf="activeTab === 'Image'" [records]="filteredRecords" (viewRecordDetails)="openModal($event)"></app-medical-images>
+        <app-prescription-list *ngIf="activeTab === 'Prescription'" [records]="filteredRecords" (viewRecordDetails)="openModal($event)"></app-prescription-list>
+
+        <div *ngIf="filteredRecords.length === 0 && activeTab !== 'MedicalHistory'" class="no-records-message flex flex-col items-center justify-center text-center py-16 bg-card rounded-card shadow-card">
+            <i class="fas fa-folder-open text-5xl text-text-muted mb-4"></i>
+            <p class="text-section-header text-text-light">No {{ activeTab.toLowerCase() }}s found.</p>
+            <p class="text-body text-text-muted">Try adjusting your search or filter criteria.</p>
+        </div>
+    </ng-container>
 
   </ng-container>
 
@@ -578,7 +597,7 @@
               <label class="block text-sm font-medium text-text-light mb-1">Image Preview</label>
               <div class="image-placeholder w-full h-64 bg-gray-100 border border-border rounded-md flex items-center justify-center text-text-muted overflow-hidden">
                   <img [src]="selectedRecord.imageUrl" *ngIf="selectedRecord.imageUrl && selectedRecord.imageUrl !== 'assets/images/xray-chest-placeholder.png' && selectedRecord.imageUrl !== 'assets/images/mri-knee-placeholder.png'" 
-                      alt="Record image" class="max-w-full max-h-full object-contain rounded-md">
+                      alt="Record image for {{ selectedRecord.title }}" class="max-w-full max-h-full object-contain rounded-md">
                   <div *ngIf="!selectedRecord.imageUrl || selectedRecord.imageUrl === 'assets/images/xray-chest-placeholder.png' || selectedRecord.imageUrl === 'assets/images/mri-knee-placeholder.png'" class="text-center">
                     <i class="fas fa-image text-4xl text-gray-400"></i>
                     <p>No preview available</p>
@@ -586,16 +605,16 @@
                 </div>
             </div>
           </ng-template>
+          <!-- Vous pouvez ajouter un ngSwitchCase pour 'Prescription' ici si des champs spécifiques au modal sont nécessaires -->
         </ng-container>
       </div>
       <div class="modal-footer flex justify-end space-x-3 p-card-padding border-t border-border">
         <button class="btn-secondary bg-card hover:bg-hover text-text-light font-medium py-2 px-4 rounded-button border border-border shadow-sm transition-colors duration-150" (click)="closeModal()">Cancel</button>
-        <!-- <button class="btn-primary flex items-center bg-primary hover:bg-primary-dark text-white font-medium py-2 px-4 rounded-button shadow-sm hover:shadow-md transition-all duration-150" (click)="downloadRecord(selectedRecord)">
+        <button class="btn-primary flex items-center bg-primary hover:bg-primary-dark text-white font-medium py-2 px-4 rounded-button shadow-sm hover:shadow-md transition-all duration-150" (click)="downloadRecord(selectedRecord)">
           <i class="fas fa-download mr-2"></i>
-          {{ selectedRecord?.type === 'LabResult' ? 'Download Lab Report' : (selectedRecord?.type === 'Image' ? 'Download Image' : 'Download Record') }}
-        </button> -->
+          {{ selectedRecord?.type === 'LabResult' ? 'Download Lab Report' : (selectedRecord?.type === 'Image' ? 'Download Image' : (selectedRecord?.type === 'Prescription' ? 'Download Prescription' : 'Download Record')) }}
+        </button>
       </div>
     </div>
   </div>
 </div>
- 

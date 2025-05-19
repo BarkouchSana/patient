@@ -7,16 +7,30 @@ class EloquentPrescription extends Model
 {
     protected $table = 'prescriptions';
     protected $fillable = [
-      'patient_id', 'doctor_id', 'name','dosage',
-      'start_date','end_date','quantity'
+        'chart_patient_id',
+        'medication_name',
+        'dosage',
+        'frequency',
+        'duration',
+        'start_date',
+        'end_date',
+        'instructions',
+        'refills',
+        'status', // Ajouté
+        'doctor_name', // Ajouté
     ];
-    public function patient()
+
+    protected $casts = [
+        'start_date' => 'datetime',
+        'end_date' => 'datetime',
+    ];
+    public function chartPatient()
     {
-        return $this->belongsTo(EloquentPatient ::class);
+        return $this->belongsTo(EloquentChartPatient::class);
     }
 
-    public function doctor()
-    {
-        return $this->belongsTo(EloquentDoctor::class);
-    }
+    // public function doctor()
+    // {
+    //     return $this->belongsTo(EloquentDoctor::class);
+    // }
 }

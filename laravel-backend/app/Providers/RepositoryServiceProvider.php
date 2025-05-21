@@ -2,22 +2,24 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use App\Domain\Interfaces\UserRepositoryInterface;
-use App\Domain\Interfaces\PatientRepositoryInterface;
-use App\Domain\Interfaces\PersonalInfoRepositoryInterface;
-use App\Infrastructure\Repositories\UserRepository;
-use App\Infrastructure\Repositories\PatientRepository;
-use App\Infrastructure\Repositories\PersonalInfoRepository;
-use App\Infrastructure\Repositories\AppointmentRepository;
-use App\Domain\Interfaces\AppointmentRepositoryInterface;
-use App\Domain\Interfaces\PrescriptionRepositoryInterface;
-use App\Infrastructure\Repositories\PrescriptionRepository;
-use App\Domain\Interfaces\MedicalHistoryRepositoryInterface;
-use App\Infrastructure\Repositories\MedicalHistoryRepository;
-use App\Domain\Interfaces\VitalSignRepositoryInterface;
-use App\Infrastructure\Repositories\VitalSignRepository;
-use App\Domain\Interfaces\LabResultRepositoryInterface;
-use App\Infrastructure\Repositories\EloquentLabResultRepository;
+use App\Repositories\Interfaces\UserRepositoryInterface;
+use App\Repositories\Eloquent\UserRepository;
+use App\Repositories\Interfaces\PatientRepositoryInterface;
+use App\Repositories\Eloquent\PatientRepository;
+use App\Repositories\Interfaces\PersonalInfoRepositoryInterface;
+use App\Repositories\Eloquent\PersonalInfoRepository;
+use App\Repositories\Interfaces\AppointmentRepositoryInterface;
+use App\Repositories\Eloquent\AppointmentRepository;
+use App\Repositories\Interfaces\PrescriptionRepositoryInterface;
+use App\Repositories\Interfaces\MedicalHistoryRepositoryInterface;
+use App\Repositories\Eloquent\PrescriptionRepository;
+use App\Repositories\Interfaces\VitalSignRepositoryInterface;
+use App\Repositories\Eloquent\MedicalHistoryRepository;
+use App\Repositories\Interfaces\LabResultRepositoryInterface;
+use App\Repositories\Eloquent\VitalSignRepository;
+use App\Repositories\Eloquent\LabResultRepository;
+
+
 class RepositoryServiceProvider extends ServiceProvider
 {
     public function register(): void
@@ -54,7 +56,7 @@ class RepositoryServiceProvider extends ServiceProvider
 
         $this->app->bind(  
             LabResultRepositoryInterface::class,
-            EloquentLabResultRepository::class
+            LabResultRepository::class
         );
 
     }

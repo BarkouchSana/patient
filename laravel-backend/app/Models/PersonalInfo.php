@@ -1,31 +1,32 @@
 <?php
-
 namespace App\Models;
-
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class PersonalInfo extends Model
 {
+    use HasFactory;
+    protected $table = 'personal_infos';
+
     protected $fillable = [
         'patient_id',
-        'name',
-        'surname',
-        'birthdate',
+         'name', 
+         'surname',
+          'birthdate',
         'gender',
-        'address',
-        'emergency_contact',
+         'address', 
+         'emergency_contact',
         'marital_status',
-        'blood_type',
-        'nationality',
-        'profile_image'
+         'blood_type',
+          'nationality',
+        'profile_image',
     ];
-
-    /**
-     * Get the patient that owns this personal info.
-     */
-    public function patient(): BelongsTo
+ 
+    protected $casts = [
+        'birthdate' => 'date', // Ajouté
+    ];
+    public function patient()
     {
-        return $this->belongsTo(Patient::class);
+        return $this->belongsTo(Patient::class, 'patient_id');
     }
 }

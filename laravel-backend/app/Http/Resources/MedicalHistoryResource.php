@@ -4,8 +4,8 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Application\DTOs\MedicalHistoryWithVitalsDto;
-use App\Application\DTOs\VitalSignItemDto as AppVitalSignItemDto;
+use App\DTOs\MedicalHistoryWithVitalsDto;
+use App\DTOs\VitalSignItemDto as AppVitalSignItemDto;
 
 class MedicalHistoryResource extends JsonResource
 {

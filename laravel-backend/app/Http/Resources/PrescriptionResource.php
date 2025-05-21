@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Domain\DTOs\PrescriptionDTO;
+use App\DTOs\PrescriptionDTO;
 use Carbon\Carbon;
 
 class PrescriptionResource extends JsonResource
@@ -25,12 +25,15 @@ class PrescriptionResource extends JsonResource
             $displayStatus = $this->resource->status; // Ou une autre logique pour ces cas
         }
 
+        // Vérifier si startDate est null avant d'utiliser toIso8601String()
+        $startDateString = $this->resource->startDate ? $this->resource->startDate->toIso8601String() : null;
+        $endDateString = $this->resource->endDate ? $this->resource->endDate->toIso8601String() : null;
 
         return [
             'id' => (string)$this->resource->id,
             'type' => 'Prescription', // Correspond à MedicalRecordItem.type
             'title' => $this->resource->medicationName,
-            'recordDate' => $this->resource->startDate->toIso8601String(), // Pour le tri/affichage
+            'recordDate' => $this->resource->startDate ? $this->resource->startDate->toIso8601String() : null, // Pour le tri/affichage
             'doctor' => $this->resource->doctorName,
             'summary' => $this->resource->dosage . ' - ' . $this->resource->frequency . ($this->resource->duration ? ' (' . $this->resource->duration . ')' : ''),
             'details' => $this->resource->instructions ?? 'Aucune instruction spécifique.',
@@ -45,8 +48,8 @@ class PrescriptionResource extends JsonResource
             'dosage' => $this->resource->dosage,
             'frequency' => $this->resource->frequency,
             'duration' => $this->resource->duration,
-            'startDate' => $this->resource->startDate->toIso8601String(),
-            'endDate' => $this->resource->endDate?->toIso8601String(),
+            'startDate' => $startDateString,
+            'endDate' => $endDateString,
             'instructions' => $this->resource->instructions,
             'refills' => $this->resource->refills,
             'dbStatus' => $this->resource->status, // Le statut original de la base de données

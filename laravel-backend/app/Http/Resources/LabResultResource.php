@@ -2,7 +2,7 @@
 
 namespace App\Http\Resources;
 
-use App\Domain\DTOs\LabResultDTO;
+use App\DTOs\LabResultDTO;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -36,13 +36,13 @@ class LabResultResource extends JsonResource
             'id' => (string) $this->id,
             'type' => 'LabResult',
             'title' => $this->title,
-            'recordDate' => $this->recordDate->toIso8601String(),
+            'recordDate' => $this->recordDate ? $this->recordDate->toIso8601String() : null,
             'doctor' => $this->doctorName,
             'summary' => $this->summary,
             'details' => $this->interpretation ?? 'No interpretation available.',
             'tagText' => $tagText,
             'tagClass' => $tagClass,
-            'resultDate' => $this->resultDate->toIso8601String(),
+            'resultDate' => $this->resultDate ? $this->resultDate->toIso8601String() : null,
             'performedBy' => $this->performedBy,
             'status' => $this->status, 
         ];

@@ -1,470 +1,629 @@
-# Healthcare Platform
 
-## Overview
-
-comprehensive healthcare platform that connects patients with healthcare providers. The application offers user profiles, appointment management, medical record access, and more in a modern, user-friendly interface.
-
-## Table of Contents
-
-1. [Getting Started](#getting-started)
-   - [Prerequisites](#prerequisites)
-   - [Installation](#installation)
-   - [Environment Configuration](#environment-configuration)
-2. [Backend API Documentation](#backend-api-documentation)
-   - [Authentication Endpoints](#authentication-endpoints)
-   - [Patient Endpoints](#patient-endpoints)
-   - [Profile Management Endpoints](#profile-management-endpoints)
-3. [Frontend Documentation](#frontend-documentation)
-   - [Key Features](#key-features)
-   - [Component Structure](#component-structure)
-4. [Development Guidelines](#development-guidelines)
-5. [Testing](#testing)
-6. [Future Improvements](#future-improvements)
-
-## Getting Started
-
-### Prerequisites
-
-- PHP 8.1 or higher
-- Composer
-- Node.js 16+ and npm
-- MySQL/MariaDB
-- Web server (Apache/Nginx)
-
-### Installation
 
 #### Backend (Laravel)
+### Profile Management Endpoints
+#### Get Patient Profile
 
-1. Clone the repository
-   ```bash
-   git clone https://github.com/yourusername/sanaa.git
-   cd sanaa/patient/laravel-backend
-   ```
+```
+GET /api/profile
+```
 
-2. Install dependencies
-   ```bash
-   composer install
-   ```
+Retrieves the authenticated patient's profile information.
 
-3. Create a copy of the environment file and generate an application key
-   ```bash
-   cp .env.example .env
-   php artisan key:generate
-   ```
+**Headers:**
+```
+Authorization: Bearer {access_token}
+Accept: application/json
+```
 
-4. Configure your database connection in the `.env` file
-   ```
-   DB_CONNECTION=mysql
-   DB_HOST=127.0.0.1
-   DB_PORT=3306
-   DB_DATABASE=sanaa
-   DB_USERNAME=root
-   DB_PASSWORD=your_password
-   ```
 
-5. Run migrations and seed the database
-   ```bash
-   php artisan migrate
-   php artisan db:seed
-   ```
+**Success Response (200 OK):**
+(Based on `ProfileController` snippet)
+```json
+{
+  "status": "success",
+  "data": {
+    "id": 1,
+    "email": "patient@example.com",
+    "name": "John",
+    "surname": "Doe",
+    "birthdate": "1990-01-01",
+    "gender": "Male",
+    "address": "123 Main St, Anytown",
+    "emergencyContact": "Jane Doe - 555-1234",
+    "maritalStatus": "Married",
+    "bloodType": "O+",
+    "nationality": "American",
+    "profile_image": "/storage/profile_images/patient_1.jpg" // Example URL
+  }
+}
+```
 
-6. Start the development server
-   ```bash
-   php artisan serve
-   ```
+#### Update Patient Profile
+
+```
+PUT /api/profile/update
+```
+ 
+ Updates the authenticated patient's profile information.
+
+**Headers:**
+```
+Authorization: Bearer {access_token}
+Accept: application/json
+Content-Type: application/json
+```
+
+**Request Body:**
+```json
+{
+  "name": "Johnathan",
+  "surname": "Doe",
+  "birthdate": "1990-01-15",
+  "gender": "Male",
+  "address": "456 Oak Ave, Anytown",
+  "emergencyContact": "Jane Doe - 555-5678",
+  "maritalStatus": "Married",
+  "bloodType": "O+",
+  "nationality": "American"
+  // Only include fields to be updated
+}
+```
+
+**Success Response (200 OK):**
+```json
+{
+  "status": "success",
+  "message": "Profile updated successfully.",
+  "data": {
+   
+  }
+}
+```
+
+**Error Response (422 Unprocessable Entity):**
+(For validation errors on the input fields)
+
+#### Change Password
+
+```
+POST /api/change-password
+```
+
+Changes the authenticated user's password.
+
+**Headers:**
+```
+Authorization: Bearer {access_token}
+Accept: application/json
+Content-Type: application/json
+```
+
+**Request Body (based on `ChangePasswordDTO`):**
+```json
+{
+  "current_password": "old_secure_password",
+  "new_password": "new_strong_password",
+  "new_password_confirmation": "new_strong_password"
+}
+```
+
+
+**Success Response (200 OK):**
+```json
+{
+  "status": "success",
+  "message": "Password changed successfully."
+}
+```
+
+
+
+**Error Response (422 Unprocessable Entity - Validation Error):**
+```json
+{
+  "status": "error",
+  "message": "The given data was invalid.",
+  "errors": {
+    "current_password": ["The current password field is required."],
+    "new_password": ["The new password must be at least 8 characters.", "The new password confirmation does not match."]
+  }
+}
+```
+
+
+**Error Response (401 Unauthorized or 400 Bad Request - Current password incorrect):**
+```json
+{
+  "status": "error",
+  "message": "Current password does not match."
+}
+```
+
+
+#### Upload Profile Image
+
+```
+POST /api/profile/update-image
+```
+
+Uploads or updates the user's profile image.
+
+**Headers:**
+```
+Authorization: Bearer {access_token}
+Accept: application/json
+Content-Type: multipart/form-data
+``
+
+**Request Body (form-data):**
+-   `profile_image`: (file) The image file to upload (e.g., jpg, png).
+
+**Success Response (200 OK):**
+```json
+{
+  "status": "success",
+  "message": "Profile image uploaded successfully.",
+  "data": {
+    "profile_image": "/storage/profile_images/new_image.jpg"
+  }
+}
+```
+
+**Error Response (422 Unprocessable Entity):**
+(For validation errors like file type, size, etc.)
+
+
+### Patient Data Endpoints
+#### Dashboard Endpoints
+##### Get Patient Dashboard Data
+ 
+```
+GET /api/patient/dashboard
+```
+
+Retrieves aggregated data for the authenticated patient's dashboard.
+
+**Headers:**
+```
+Authorization: Bearer {access_token}
+Accept: application/json
+```
+
+
+#### Medical History Endpoints
+##### Get Patient Medical History
+```
+GET /api/patients/medical-history
+```
+Retrieves the medical history for the authenticated patient.
+
+**Headers:**
+```
+Authorization: Bearer {access_token}
+Accept: application/json
+```
+
+**Success Response (200 OK - based on `MedicalHistoryResource` and `MedicalHistoryWithVitalsDto`):**
+```json
+{
+    "data": {
+        "currentMedicalConditions": [
+            "Depression",
+            "Anxiety"
+        ],
+        "pastSurgeries": [
+            "Gallbladder removal in 2012",
+            "Appendectomy in 2010"
+        ],
+        "chronicDiseases": [
+            "Multiple Sclerosis"
+        ],
+        "currentMedications": [
+            "Levothyroxine 75mcg daily",
+            "Escitalopram 10mg daily",
+            "Metformin 500mg twice daily"
+        ],
+        "allergies": [
+            "Sulfa drugs",
+            "Penicillin",
+            "Latex"
+        ],
+        "vitalSigns": {
+            "lastRecorded": null,
+            "bloodPressure": {
+                "label": "Blood Pressure",
+                "value": "114/60",
+                "unit": "mmHg",
+                "icon": "fas fa-heartbeat"
+            },
+            "pulse": {
+                "label": "Pulse",
+                "value": "65",
+                "unit": "bpm",
+                "icon": "fas fa-heart"
+            },
+            "temperature": {
+                "label": "Temperature",
+                "value": "35.9",
+                "unit": "°C",
+                "icon": "fas fa-thermometer-half"
+            },
+            "respiratoryRate": {
+                "label": "Respiratory Rate",
+                "value": "13",
+                "unit": "breaths/min",
+                "icon": "fas fa-wind"
+            },
+            "oxygenSaturation": {
+                "label": "O₂ Saturation",
+                "value": "97",
+                "unit": "%",
+                "icon": "fas fa-lungs"
+            },
+            "weight": {
+                "label": "Weight",
+                "value": "63.3",
+                "unit": "kg",
+                "icon": "fas fa-weight"
+            },
+            "height": {
+                "label": "Height",
+                "value": "180",
+                "unit": "cm",
+                "icon": "fas fa-ruler-vertical"
+            }
+        },
+        "lastUpdated": "2025-05-25T09:52:22+00:00"
+    }
+}
+```
+
+#### Appointments Endpoints
+
+##### Get Appointment History
+
+```
+GET /api/appointments/history
+```
+Retrieves the appointment history for the authenticated patient. (Note: `AppointmentHistoryController` logic for patient ID should use authenticated user).
+
+**Headers:**
+```
+Authorization: Bearer {access_token}
+Accept: application/json
+```
+**Success Response (200 OK - based on `AppointmentDTO` and `GetAppointmentHistoryService`):**
+```json
+[
+    {
+        "id": 1,
+        "date": "May 26th, 2025",
+        "time": "09:00 - 09:30",
+        "reason": "Back pain",
+        "status": "Completed",
+        "doctorName": "Dr. Smith 3",
+        "doctorSpecialty": "Neurologist",
+        "cancelReason": null,
+        "location": "Medical Center, Room 349",
+        "followUp": false,
+        "notes": null
+    },
+    {
+        "id": 7,
+        "date": "May 26th, 2025",
+        "time": "08:00 - 08:30",
+        "reason": "Back pain",
+        "status": "Completed",
+        "doctorName": "Dr. Smith 5",
+        "doctorSpecialty": "Orthopedic Surgeon",
+        "cancelReason": null,
+        "location": "Medical Center, Room 993",
+        "followUp": false,
+        "notes": null
+    },
+    {
+        "id": 13,
+        "date": "May 19th, 2025",
+        "time": "15:30 - 16:00",
+        "reason": "Skin rash",
+        "status": "Cancelled",
+        "doctorName": "Dr. Smith 5",
+        "doctorSpecialty": "Orthopedic Surgeon",
+        "cancelReason": "Patient requested cancellation",
+        "location": "Medical Center, Room 904",
+        "followUp": false,
+        "notes": null
+    },
+    {
+        "id": 30,
+        "date": "April 29th, 2025",
+        "time": "09:00 - 09:30",
+        "reason": "Headache",
+        "status": "Cancelled",
+        "doctorName": "Dr. Smith 1",
+        "doctorSpecialty": "Cardiologist",
+        "cancelReason": "Patient requested cancellation",
+        "location": "Medical Center, Room 258",
+        "followUp": false,
+        "notes": null
+    }
+]
+
+```
+##### Get Appointment Details
+
+```
+GET /api/appointments/{id}
+```
+**Headers:**
+```
+Authorization: Bearer {access_token}
+Accept: application/json
+```
+**Path Parameters:**
+-   `{id}` (integer, required): The ID of the appointment.
+
+**Success Response (200 OK - based on `AppointmentDTO` from `AppointmentHistoryController`):**
+```json
+{
+    "id": 1,
+    "date": "May 26th, 2025",
+    "time": "09:00 - 09:30",
+    "reason": "Back pain",
+    "status": "Completed",
+    "doctorName": "Dr. Smith 3",
+    "doctorSpecialty": "Neurologist",
+    "cancelReason": null,
+    "location": "Medical Center, Room 339",
+    "followUp": false,
+    "notes": [
+        "Patient requested morning appointment",
+        "Bring previous test results"
+    ]
+}
+```
+**Error Response (404 Not Found):**
+```json
+{
+  "status": "error",
+  "message": "Appointment not found."
+}
+```
+##### Cancel Appointment
+
+```
+POST /api/appointments/{id}/cancel
+```
+
+Cancels a specific appointment.
+
+**Headers:**
+```
+Authorization: Bearer {access_token}
+Accept: application/json
+Content-Type: application/json
+```
+**Path Parameters:**
+-   `{id}` (integer, required): The ID of the appointment to cancel.
+
+**Request Body (Optional):**
+```json
+{
+  "cancel_reason": "Patient unable to attend."
+}
+```
+
+**Success Response (200 OK):**
+```json
+{
+  "status": "success",
+  "message": "Appointment cancelled successfully.",
+  "data": {
+    // Updated appointment details with status "Cancelled"
+    "id": 2,
+    "doctor_name": "Dr. John Smith",
+    "doctor_specialty": "General Medicine",
+    "date": "15/06/2025",
+    "time": "14:00 - 14:30",
+    "status": "Cancelled",
+    "reason": "Follow-up",
+    "cancel_reason": "Patient unable to attend."
+  }
+}
+```
+#### Prescriptions Endpoints
+
+##### Get Patient Prescriptions
+
+```
+GET /api/prescriptions
+```
+Retrieves a list of prescriptions for the authenticated patient.
+**Headers:**
+```
+Authorization: Bearer {access_token}
+Accept: application/json
+```
+**Success Response (200 OK - based on `PrescriptionResource`):**
+```json
+
+{
+    "data": [
+        {
+            "id": "1",
+            "type": "Prescription",
+            "title": "Sertraline",
+            "recordDate": "2025-05-14T09:52:22+00:00",
+            "doctor": "Dr. Smith",
+            "summary": "100mg - Before meals (10 days)",
+            "details": "May cause sensitivity to sunlight",
+            "tagText": "active",
+            "tagClass": "bg-status-success/20 text-status-success border border-status-success/30",
+            "status": "active",
+            "medicationName": "Sertraline",
+            "dosage": "100mg",
+            "frequency": "Before meals",
+            "duration": "10 days",
+            "startDate": "2025-05-14T09:52:22+00:00",
+            "endDate": "2025-07-21T09:52:22+00:00",
+            "instructions": "May cause sensitivity to sunlight",
+            "refills": "No refills authorized",
+            "dbStatus": "active"
+        }
+    ]
+}
+```
+#### Lab Results Endpoints
+
+##### Get Patient Lab Results
+
+
+```
+GET /api/lab-results
+```
+
+Retrieves a list of lab results for the authenticated patient.
+
+**Headers:**
+```
+Authorization: Bearer {access_token}
+Accept: application/json
+```
+
+**Success Response (200 OK - based on `LabResultResource`):**
+```json
+{
+    "data": [
+        {
+            "id": "13",
+            "type": "LabResult",
+            "title": "Complete Blood Count (CBC)",
+            "recordDate": "2025-05-24T09:52:23+00:00",
+            "doctor": "Dr. Smith 1",
+            "summary": "Routine blood test results.",
+            "details": "All values within normal range. White blood cell count: 7.5, Red blood cell count: 4.8, Hemoglobin: 14.2,...",
+            "tagText": "Completed",
+            "tagClass": "bg-status-success/20 text-status-success border border-status-success/30",
+            "resultDate": "2025-05-24T21:52:23+00:00",
+            "performedBy": "Central Lab Services",
+            "status": "completed"
+        },
+        {
+            "id": "14",
+            "type": "LabResult",
+            "title": "Lipid Panel",
+            "recordDate": "2025-05-23T09:52:23+00:00",
+            "doctor": "Dr. Smith 1",
+            "summary": "Cholesterol and triglyceride levels.",
+            "details": "Total Cholesterol: 185 mg/dL, HDL: 55 mg/dL, LDL: 110 mg/dL, Triglycerides: 100 mg/dL. Overall good lipid profile.",
+            "tagText": "Reviewed",
+            "tagClass": "bg-status-info/20 text-status-info border border-status-info/30",
+            "resultDate": "2025-05-24T04:52:23+00:00",
+            "performedBy": "Advanced Diagnostics Lab",
+            "status": "reviewed"
+        }
+    ]
+}
+```
+#### Bills Endpoints
+
+##### Get Patient Bills
+
+```
+GET /api/bills
+```
+(Note: `BillController` in snippet uses `/first-patient` and hardcodes patient ID. This should be updated to use authenticated user and a general `/api/bills` route).
+
+**Headers:**
+```
+Authorization: Bearer {access_token}
+Accept: application/json
+```
+
+**Query Parameters (Based on `BillController`):**
+-   `status` (string): Filter by bill status (e.g., `paid`, `pending`, `overdue`).
+-   `date_from` (date `YYYY-MM-DD`): Filter bills issued from this date.
+-   `date_to` (date `YYYY-MM-DD`): Filter bills issued up to this date.
+-   `sort_by` (string): Field to sort by (`id`, `issue_date`, `due_date`, `amount`, `status`). Default: `issue_date`.
+-   `sort_direction` (string): `asc` or `desc`. Default: `desc`.
+-   `per_page` (integer): Number of items per page. Default: 10.
+-   `page` (integer): Page number.
+
+
+**Success Response (200 OK - based on `BillResource`):**
+```json
+
+{
+    "data": [
+        {
+            "id": 2,
+            "patient_id": 1,
+            "amount": 132.95,
+            "issue_date": "2024-07-13",
+            "due_date": "2025-05-27",
+            "status": "paid",
+            "notes": null,
+            "pdf_link": null,
+            "created_at": "2025-05-25T09:52:23+00:00",
+            "updated_at": "2025-05-25T09:52:23+00:00",
+            "doctor_name": "Dr. Smith 1",
+            "doctor_specialty": "Cardiologist",
+            "payment_method": "Espèces",
+            "services_rendered": [
+                {
+                    "id": 42,
+                    "name": "Analyse sanguine",
+                    "quantity": 1,
+                    "unit_price": 86.35,
+                    "total_price": 86.35
+                },
+                {
+                    "id": 43,
+                    "name": "Soin dentaire",
+                    "quantity": 2,
+                    "unit_price": 23.3,
+                    "total_price": 46.6
+                }
+
+            ]
+        }
+         // ... more bills
+    ],
+    "links": {
+        "first": "/?page=1",
+        "last": "/?page=1",
+        "prev": null,
+        "next": null
+    },
+    "meta": {
+        "current_page": 1,
+        "from": 1,
+        "last_page": 1,
+        "links": [
+            {
+                "url": null,
+                "label": "&laquo; Previous",
+                "active": false
+            },
+            {
+                "url": "/?page=1",
+                "label": "1",
+                "active": true
+            },
+            {
+                "url": null,
+                "label": "Next &raquo;",
+                "active": false
+            }
+        ],
+        "path": "/",
+        "per_page": 10,
+        "to": 5,
+        "total": 5
+    }
+}
+```
 
 #### Frontend (Angular)
 
-1. Navigate to the frontend directory
-   ```bash
-   cd ../angular-frontend
-   ```
-
-2. Install dependencies
-   ```bash
-   npm install
-   ```
-
-3. Configure the environment files in `src/environments/` to point to your backend URL
-
-4. Start the development server
-   ```bash
-   ng serve
-   ```
-
-5. Access the application at `http://localhost:4200`
-
-### Environment Configuration
-
-The backend requires the following environment variables:
-
-```
-APP_URL=http://localhost:8000
-FRONTEND_URL=http://localhost:4200
-JWT_SECRET=your_jwt_secret_key
-JWT_TTL=60 # JWT token time-to-live in minutes
-```
-
-## Backend API Documentation
-
-### Authentication Endpoints
-
-#### Register a new user
-
-```
-POST /api/auth/register
-```
-
-Request body:
-```json
-{
-  "name": "John Doe",
-  "email": "john@example.com",
-  "password": "securepassword",
-  "password_confirmation": "securepassword"
-}
-```
-
-Response:
-```json
-{
-  "status": "success",
-  "message": "User registered successfully",
-  "data": {
-    "user": {
-      "id": 1,
-      "email": "john@example.com",
-      "name": "John Doe",
-      "created_at": "2023-04-29T12:34:56.000000Z"
-    },
-    "access_token": "eyJ0eXAiOiJKV1..."
-  }
-}
-```
-
-#### Login
-
-```
-POST /api/auth/login
-```
-
-Request body:
-```json
-{
-  "email": "john@example.com",
-  "password": "securepassword"
-}
-```
-
-Response:
-```json
-{
-  "status": "success",
-  "message": "Login successful",
-  "data": {
-    "user": {
-      "id": 1,
-      "email": "john@example.com",
-      "name": "John Doe"
-    },
-    "access_token": "eyJ0eXAiOiJKV1..."
-  }
-}
-```
-
-#### Logout
-
-```
-POST /api/auth/logout
-```
-
-Headers:
-```
-Authorization: Bearer {access_token}
-```
-
-Response:
-```json
-{
-  "status": "success",
-  "message": "Successfully logged out"
-}
-```
-
-#### Get authenticated user
-
-```
-GET /api/auth/user
-```
-
-Headers:
-```
-Authorization: Bearer {access_token}
-```
-
-Response:
-```json
-{
-  "status": "success",
-  "data": {
-    "user": {
-      "id": 1,
-      "name": "John Doe",
-      "email": "john@example.com",
-      "created_at": "2023-04-29T12:34:56.000000Z"
-    }
-  }
-}
-```
-
-### Patient Endpoints
-
-#### Get patient profile
-
-```
-GET /api/patient/profile
-```
-
-Headers:
-```
-Authorization: Bearer {access_token}
-```
-
-Response:
-```json
-{
-  "status": "success",
-  "data": {
-    "id": 1,
-    "user_id": 1,
-    "name": "John",
-    "surname": "Doe",
-    "email": "john@example.com",
-    "birthdate": "1990-01-01",
-    "gender": "Male",
-    "address": "123 Main St, City",
-    "emergency_contact": "Jane Doe, (555) 123-4567",
-    "marital_status": "Married",
-    "blood_type": "O+",
-    "nationality": "American",
-    "profile_image": "/storage/profile_images/user_1.jpg",
-    "registration_date": "2023-01-01"
-  }
-}
-```
-
-### Profile Management Endpoints
-
-#### Update patient profile
-
-```
-PUT /api/patient/profile
-```
-
-Headers:
-```
-Authorization: Bearer {access_token}
-```
-
-Request body:
-```json
-{
-  "name": "John",
-  "surname": "Doe",
-  "birthdate": "1990-01-01",
-  "gender": "Male",
-  "address": "123 Main St, City",
-  "emergency_contact": "Jane Doe, (555) 123-4567",
-  "marital_status": "Married",
-  "blood_type": "O+",
-  "nationality": "American"
-}
-```
-
-Response:
-```json
-{
-  "status": "success",
-  "message": "Profile updated successfully",
-  "data": {
-    "id": 1,
-    "user_id": 1,
-    "name": "John",
-    "surname": "Doe",
-    "birthdate": "1990-01-01",
-    "gender": "Male",
-    "address": "123 Main St, City",
-    "emergency_contact": "Jane Doe, (555) 123-4567",
-    "marital_status": "Married",
-    "blood_type": "O+",
-    "nationality": "American",
-    "profile_image": "/storage/profile_images/user_1.jpg"
-  }
-}
-```
-
-#### Update profile image
-
-```
-POST /api/patient/profile/image
-```
-
-Headers:
-```
-Authorization: Bearer {access_token}
-Content-Type: multipart/form-data
-```
-
-Request body:
-```
-profile_image: [file upload]
-```
-
-Response:
-```json
-{
-  "status": "success",
-  "message": "Profile image updated successfully",
-  "data": {
-    "profile_image": "/storage/profile_images/user_1_1682779456.jpg"
-  }
-}
-```
-
-## Frontend Documentation
-
-### Key Features
-
-- **User Authentication**: Login, registration, and protected routes
-- **Profile Management**: View and edit personal information
-- **Responsive Design**: Mobile-first approach for all screen sizes
-
-### Component Structure
-
-The application follows a modular architecture:
-
-```
-src/app/
-├── core/                    # Core services, guards and models
-│   ├── guards/              # Route guards
-│   ├── interceptors/        # HTTP interceptors
-│   ├── models/              # Data models
-│   └── services/            # Core services
-├── features/                # Feature modules
-│   ├── auth/                # Authentication feature
-│   ├── dashboard/           # Dashboard feature
-│   └── profile/             # Profile feature
-│       ├── components/
-│       │   ├── profile-edit/
-│       │   └── profile-view/
-│       └── profile.component.ts
-├── shared/                  # Shared modules, components, directives
-│   ├── components/
-│   ├── directives/
-│   └── helpers/
-└── app.component.ts         # Root component
-```
-
-## Development Guidelines
-
-1. **Coding Standards**
-   - Follow Angular style guide
-   - Use type safety with TypeScript
-   - Document public methods and interfaces
-
-2. **Git Workflow**
-   - Use feature branches
-   - Write meaningful commit messages
-   - Create pull requests for code review
-
-3. **Error Handling**
-   - Implement global error handling for HTTP requests
-   - Log errors to the console in development
-   - Display user-friendly error messages
-
-## Testing
-
-### Running Tests
-
-```bash
-# Backend tests
-cd laravel-backend
-php artisan test
-
-# Frontend tests
-cd angular-frontend
-ng test
-```
-
-## Future Improvements
-
-Below are suggestions to enhance this application:
-
-### User Experience Improvements
-
-1. **Consistent Design System**
-   - Implement a design system with reusable components
-   - Create a shared color palette and typography system
-   - Extract common styles to a global stylesheet
-
-2. **Loading States and Feedback**
-   - Add skeleton loaders instead of simple spinners
-   - Implement toast notifications for system messages
-   - Add micro-interactions and transitions
-
-3. **Responsive Design Enhancements**
-   - Improve tablet view with optimized layouts
-   - Test on various screen sizes
-
-4. **Accessibility Improvements**
-   - Add proper ARIA labels
-   - Ensure keyboard navigation
-   - Test with screen readers
-
-### Technical Improvements
-
-1. **State Management**
-   - Implement NgRx/Redux for complex state management
-   - Create proper loading/error states
-
-2. **Performance Optimization**
-   - Lazy load images
-   - Implement virtual scrolling for long lists
-   - Add HTTP request caching
-
-3. **Form Handling**
-   - Add more sophisticated form validations
-   - Implement auto-save functionality
-   - Add confirmation dialogs before discarding changes
-
-4. **Testing**
-   - Add unit tests for services and components
-   - Implement end-to-end tests
-   - Add visual regression testing
-
-### Feature Enhancements
-
-1. **User Profile**
-   - Add user preferences section
-   - Implement security features (password change, 2FA)
-   - Add profile completeness indicator
-
-2. **Patient Features**
-   - Implement appointment scheduling
-   - Add medical history timeline
-   - Create a dashboard with health metrics
-   - Add document management for medical records
-
-3. **Communication Tools**
-   - In-app messaging with healthcare providers
-   - Notification preferences
-   - Feedback/rating system
-
-4. **Data Visualization**
-   - Charts and graphs for health metrics
-   - Interactive visualizations for medical data
-   - Printable reports
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.

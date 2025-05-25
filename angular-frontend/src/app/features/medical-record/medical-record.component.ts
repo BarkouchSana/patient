@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, HostListener, OnInit } from '@angular/core';
 import { MedicalHistoryService } from '../../core/services/medical-history.service';
 import { PrescriptionService } from '../../core/services/prescription-service.service';
-import { LabResultService } from '../../core/services/lab-result-service.service';
+import { LabResultService } from '../../core/services/lab-result.service';
  
 export interface MedicalRecordItem {
   id: string;
@@ -139,7 +139,7 @@ export class MedicalRecordComponent implements OnInit{
   loadMedicalHistory(): void {
     this.isLoadingMedicalHistory = true;
     this.medicalHistoryErrorMessage = null;
-    this.medicalHistoryService.getMedicalHistory(this.patientId).subscribe({
+    this.medicalHistoryService.getMedicalHistory().subscribe({
       next: (data) => {
         this.medicalHistory = data; // Le service devrait retourner la structure complète
         this.isLoadingMedicalHistory = false;
@@ -155,9 +155,9 @@ export class MedicalRecordComponent implements OnInit{
   }
 
   loadPrescriptions(): void {
-    this.isLoadingRecords = true; // Peut-être un indicateur spécifique pour les prescriptions
+    this.isLoadingRecords = true;  
     this.recordsError = null;
-    this.prescriptionService.getPrescriptions(this.patientId).subscribe({
+    this.prescriptionService.getPrescriptions().subscribe({
       next: (prescriptions) => {
         // S'assurer que les prescriptions ont le type 'Prescription'
         const typedPrescriptions = prescriptions.map(p => ({ ...p, type: 'Prescription' as const }));
@@ -182,7 +182,7 @@ export class MedicalRecordComponent implements OnInit{
   loadLabResults(): void {
     this.isLoadingRecords = true;
     this.recordsError = null;
-    this.labResultService.getLabResults(this.patientId).subscribe({
+    this.labResultService.getLabResults().subscribe({
       next: (labResults: Omit<MedicalRecordItem, 'type'>[]) => {
         const typedLabResults = labResults.map(lr => ({ ...lr, type: 'LabResult' as const }));
 

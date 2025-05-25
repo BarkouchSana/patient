@@ -11,16 +11,11 @@ export class PrescriptionService {
   private apiUrl = 'http://127.0.0.1:8000/api'; // URL de votre API Laravel
 
   constructor(private http: HttpClient) { }
-
-  /**
-   * Récupère les prescriptions pour un patient donné.
-   * @param patientId L'ID du patient (actuellement ignoré par le backend qui utilise un ID codé en dur pour l'utilisateur 1)
-   */
-  getPrescriptions(patientId: number): Observable<MedicalRecordItem[]> {
-    // Le backend utilise actuellement un ID codé en dur, donc patientId n'est pas utilisé dans l'URL pour l'instant.
-    // La route est /api/prescriptions
-    // Le backend retourne { data: [...] }
-    console.log(`PrescriptionService: Fetching prescriptions for patientId (currently unused by backend): ${patientId}`);
+ 
+getPrescriptions(): Observable<MedicalRecordItem[]> {
+    console.log('PrescriptionService: Fetching prescriptions from the backend');
+    
+    // URL modifiée pour utiliser l'endpoint qui travaille avec le premier patient
     return this.http.get<{ data: MedicalRecordItem[] }>(`${this.apiUrl}/prescriptions`).pipe(
       tap(response => console.log('PrescriptionService: Raw response', response)),
       map(response => {

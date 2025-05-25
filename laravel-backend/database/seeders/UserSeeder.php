@@ -2,31 +2,68 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-use App\Infrastructure\Models\EloquentUser;
+
 class UserSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
-    public function run(): void
+    public function run()
     {
-        EloquentUser::create([
-            'name' => 'John Doe',
-            'email' => 'john.doe@example.com',
-            'password' => Hash::make('password'),
-            'phone' => '1234567890',
+        // Création d'utilisateurs patients
+        User::create([
+            'name' => 'Sarah Johnson',
+            'email' => 'sarah@example.com',
+            'password' => Hash::make('password123'),
+            'phone' => '+1-202-555-0153',
             'status' => 'active',
+            'email_verified_at' => now()
         ]);
 
-        EloquentUser::create([
-            'name' => 'Jane Smith',
-            'email' => 'jane.smith@example.com',
-            'password' => Hash::make('password'),
-            'phone' => '0987654321',
+        User::create([
+            'name' => 'Michael Rodriguez',
+            'email' => 'michael@example.com',
+            'password' => Hash::make('password123'),
+            'phone' => '+1-202-555-0187',
             'status' => 'active',
+            'email_verified_at' => now()
+        ]);
+
+        User::create([
+            'name' => 'Emma Thompson',
+            'email' => 'emma@example.com',
+            'password' => Hash::make('password123'),
+            'phone' => '+1-202-555-0192',
+            'status' => 'active',
+            'email_verified_at' => now()
+        ]);
+
+        User::create([
+            'name' => 'David Chen',
+            'email' => 'david@example.com',
+            'password' => Hash::make('password123'),
+            'phone' => '+1-202-555-0143',
+            'status' => 'active',
+            'email_verified_at' => now()
+        ]);
+
+        User::create([
+            'name' => 'Olivia Martinez',
+            'email' => 'olivia@example.com',
+            'password' => Hash::make('password123'),
+            'phone' => '+1-202-555-0198',
+            'status' => 'active',
+            'email_verified_at' => now()
+        ]);
+
+        // Création d'un compte administrateur
+        User::create([
+            'name' => 'Admin',
+            'email' => 'admin@hospital.com',
+            'password' => Hash::make('admin123'),
+            'phone' => '+1-202-555-0001',
+            'status' => 'active',
+            'email_verified_at' => now()
         ]);
     }
 }

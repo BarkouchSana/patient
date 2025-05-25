@@ -27,6 +27,6 @@ export class PatientService {
   }
   changePassword(currentPassword: string, newPassword: string): Observable<{ status: string; message?: string }> {
     const payload = { currentPassword, newPassword };
-    return this.http.post<{ status: string; message?: string }>('/api/change-password', payload);
+    return this.http.post<{ status: string; message?: string }>(`${this.baseUrl}/change-password`, payload);
   }
 }

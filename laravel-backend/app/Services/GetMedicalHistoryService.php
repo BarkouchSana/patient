@@ -1,4 +1,5 @@
 <?php
+ 
 
 namespace App\Services;
 
@@ -51,19 +52,51 @@ class GetMedicalHistoryService
             );
         }
 
+        // S'assurer que toutes les propriétés sont des tableaux PHP
+        $currentMedicalConditions = $this->ensureArray($medicalHistory->currentMedicalConditions);
+        $pastSurgeries = $this->ensureArray($medicalHistory->pastSurgeries);
+        $chronicDiseases = $this->ensureArray($medicalHistory->chronicDiseases);
+        $currentMedications = $this->ensureArray($medicalHistory->currentMedications);
+        $allergies = $this->ensureArray($medicalHistory->allergies);
+
         return new MedicalHistoryWithVitalsDto(
-            currentMedicalConditions: $medicalHistory->currentMedicalConditions ?? [],
-            pastSurgeries: $medicalHistory->pastSurgeries ?? [],
-            chronicDiseases: $medicalHistory->chronicDiseases ?? [],
-            currentMedications: $medicalHistory->currentMedications ?? [],
-            allergies: $medicalHistory->allergies ?? [],
+            currentMedicalConditions: $currentMedicalConditions,
+            pastSurgeries: $pastSurgeries,
+            chronicDiseases: $chronicDiseases,
+            currentMedications: $currentMedications,
+            allergies: $allergies,
             vitalSigns: $vitalSignsDto,
             lastUpdated: $medicalHistory->lastUpdated?->format(DateTimeInterface::ATOM) // Formatage ISO 8601
         );
     }
 
+    /**
+     * S'assure qu'une valeur est un tableau.
+     * Décode les chaînes JSON si nécessaire.
+     */
+    private function ensureArray($value): array
+    {
+        if (is_null($value)) {
+            return [];
+        }
+        
+        if (is_array($value)) {
+            return $value;
+        }
+        
+        if (is_string($value)) {
+            $decoded = json_decode($value, true);
+            if (is_array($decoded)) {
+                return $decoded;
+            }
+        }
+        
+        return [];
+    }
+
     private function mapVitalSignRecordToDto(VitalSign $vitalSign): VitalSignsDto
     {
+        // ... code existant inchangé ...
         return new VitalSignsDto(
             lastRecorded: $vitalSign->recorded_at ? $vitalSign->recorded_at->format(DateTimeInterface::ATOM) : null,
             bloodPressure: ($vitalSign->blood_pressure_systolic && $vitalSign->blood_pressure_diastolic)

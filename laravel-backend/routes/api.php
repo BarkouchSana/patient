@@ -22,13 +22,16 @@ use App\Http\Controllers\API\BillController;
     Route::get('profile', [ProfileController::class, 'getProfile'])->name('profile.show');
     Route::put('profile/update', [ProfileController::class, 'updateProfile'])->name('profile.update');
     Route::post('profile/update-image', [ProfileController::class, 'updateProfileImage'])->name('profile.update-image');
-    
+    Route::post('/change-password', [ProfileController::class, 'changePassword'])->name('password.change');
+
+
     Route::get('patient/dashboard', [PatientDashboardController::class, 'show'])->name('patient.dashboard.show');
  
 
     
-    Route::get('/patients/{patientId}/medical-history', [MedicalHistoryController::class, 'show']);
+    Route::get('/patients/medical-history', [MedicalHistoryController::class, 'show']);
     // Route::get('/patients/{patientId}/appointments/history',[AppointmentHistoryController::class, 'index']);
+    
     Route::get('/appointments/history', [AppointmentHistoryController::class, 'index']);
     // Routes pour les détails et l'annulation des rendez-vous
     Route::get('/appointments/{id}', [AppointmentHistoryController::class, 'show']);
@@ -37,8 +40,12 @@ use App\Http\Controllers\API\BillController;
     Route::get('/prescriptions', [PrescriptionController::class, 'index'])->name('prescriptions.index');
     Route::get('/lab-results', [LabResultController::class, 'index'])->name('labresults.index');
     
-    Route::get('/patients/{patientId}/bills', [BillController::class, 'index'])->name('patients.bills.index');
-    Route::get('/bills/{billId}/pdf', [BillController::class, 'downloadPdf'])->name('bills.pdf.download');
 
+
+  // Route pour récupérer les factures du premier patient
+Route::get('/bills/first-patient', [BillController::class, 'index'])->name('bills.first-patient.index');
+
+// La route pour le téléchargement de PDF reste la même si elle était déjà définie
+Route::get('/bills/{billId}/pdf', [BillController::class, 'downloadPdf'])->name('bills.pdf.download');
     
     // });

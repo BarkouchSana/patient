@@ -4,7 +4,9 @@ namespace Database\Seeders;
 
 use App\Domain\Entities\Prescription;
 use App\Models\Bill;
+use App\Models\LabTest;
 use App\Models\User;
+use App\Models\VitalSign;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\App;
@@ -38,8 +40,17 @@ class DatabaseSeeder extends Seeder
             AppointmentSeeder::class,
             PrescriptionSeeder::class,
             MedicalHistorySeeder::class,
-            LabTestDataSeeder::class,
+            LabTestSeeder::class,
             BillSeeder::class,
+            VitalSignSeeder::class,
+            RecordTypeSeeder::class,
+            ChartPatientSeeder::class,
+            MedicalRecordSeeder::class, 
+            LabTestSeeder::class,
+            LabResultSeeder::class,
+            PrescriptionSeeder::class,
+            BillSeeder::class,
+            BillItemSeeder::class,
             
         ]);
     }

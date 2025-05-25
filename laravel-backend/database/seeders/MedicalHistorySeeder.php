@@ -3,100 +3,60 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Infrastructure\Models\EloquentMedicalHistory;
-use App\Infrastructure\Models\EloquentPatient;
-use Carbon\Carbon;
+use App\Models\MedicalHistory;
+use App\Models\Patient;
+
 class MedicalHistorySeeder extends Seeder
 {
-    public function run(): void
+    public function run()
     {
-        $patientId = 1; 
-
-        EloquentMedicalHistory::updateOrCreate(
-            ['patient_id' => $patientId], // Find by patient_id to avoid duplicates if run multiple times
+        $patients = Patient::all();
+        
+        $medicalHistoryData = [
             [
-                'currentMedicalConditions' => json_encode([
-                    [
-                        'id' => 'cmc1',
-                        'conditionName' => 'Hypertension Artérielle',
-                        'diagnosisDate' => '2020-05-15',
-                        'treatingDoctor' => 'Dr. Cardio',
-                        'notes' => 'Traitement par Lisinopril 10mg.',
-                        'status' => 'Actif'
-                    ],
-                    [
-                        'id' => 'cmc2',
-                        'conditionName' => 'Asthme léger intermittent',
-                        'diagnosisDate' => '2010-09-01',
-                        'treatingDoctor' => 'Dr. Pulmo',
-                        'notes' => 'Utilise un inhalateur de salbutamol au besoin.',
-                        'status' => 'Contrôlé'
-                    ]
-                ]),
-                'pastSurgeries' => json_encode([
-                    [
-                        'id' => 'surg1',
-                        'surgeryName' => 'Appendicectomie',
-                        'surgeryDate' => '2005-07-20',
-                        'hospitalName' => 'Hôpital Central',
-                        'surgeonName' => 'Dr. Chir',
-                        'notes' => 'Récupération sans complications.'
-                    ]
-                ]),
-                'chronicDiseases' => json_encode([
-                    [
-                        'id' => 'cd1',
-                        'diseaseName' => 'Diabète de type 2',
-                        'diagnosisDate' => '2018-03-10',
-                        'severity' => 'Modérée', // Assuming severity is a string
-                        'managementPlan' => 'Régime alimentaire, exercice, Metformine 500mg x2/jour.',
-                        'notes' => 'Contrôle glycémique régulier.'
-                    ]
-                ]),
-              'currentMedications' => json_encode([
-                    [
-                        'id' => 'med1',
-                        'medicationName' => 'Lisinopril',
-                        'dosage' => '10mg',
-                        'frequency' => 'Une fois par jour',
-                        'route' => 'Oral',
-                        'startDate' => '2020-05-20',
-                        'prescribingDoctor' => 'Dr. Cardio',
-                        'purpose' => 'Hypertension'
-                    ],
-                    [
-                        'id' => 'med2',
-                        'medicationName' => 'Metformine',
-                        'dosage' => '500mg',
-                        'frequency' => 'Deux fois par jour',
-                        'route' => 'Oral',
-                        'startDate' => '2018-03-15',
-                        'prescribingDoctor' => 'Dr. Endo',
-                        'purpose' => 'Diabète'
-                    ]
-                ]),
-                'allergies' => json_encode([
-                    [
-                        'id' => 'alg1',
-                        'allergen' => 'Pénicilline',
-                        'reaction' => 'Éruption cutanée, démangeaisons',
-                        'severity' => 'Sévère', // Assuming severity is a string
-                        'diagnosisDate' => '2000-01-15',
-                        'notes' => 'Éviter tous les médicaments de la famille des pénicillines.'
-                    ],
-                    [
-                        'id' => 'alg2',
-                        'allergen' => 'Acariens',
-                        'reaction' => 'Rhinite allergique, éternuements',
-                        'severity' => 'Modérée',
-                        'diagnosisDate' => '1995-06-01',
-                        'notes' => 'Utilisation de housses anti-acariens.'
-                    ]
-                ]),
-                'lastUpdated' => Carbon::now(),
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
+                'currentMedicalConditions' => ['Hypertension', 'Diabète de type 2', 'Asthme'],
+                'pastSurgeries' => ['Appendicectomie (2010)', 'Amygdalectomie (1995)'],
+                'chronicDiseases' => ['Hypertension', 'Diabète de type 2'],
+                'currentMedications' => ['Lisinopril 10mg quotidien', 'Metformine 500mg deux fois par jour', 'Ventoline en cas de besoin'],
+                'allergies' => ['Pénicilline', 'Fruits de mer']
+            ],
+            [
+                'currentMedicalConditions' => ['Hypercholestérolémie', 'Arthrose'],
+                'pastSurgeries' => ['Remplacement du genou (2018)', 'Réparation d\'hernie (2012)'],
+                'chronicDiseases' => ['Hypercholestérolémie'],
+                'currentMedications' => ['Atorvastatine 20mg quotidien', 'Paracétamol 500mg en cas de besoin', 'Supplément de glucosamine'],
+                'allergies' => ['Sulfamides', 'Latex']
+            ],
+            [
+                'currentMedicalConditions' => ['Migraine', 'Anxiété'],
+                'pastSurgeries' => ['Extraction des dents de sagesse (2015)'],
+                'chronicDiseases' => ['Migraine'],
+                'currentMedications' => ['Sumatriptan en cas de besoin', 'Escitalopram 10mg quotidien'],
+                'allergies' => ['Ibuprofène']
+            ],
+            [
+                'currentMedicalConditions' => ['Fibrillation auriculaire', 'Maladie rénale chronique'],
+                'pastSurgeries' => ['Chirurgie de la cataracte (2019)', 'Ablation de la vésicule biliaire (2005)', 'Prothèse de hanche (2017)'],
+                'chronicDiseases' => ['Fibrillation auriculaire', 'Maladie rénale chronique', 'Hypertension'],
+                'currentMedications' => ['Warfarine 5mg quotidien', 'Métoprolol 25mg deux fois par jour', 'Furosémide 20mg quotidien'],
+                'allergies' => ['Aspirine', 'Produit de contraste']
+            ],
+            [
+                'currentMedicalConditions' => ['Hypothyroïdie', 'Dépression', 'Reflux gastro-œsophagien'],
+                'pastSurgeries' => [],
+                'chronicDiseases' => ['Hypothyroïdie', 'RGO'],
+                'currentMedications' => ['Lévothyroxine 50mcg quotidien', 'Sertraline 50mg quotidien', 'Oméprazole 20mg quotidien'],
+                'allergies' => ['Codéine']
             ]
-        );      
+        ];
+
+        foreach ($patients as $index => $patient) {
+            if (isset($medicalHistoryData[$index])) {
+                $historyData = $medicalHistoryData[$index];
+                $historyData['patient_id'] = $patient->id;
+                $historyData['lastUpdated'] = now()->subDays(rand(1, 30));
+                MedicalHistory::create($historyData);
+            }
+        }
     }
 }

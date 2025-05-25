@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 // use Illuminate\Support\Facades\Auth; // Pour l'authentification future
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Log;
-
+use App\Models\Patient; // Assurez-vous d'importer le modèle Patient
 class PrescriptionController extends Controller
 {
     private GetPrescriptionsForPatientService $getPrescriptionsService;
@@ -16,37 +16,50 @@ class PrescriptionController extends Controller
     public function __construct(GetPrescriptionsForPatientService $getPrescriptionsService)
     {
         $this->getPrescriptionsService = $getPrescriptionsService;
-        // $this->middleware('auth:api'); // À activer plus tard
+       Log::info("PrescriptionController initialized");
     }
 
     public function index(Request $request)
     {
-        // TEMPORAIRE: Utiliser user_id = 1 pour le patient
-        $userPatientId = 1;
-        Log::info("PrescriptionController: Fetching prescriptions for hardcoded user_patient_id {$userPatientId}");
-
-        // TODO: Remplacer par l'ID de l'utilisateur authentifié
-        /*
-        if (!Auth::check()) {
-             Log::warning("PrescriptionController: User not authenticated.");
-             return response()->json(['message' => 'Unauthenticated.'], 401);
+        Log::info("PrescriptionController@index: Starting to fetch prescriptions");
+        
+        // Récupérer le premier patient de la base de données
+        $patient = Patient::first();
+        
+        if (!$patient) {
+            Log::error("PrescriptionController@index: No patient found in database");
+            return response()->json(['error' => 'No patient record found in the database.'], 404);
         }
-        $userPatientId = Auth::id(); // Ou $request->user()->id;
-        Log::info("PrescriptionController: Fetching prescriptions for authenticated user_patient_id {$userPatientId}");
-        */
-
+        
+        Log::info("PrescriptionController@index: Using first patient", [
+            'patient_id' => $patient->id
+        ]);
+        
         try {
-            $prescriptionDTOs = $this->getPrescriptionsService->execute($userPatientId);
+            $prescriptionDTOs = $this->getPrescriptionsService->execute($patient->id);
             
+            Log::info("PrescriptionController@index: Retrieved prescriptions", [
+                'count' => $prescriptionDTOs->count(),
+                'patient_id' => $patient->id
+            ]);
+
             if ($prescriptionDTOs->isEmpty()) {
-                Log::info("PrescriptionController: No prescriptions found for user_patient_id {$userPatientId}");
+                Log::info("PrescriptionController@index: No prescriptions found for patient", [
+                    'patient_id' => $patient->id
+                ]);
+                // Retourner une collection vide plutôt qu'une erreur 404
             }
-            // Laravel enveloppe automatiquement les collections de ressources dans une clé "data"
+            
             return PrescriptionResource::collection($prescriptionDTOs);
 
         } catch (\Exception $e) {
-            Log::error("PrescriptionController: Error fetching prescriptions for user_patient_id {$userPatientId}: " . $e->getMessage(), ['exception' => $e]);
-            return response()->json(['message' => 'An error occurred while fetching prescriptions.'], 500);
+            Log::error("PrescriptionController@index: Exception while retrieving prescriptions", [
+                'patient_id' => $patient->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return response()->json(['error' => 'An error occurred while retrieving prescriptions.'], 500);
         }
     }
 }

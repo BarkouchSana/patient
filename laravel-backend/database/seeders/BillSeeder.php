@@ -2,57 +2,62 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Carbon\Carbon;
 use App\Models\Bill;
-use App\Infrastructure\Models\EloquentPatient as Patient; // Assurez-vous que le namespace est correct
+use App\Models\Patient;
+use App\Models\Doctor;
+use Carbon\Carbon;
+
 class BillSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
-    public function run(): void
+    public function run()
     {
-       
-        $patient1 = Patient::find(1); // Assurez-vous que le patient avec ID 1 existe
-
-        if ($patient1) {
-            Bill::create([
-                'patient_id' => $patient1->id,
-                'amount' => 120.50,
-                'issue_date' => Carbon::parse('2025-01-15'),
-                'due_date' => Carbon::parse('2025-01-30'),
-                'status' => 'paid',
-                'notes' => 'Consultation générale Dr. Martin',
-                'pdf_path' => 'sample_bills/F2025-001.pdf',
-            ]);
-            Bill::create([
-                'patient_id' => $patient1->id,
-                'amount' => 75.00,
-                'issue_date' => Carbon::parse('2025-02-10'),
-                'due_date' => Carbon::parse('2025-02-25'),
-                'status' => 'paid',
-                'notes' => 'Analyse sanguine',
-                'pdf_path' => 'sample_bills/F2025-002.pdf',
-            ]);
-            Bill::create([
-                'patient_id' => $patient1->id,
-                'amount' => 90.00,
-                'issue_date' => Carbon::parse('2025-03-05'),
-                'due_date' => Carbon::parse('2025-03-20'),
-                'status' => 'pending',
-                'notes' => 'Radiographie du genou',
-            ]);
-             Bill::create([
-                'patient_id' => $patient1->id,
-                'amount' => 65.00,
-                'issue_date' => Carbon::parse('2024-12-15'),
-                'due_date' => Carbon::parse('2024-12-30'),
-                'status' => 'paid',
-                'notes' => 'Vaccination annuelle',
-                'pdf_path' => 'sample_bills/F2024-005.pdf',
-            ]);
+        $patients = Patient::all();
+        $doctors = Doctor::all();
+        
+        $statuses = ['pending', 'paid', 'overdue', 'cancelled', 'partially_paid'];
+        $paymentMethods = ['credit_card', 'debit_card', 'cash', 'insurance', 'bank_transfer', 'check'];
+        
+        // Créer des factures pour chaque patient
+        foreach ($patients as $patient) {
+            // Créer 2-4 factures par patient
+            $numBills = rand(2, 4);
+            
+            for ($i = 0; $i < $numBills; $i++) {
+                $doctor = $doctors->random();
+                
+                $issueDate = Carbon::now()->subDays(rand(1, 180));
+                $dueDate = Carbon::parse($issueDate)->addDays(30);
+                $amount = rand(2000, 50000) / 100; // 20.00€ - 500.00€
+                
+                $status = $statuses[array_rand($statuses)];
+                $paymentMethod = null;
+                $notes = null;
+                
+                if ($status === 'paid') {
+                    $paymentMethod = $paymentMethods[array_rand($paymentMethods)];
+                    $notes = 'Paiement reçu le ' . Carbon::parse($issueDate)->addDays(rand(1, 25))->format('d/m/Y');
+                } elseif ($status === 'partially_paid') {
+                    $paymentMethod = $paymentMethods[array_rand($paymentMethods)];
+                    $notes = 'Paiement partiel de ' . number_format(($amount / 2), 2) . '€ reçu. Solde restant dû.';
+                } elseif ($status === 'overdue') {
+                    $notes = 'Paiement en retard. Second rappel envoyé le ' . Carbon::parse($dueDate)->addDays(15)->format('d/m/Y');
+                }
+                
+                Bill::create([
+                    'patient_id' => $patient->id,
+                    'doctor_id' => $doctor->id,
+                    'amount' => $amount,
+                    'issue_date' => $issueDate,
+                    'due_date' => $dueDate,
+                    'status' => $status,
+                    'payment_method' => $paymentMethod,
+                    'notes' => $notes,
+                    'pdf_path' => 'bills/facture_' . $patient->id . '_' . ($i + 1) . '.pdf',
+                    'created_at' => $issueDate,
+                    'updated_at' => $issueDate
+                ]);
+            }
+        }
     }
-}
 }

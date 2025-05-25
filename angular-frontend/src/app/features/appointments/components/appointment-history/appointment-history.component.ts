@@ -22,8 +22,7 @@ export class AppointmentHistoryComponent implements OnInit {
   
     doctorName: string = 'Dr. Sarah Johnson';
   
-    currentPatientId: number = 1; // <<--- EXAMPLE: Replace with actual patientId source
-  
+     
     isLoading: boolean = false;
     errorMessage: string | null = null;
     
@@ -38,76 +37,69 @@ export class AppointmentHistoryComponent implements OnInit {
     ) {}
   
     ngOnInit(): void {
-      if (this.currentPatientId) {
-        this.loadAppointmentHistory();
-      } else {
-        this.errorMessage = 'Patient ID is not set. Cannot load history.';
-        console.error(this.errorMessage);
-      }
+      this.loadAppointmentHistory();
     }
   
-    loadAppointmentHistory(): void {
-      if (!this.currentPatientId) {
-        this.errorMessage = 'Cannot load history: Patient ID is missing.';
-        console.error(this.errorMessage);
-        return;
-      }
-      this.isLoading = true;
-      this.errorMessage = null;
-      this.appointmentService.getAppointmentHistory(this.currentPatientId).subscribe(
-        (data) => {
-          this.allAppointments = data.map(appointment => {
-            let parsedDate: string = appointment.date as string; // Default to original string
-            if (typeof appointment.date === 'string') {
-              // Remove ordinal suffixes (st, nd, rd, th) before attempting to parse
-              const dateStringWithoutOrdinal = appointment.date.replace(/(\d+)(st|nd|rd|th)/, '$1');
-              const tempDate = new Date(dateStringWithoutOrdinal);
-              if (!isNaN(tempDate.getTime())) { // Check if the conversion was successful
-                parsedDate = tempDate.toISOString(); // Convert Date to ISO string
-              } else {
-                console.warn(`Could not parse date string: "${appointment.date}". Using original or it might appear as invalid.`);
-              }
-            } else if (appointment.date && Object.prototype.toString.call(appointment.date) === '[object Date]') {
-              parsedDate = (appointment.date as Date).toISOString(); // Convert Date to ISO string
+     loadAppointmentHistory(): void {
+    this.isLoading = true;
+    this.errorMessage = null;
+    
+    // Ne passe plus de patientId - le backend utilise le premier patient
+    this.appointmentService.getAppointmentHistory().subscribe({
+      next: (data) => {
+        this.allAppointments = data.map(appointment => {
+          let parsedDate: string = appointment.date as string; // Par défaut, on garde la chaîne originale
+          if (typeof appointment.date === 'string') {
+            // Supprimer les suffixes ordinaux (st, nd, rd, th) avant de tenter l'analyse
+            const dateStringWithoutOrdinal = appointment.date.replace(/(\d+)(st|nd|rd|th)/, '$1');
+            const tempDate = new Date(dateStringWithoutOrdinal);
+            if (!isNaN(tempDate.getTime())) { // Vérifier si la conversion a réussi
+              parsedDate = tempDate.toISOString(); // Convertir Date en chaîne ISO
+            } else {
+              console.warn(`Impossible d'analyser la chaîne de date: "${appointment.date}". Utilisation de l'original ou pourrait apparaître comme invalide.`);
             }
-
-            return {
-              ...appointment,
-              patientId: this.currentPatientId, // Add patientId
-              doctorId: (appointment as any).doctorId, // Add doctorId, assuming it exists on the incoming appointment data
-              date: parsedDate, // Ensure date is always a string
-              status: this.mapServiceStatusToDomainStatus(appointment.status as string | undefined, 'Unknown')
-            };
-          });
-                    
-          // ---- DEBUT DU DEBUG ----
-          console.log('Données brutes reçues (data):', JSON.stringify(data.slice(0, 10))); 
-          console.log('allAppointments (après mapping, 10 premiers):', JSON.stringify(this.allAppointments.slice(0, 10)));
-          // ---- FIN DU DEBUG ----
-          
-          this.applyFiltersAndPagination();
-                    
-          // ---- DEBUT DU DEBUG (après pagination pour la première page) ----
-          if (this.paginatedAppointments) {
-            console.log('paginatedAppointments (première page):', JSON.stringify(this.paginatedAppointments));
-            console.log('Nombre dans paginatedAppointments:', this.paginatedAppointments.length);
+} else if (appointment.date && Object.prototype.toString.call(appointment.date) === '[object Date]') {
+            parsedDate = (appointment.date as Date).toISOString(); // Convertir Date en chaîne ISO
           }
-          console.log('currentPage:', this.currentPage, 'itemsPerPage:', this.itemsPerPage);
-          // ---- FIN DU DEBUG ----
+
+          return {
+            ...appointment,
+            // Ensure patientId and doctorId are present, defaulting if not found on the source object.
+            // This addresses the type error if the source 'appointment' objects from 'data'
+            // do not contain patientId or doctorId, which are required by the Appointment model.
           
-          this.isLoading = false;
-          this.cdr.detectChanges();
-        },
-        (error) => {
-          console.error('Error fetching appointment history:', error);
-          this.errorMessage = 'Failed to load appointment history. Please try again later.';
-          this.isLoading = false;
-          this.allAppointments = [];
-          this.applyFiltersAndPagination();
-          this.cdr.detectChanges(); 
+            doctorId: (appointment as any).doctorId ?? -1,   // Using -1 as a default for missing ID
+            date: parsedDate, // Garantir que date est toujours une chaîne
+            status: this.mapServiceStatusToDomainStatus(appointment.status as string | undefined, 'Unknown')
+          };
+        });
+
+console.log('Données brutes reçues (data):', JSON.stringify(data.slice(0, 10))); 
+        console.log('allAppointments (après mapping, 10 premiers):', JSON.stringify(this.allAppointments.slice(0, 10)));
+        
+        this.applyFiltersAndPagination();
+                  
+        if (this.paginatedAppointments) {
+          console.log('paginatedAppointments (première page):', JSON.stringify(this.paginatedAppointments));
+          console.log('Nombre dans paginatedAppointments:', this.paginatedAppointments.length);
         }
-      );
-    }
+        console.log('currentPage:', this.currentPage, 'itemsPerPage:', this.itemsPerPage);
+        
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Erreur lors de la récupération de l\'historique des rendez-vous:', error);
+        this.errorMessage = 'Échec du chargement de l\'historique des rendez-vous. Veuillez réessayer plus tard.';
+        this.isLoading = false;
+        this.allAppointments = [];
+        this.applyFiltersAndPagination();
+        this.cdr.detectChanges(); 
+      }
+    });
+  }
+
+
   
     applyFiltersAndPagination(): void {
       let tempAppointments = this.allAppointments;

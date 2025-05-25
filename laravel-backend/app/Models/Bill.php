@@ -12,10 +12,12 @@ class Bill extends Model
 
     protected $fillable = [
         'patient_id',
+         'doctor_id',
         'amount',
         'issue_date',
         'due_date',
         'status',
+        'payment_method',
         'notes',
         'pdf_path',
     ];
@@ -30,5 +32,13 @@ class Bill extends Model
     {
         // Ajustez le namespace si EloquentPatient est dans App\Infrastructure\Models
         return $this->belongsTo(Patient::class); // Ou EloquentPatient::class
+    }
+    public function doctor()
+    {
+        return $this->belongsTo(Doctor::class);
+    }
+     public function items() // ou services_rendered si vous préférez ce nom
+    {
+        return $this->hasMany(BillItem::class);
     }
 }

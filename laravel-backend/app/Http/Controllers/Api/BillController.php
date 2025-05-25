@@ -3,69 +3,72 @@
 namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
-use App\Models\Bill; // Ou App\Infrastructure\Models\EloquentBill
-use App\Http\Resources\BillResource; // Nous allons créer cette ressource
-// use Illuminate\Support\Facades\Auth; // Si vous utilisez l'authentification Laravel standard
-use App\Http\Controllers\Controller; // Assurez-vous d'importer le bon namespace pour le contrôleur
+use Illuminate\Support\Facades\Storage;
+use App\Models\Bill;
+use App\Models\Patient;
+use App\Http\Resources\BillResource;
+use App\Http\Controllers\Controller;
+
 class BillController extends Controller
 {
-    public function index(Request $request, int $patientId)
+    public function index(Request $request)
     {
-        // TODO: Mettre en place une vraie vérification d'autorisation
-        // Pour l'instant, on suppose que si l'ID patient est fourni, c'est autorisé pour la démo.
-        // Dans une vraie application, vérifiez que l'utilisateur authentifié
-        // a le droit de voir les factures de $patientId.
-        // Par exemple: if (Auth::user()->patient_id !== $patientId && !Auth::user()->isAdmin()) {
-        // return response()->json(['message' => 'Unauthorized'], 403);
-        // }
+        $firstPatient = Patient::first();
+        if (!$firstPatient) {
+            return response()->json(['message' => 'Aucun patient trouvé dans la base de données.'], 404);
+        }
 
-        $query = Bill::where('patient_id', $patientId)->where('status', 'paid');
+        $patientId = $firstPatient->id;
 
-        // Filtrage par date d'émission
+        $query = Bill::where('patient_id', $patientId)
+                     ->with(['doctor', 'items']); // Eager load doctor and items
+
+        if ($request->has('status')) {
+            $query->where('status', $request->status);
+        }
+        
         if ($request->has('date_from')) {
             $query->where('issue_date', '>=', $request->date_from);
         }
         if ($request->has('date_to')) {
             $query->where('issue_date', '<=', $request->date_to);
         }
+        
+        $sortBy = $request->input('sort_by', 'issue_date');
+        $sortDirection = $request->input('sort_direction', 'desc');
 
-        // Tri
-        $sortBy = $request->input('sort_by', 'issue_date'); // Colonne de tri par défaut
-        $sortDirection = $request->input('sort_direction', 'desc'); // Direction par défaut
-
-        if (!in_array($sortBy, ['issue_date', 'amount'])) {
-            $sortBy = 'issue_date'; // fallback si la colonne de tri n'est pas valide
+        // Mettre à jour les colonnes de tri autorisées si nécessaire (ex: doctor.name)
+        // Pour trier par nom de médecin, vous auriez besoin d'un join ou d'une approche plus complexe.
+        // Pour l'instant, on garde les colonnes directes de la table bills.
+        $allowedSortColumns = ['id', 'issue_date', 'due_date', 'amount', 'status'];
+        if ($sortBy === 'doctor_name' && method_exists((new Bill)->doctor(), 'getForeignKeyName')) { // Simple check
+            // Pour un tri plus robuste par nom de docteur, un join est préférable
+            // $query->join('doctors', 'bills.doctor_id', '=', 'doctors.id')
+            //       ->orderBy('doctors.name', $sortDirection)
+            //       ->select('bills.*'); // S'assurer de sélectionner les colonnes de bills
+            // Pour la simplicité, on ne trie pas par nom de docteur ici sans join complexe
+        } elseif (in_array($sortBy, $allowedSortColumns)) {
+            $query->orderBy($sortBy, $sortDirection);
+        } else {
+            $query->orderBy('issue_date', 'desc'); // Fallback
         }
-        if (!in_array(strtolower($sortDirection), ['asc', 'desc'])) {
-            $sortDirection = 'desc'; // fallback
-        }
 
-        $query->orderBy($sortBy, $sortDirection);
 
         $bills = $query->paginate($request->input('per_page', 10));
 
         return BillResource::collection($bills);
     }
 
-    // Méthode pour simuler le téléchargement de PDF
     public function downloadPdf(Request $request, int $billId)
     {
-        $bill = Bill::where('status', 'paid')->findOrFail($billId);
-        // TODO: Vérifier que l'utilisateur authentifié a accès à cette facture
-        // if (Auth::user()->patient_id !== $bill->patient_id && !Auth::user()->isAdmin()) {
-        // return response()->json(['message' => 'Unauthorized'], 403);
-        // }
+        $bill = Bill::findOrFail($billId); 
 
-        if ($bill->pdf_path) {
-            // Dans une vraie application, vous retourneriez le fichier PDF.
-            // Storage::download($bill->pdf_path) ou response()->file(...)
-            // Pour la démo, nous simulons.
-            return response()->json([
-                'message' => "Simulation du téléchargement du PDF pour la facture ID: {$bill->id}",
-                'path' => $bill->pdf_path,
-                'url' => asset('storage/' . $bill->pdf_path) // Assurez-vous que le lien symbolique storage est créé
-            ]);
+        if ($bill->pdf_path && Storage::disk('public')->exists($bill->pdf_path)) {
+            $fileName = 'bill_' . $bill->id . '_' . $bill->issue_date->format('Ymd') . '.pdf';
+            $filePath = Storage::disk('public')->path($bill->pdf_path);
+            return response()->download($filePath, $fileName);
         }
-        return response()->json(['message' => 'Aucun PDF disponible pour cette facture.'], 404);
+        
+        return response()->json(['message' => 'Aucun PDF disponible ou le fichier est introuvable pour cette facture.'], 404);
     }
 }

@@ -3,24 +3,21 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Infrastructure\Models\EloquentUser;
-use App\Infrastructure\Models\EloquentPatient;
+use App\Models\Patient;
+use App\Models\User;
 
 class PatientSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
-    public function run(): void
+    public function run()
     {
-        // Get all users that don't have a patient record yet
-        $users = EloquentUser::doesntHave('patient')->get();
+        // Récupérer les utilisateurs créés précédemment (excluant l'admin)
+        $users = User::where('email', '!=', 'admin@hospital.com')->get();
 
-        // Create a patient record for each user
         foreach ($users as $user) {
-            EloquentPatient::create([
+            // Créer un patient lié à chaque utilisateur
+            Patient::create([
                 'user_id' => $user->id,
-                'registration_date' => now(),
+                'registration_date' => now()->subDays(rand(10, 365))
             ]);
         }
     }

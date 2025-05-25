@@ -1,10 +1,10 @@
 <?php
 
+
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Storage;
 
 class BillResource extends JsonResource
 {
@@ -24,13 +24,19 @@ class BillResource extends JsonResource
             'status' => $this->status,
             'notes' => $this->notes,
             'pdf_link' => $this->when($this->pdf_path, function () {
-                // Génère un lien vers la route de téléchargement du PDF
+                // Assurez-vous que la route 'bills.pdf.download' est définie et prend 'billId'
                 return route('bills.pdf.download', ['billId' => $this->id]);
                 // Ou si vous stockez les PDF publiquement et avez un lien symbolique:
                 // return $this->pdf_path ? Storage::url($this->pdf_path) : null;
-            }),
+            }, null),
             'created_at' => $this->created_at->toIso8601String(),
             'updated_at' => $this->updated_at->toIso8601String(),
+
+            // Nouvelles données
+            'doctor_name' => $this->whenLoaded('doctor', $this->doctor->name ?? null),
+            'doctor_specialty' => $this->whenLoaded('doctor', $this->doctor->specialty ?? null),
+            'payment_method' => $this->payment_method,
+            'services_rendered' => BillItemResource::collection($this->whenLoaded('items')), // 'items' est le nom de la relation
         ];
     }
 }

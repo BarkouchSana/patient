@@ -8,12 +8,13 @@ import { map } from 'rxjs/operators'; // Importer map
   providedIn: 'root'
 })
 export class MedicalHistoryService {
-  private apiUrl = 'http://127.0.0.1:8000/api/patients'; // Assurez-vous que c'est la bonne URL de base de l'API
+  private apiUrl = 'http://127.0.0.1:8000/api'; // Assurez-vous que c'est la bonne URL de base de l'API
 
   constructor(private http: HttpClient) { }
 
-  getMedicalHistory(patientId: number): Observable<MedicalHistoryData> {
-    return this.http.get<{ data: MedicalHistoryData }>(`${this.apiUrl}/${patientId}/medical-history`)
+  getMedicalHistory(): Observable<MedicalHistoryData> {
+    return this.http.get<{ data: MedicalHistoryData }>(`${this.apiUrl}/patients/medical-history`)
+
       .pipe(
         map(response => response.data) // Extraire les données de la clé "data"
       );

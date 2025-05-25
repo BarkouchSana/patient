@@ -1,6 +1,6 @@
 export interface Appointment {
         id: number;
-        patientId: number;
+       
         doctorId: number;
         doctorName?: string; // Added for convenience
         date: string | Date; // Can be string from API, converted to Date in service/component

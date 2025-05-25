@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 export interface Appointment {
   id: number;
@@ -26,15 +27,20 @@ export class AppointmentService {
 
   constructor(private http: HttpClient) {}
 
-  getAppointmentHistory(patientId: number): Observable<Appointment[]> {
-    
-    const params = new HttpParams().set('patientId', patientId.toString());
-    return this.http.get<Appointment[]>(`${this.apiUrl}/appointments/history`, { params });
+  getAppointmentHistory(): Observable<Appointment[]> {
+    // Plus besoin de passer un patientId - le backend utilise le premier patient
+    return this.http.get<Appointment[]>(`${this.apiUrl}/appointments/history`)
+      .pipe(
+        map(response => response || [])
+      );
   }
 
    
-  getAppointments(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/appointments`);  
+  getAppointments(): Observable<Appointment[]> {
+    return this.http.get<Appointment[]>(`${this.apiUrl}/appointments`)
+      .pipe(
+        map(response => response || [])
+      );
   }
 
   getAppointment(id: number): Observable<any> {
@@ -55,7 +61,10 @@ export class AppointmentService {
 
 
   getAppointmentDetails(id: number): Observable<Partial<Appointment>> {
-    return this.http.get<Partial<Appointment>>(`${this.apiUrl}/appointments/${id}`);
+    return this.http.get<Partial<Appointment>>(`${this.apiUrl}/appointments/${id}`)
+      .pipe(
+        map(response => response || {})
+      );
   }
 
  

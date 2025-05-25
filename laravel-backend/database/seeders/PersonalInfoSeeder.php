@@ -3,58 +3,84 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Infrastructure\Models\EloquentUser;
-use App\Infrastructure\Models\EloquentPatient;
-use App\Infrastructure\Models\EloquentPersonalInfo;
-use Illuminate\Support\Facades\Storage;
+use App\Models\PersonalInfo;
+use App\Models\Patient;
 
 class PersonalInfoSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
-    public function run(): void
+    public function run()
     {
-        // Get all patients
-        $patients = EloquentPatient::all();
+        $patients = Patient::all();
+        
+        $personalInfoData = [
+            [
+                'name' => 'Sarah',
+                'surname' => 'Johnson',
+                'birthdate' => '1985-04-12',
+                'gender' => 'female',
+                'address' => '123 Rue Principale, Apt 4B, Paris 75001',
+                'emergency_contact' => 'John Johnson (Mari): +33 6 12 34 56 78',
+                'marital_status' => 'married',
+                'blood_type' => 'A+',
+                'nationality' => 'Française',
+                'profile_image' => null
+            ],
+            [
+                'name' => 'Michael',
+                'surname' => 'Rodriguez',
+                'birthdate' => '1978-07-23',
+                'gender' => 'male',
+                'address' => '456 Avenue du Parc, Suite 7, Lyon 69002',
+                'emergency_contact' => 'Lisa Rodriguez (Épouse): +33 6 23 45 67 89',
+                'marital_status' => 'married',
+                'blood_type' => 'O-',
+                'nationality' => 'Espagnole',
+                'profile_image' => null
+            ],
+            [
+                'name' => 'Emma',
+                'surname' => 'Thompson',
+                'birthdate' => '1992-11-30',
+                'gender' => 'female',
+                'address' => '789 Boulevard Saint-Michel, Apt 12C, Paris 75005',
+                'emergency_contact' => 'Rebecca Thompson (Mère): +33 6 34 56 78 90',
+                'marital_status' => 'single',
+                'blood_type' => 'B+',
+                'nationality' => 'Britannique',
+                'profile_image' => null
+            ],
+            [
+                'name' => 'David',
+                'surname' => 'Chen',
+                'birthdate' => '1965-03-18',
+                'gender' => 'male',
+                'address' => '101 Rue du Chêne, Bordeaux 33000',
+                'emergency_contact' => 'Grace Chen (Fille): +33 6 45 67 89 01',
+                'marital_status' => 'widowed',
+                'blood_type' => 'AB+',
+                'nationality' => 'Chinoise-Française',
+                'profile_image' => null
+            ],
+            [
+                'name' => 'Olivia',
+                'surname' => 'Martinez',
+                'birthdate' => '1989-09-05',
+                'gender' => 'female',
+                'address' => '222 Rue des Saules, Toulouse 31000',
+                'emergency_contact' => 'Carlos Martinez (Frère): +33 6 56 78 90 12',
+                'marital_status' => 'divorced',
+                'blood_type' => 'O+',
+                'nationality' => 'Franco-Mexicaine',
+                'profile_image' => null
+            ]
+        ];
 
-        foreach ($patients as $patient) {
-            // Create or update personal info for each patient
-            EloquentPersonalInfo::updateOrCreate(
-                ['patient_id' => $patient->id],
-                [
-                    'name' => fake()->firstName(),
-                    'surname' => fake()->lastName(),
-                    'birthdate' => fake()->date('Y-m-d', '-20 years'),
-                    'gender' => fake()->randomElement(['male', 'female']),
-                    'address' => fake()->address(),
-                    'emergency_contact' => fake()->phoneNumber(),
-                    'marital_status' => fake()->randomElement(['single', 'married']),
-                    'blood_type' => fake()->randomElement(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']),
-                    'nationality' => fake()->country(),
-                    'profile_image' => null,
-                ]
-            );
-        }
-
-        // Create a specific profile for the test user
-        $testUser = EloquentUser::where('email', 'test@example.com')->first();
-        if ($testUser && $testUser->patient) {
-            EloquentPersonalInfo::updateOrCreate(
-                ['patient_id' => $testUser->patient->id],
-                [
-                    'name' => 'Test',
-                    'surname' => 'User',
-                    'birthdate' => '1990-01-01',
-                    'gender' => 'male',
-                    'address' => '123 Test Street, Test City',
-                    'emergency_contact' => '123-456-7890',
-                    'marital_status' => 'single',
-                    'blood_type' => 'O+',
-                    'nationality' => 'United States',
-                    'profile_image' => null,
-                ]
-            );
+        foreach ($patients as $index => $patient) {
+            if (isset($personalInfoData[$index])) {
+                $infoData = $personalInfoData[$index];
+                $infoData['patient_id'] = $patient->id;
+                PersonalInfo::create($infoData);
+            }
         }
     }
 }

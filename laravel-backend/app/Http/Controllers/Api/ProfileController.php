@@ -7,10 +7,12 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
- 
+use Illuminate\Support\Facades\Hash; 
 use App\Models\Patient;
 use App\Models\PersonalInfo;
 use App\Http\Controllers\Controller;
+use App\Services\ChangePasswordService; // Assuming ChangePasswordService is in App\Services
+use App\DTOs\ChangePasswordDTO; // Assuming ChangePasswordDTO is in App\DTOs
 class ProfileController extends Controller
 {
     /**
@@ -21,25 +23,23 @@ class ProfileController extends Controller
      */
     public function updateProfile(Request $request)
     {
-        $user = User::find(1);
+        $patient = Patient::first();
         
-        if (!$user) {
+        if (!$patient) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Unauthenticated'
             ], 401);
         }
         
-        // Find the patient record associated with this user
-        $patient = Patient::where('user_id', $user->id)->first();
-        
-        if (!$patient) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Patient record not found'
-            ], 404);
-        }
-        
+        $user = $patient->user;
+            if (!$user) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'User not found for this patient'
+        ], 404);
+    }
+    
         // Get or create personal info record
         $personalInfo = PersonalInfo::firstOrCreate(['patient_id' => $patient->id]);
         
@@ -64,7 +64,8 @@ class ProfileController extends Controller
             ], 422);
         }
         
-        // Update email in the users table
+   try {
+        // Mettre à jour l'email dans la table users
         if ($request->has('email')) {
             $user->email = $request->email;
             $user->save();
@@ -98,7 +99,7 @@ class ProfileController extends Controller
             'email' => $user->email,
             'name' => $personalInfo->name,
             'surname' => $personalInfo->surname,
-            'birthdate' => $personalInfo->birthdate,
+             'birthdate' => $personalInfo->birthdate ? $personalInfo->birthdate->format('Y-m-d') : null,
             'gender' => $personalInfo->gender,
             'address' => $personalInfo->address,
             'emergencyContact' => $personalInfo->emergency_contact,
@@ -113,38 +114,40 @@ class ProfileController extends Controller
             'message' => 'Profile updated successfully',
             'data' => $responseData
         ]);
+           } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'An error occurred while updating the profile',
+            'error' => $e->getMessage()
+        ], 500);
+    }
     }
     
     /**
-     * Update the user's profile image.
+     * Update the patient's profile image.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function updateProfileImage(Request $request)
     {
-        $user = User::find(1);
-        
-        if (!$user) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Unauthenticated'
-            ], 401);
-        }
-        
-        // Find the patient record associated with this user
-        $patient = Patient::where('user_id', $user->id)->first();
-        
+       $patient = Patient::first();
         if (!$patient) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Patient record not found'
+                'message' => 'Patient not found'
             ], 404);
-        }
+        }   
+        
+ 
+        
+         
+     
         
         // Get or create personal info record
         $personalInfo = PersonalInfo::firstOrCreate(['patient_id' => $patient->id]);
         
+        // Valider l'image
         $validator = Validator::make($request->all(), [
             'profile_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
@@ -187,27 +190,21 @@ class ProfileController extends Controller
      */
     public function getProfile()
     {
-        $user = User::find(1);
+         // Récupérer le premier patient 
+        $patient = Patient::first();
+
         
-        if (!$user) {
+            if (!$patient) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Unauthenticated'
-            ], 401);
-        }
-        
-        // Find the patient record associated with this user
-        $patient = Patient::where('user_id', $user->id)->first();
-        
-        if (!$patient) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Patient record not found'
+                'message' => 'Patient not found'
             ], 404);
         }
         
-        // Get personal info or return empty data
-        $personalInfo = PersonalInfo::where('patient_id', $patient->id)->first();
+        $user = $patient->user;
+
+        // Find the patient record associated with this user
+               $personalInfo = PersonalInfo::where('patient_id', $patient->id)->first();
         
         $data = [
             'id' => $user->id,
@@ -229,9 +226,66 @@ class ProfileController extends Controller
             ]);
         }
         
-        return response()->json([
+ 
+             // Renvoyer toutes les informations disponibles
+      return response()->json([
             'status' => 'success',
             'data' => $data
         ]);
     }
+
+
+
+/**
+ * Change the user's password.
+ *
+ * @param  \Illuminate\Http\Request  $request
+ * @return \Illuminate\Http\JsonResponse
+ */
+public function changePassword(Request $request)
+{
+
+    // Récupérer le premier patient
+        $patient = Patient::first();
+            if (!$patient) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Patient not found'
+            ], 404);
+        }
+         $user = $patient->user;
+        
+        $validator = Validator::make($request->all(), [
+            'currentPassword' => 'required|string',
+            'newPassword' => 'required|string|min:8',
+        ]);
+             if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+                $dto = new ChangePasswordDTO(
+            $user->id,
+            $request->currentPassword,
+            $request->newPassword
+        );
+        
+        $service = app(ChangePasswordService::class);
+        $success = $service->execute($dto);
+        
+        if (!$success) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Le mot de passe actuel est incorrect.'
+           ], 422);
+                     }
+        
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Mot de passe changé avec succès!'
+        ]); 
+}
+
 }

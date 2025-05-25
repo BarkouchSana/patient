@@ -40,22 +40,9 @@ class MedicalRecord extends Model
     ];
  
 
-     /**
-     * Polymorphic relationship to specialized record types
-     */
-    public function recordable(): MorphTo
-    {
-        return $this->morphTo('record_class');
-    }
+ 
 
-        /**
-     * Get the user associated with this medical record.
-     */
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'user_id');
-    }
-
+  
         /**
      * Get the doctor associated with this medical record.
      */

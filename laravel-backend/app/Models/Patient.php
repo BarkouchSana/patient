@@ -55,8 +55,5 @@ class Patient extends Model
         return $this->hasMany(MedicalRecord::class, 'patient_id');
     }
 
-    public function labResults()
-    {
-        return $this->hasMany(LabResult::class, 'patient_id');
-    }
+ 
 }
